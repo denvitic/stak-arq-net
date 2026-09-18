@@ -1,0 +1,750 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #090a0c;
+    --bg-surface: #111216;
+    --bg-card: #16181d;
+    --bg-muted: #1f2229;
+    --text-primary: #f3f4f6;
+    --text-secondary: #a2a6b0;
+    --text-muted: #6b7280;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(198, 168, 124, 0.3);
+    --accent-gold: #c6a87c;
+    --accent-gold-hover: #d8bb90;
+    color-scheme: dark;
+  }
+
+  html.light, [data-theme="light"] {
+    --bg-main: #f8f7f5;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-muted: #f1ede6;
+    --text-primary: #121316;
+    --text-secondary: #374151;
+    --text-muted: #64748b;
+    --border-subtle: #e4ded5;
+    --border-accent: rgba(154, 115, 62, 0.35);
+    --accent-gold: #9a733e;
+    --accent-gold-hover: #835f2e;
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ==========================================================================
+   LIGHT THEME ARCHITECTURAL SPECIFICATION
+   100% Contrast, Flawless Dark Overlays, Crystal-Clear Typography & Surfaces
+   ========================================================================== */
+
+html.light:not(.admin-view) {
+  background-color: #f8f7f5;
+  color: #121316;
+}
+
+html.light #stak-website {
+
+  /* --------------------------------------------------------------------------
+     1. Page Main Backgrounds & Section Colors (Light Surface)
+     -------------------------------------------------------------------------- */
+  .bg-\[\#090a0c\],
+  .bg-\[\#08090a\]:not(#hero, .page-hero-banner),
+  .bg-\[\#08090b\]:not(.page-hero-banner),
+  .bg-\[\#0a0b0d\],
+  .bg-\[\#0a0b0e\],
+  .bg-\[\#0c0d10\],
+  .bg-\[\#0c0d0f\],
+  .bg-\[\#0c0d11\],
+  .bg-\[\#0e0f14\],
+  .bg-\[\#07080a\],
+  .bg-\[\#060708\] {
+    background-color: #f8f7f5 !important;
+  }
+
+  /* Filter bar & Control Strips */
+  section.bg-\[\#0c0d11\],
+  .bg-\[\#0c0d11\] {
+    background-color: #f2eee6 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     2. Elevated Cards, Containers & Content Surfaces (White in Light Mode)
+     -------------------------------------------------------------------------- */
+  .bg-\[\#111216\]:not(#hero .bg-\[\#111216\]\/85),
+  .bg-\[\#121316\],
+  .bg-\[\#121317\],
+  .bg-\[\#121318\],
+  .bg-\[\#131418\],
+  .bg-\[\#14151a\],
+  .bg-\[\#15161c\],
+  .bg-\[\#15171e\],
+  .bg-\[\#16181d\],
+  .bg-\[\#16171b\],
+  .bg-\[\#161820\],
+  .bg-\[\#17181d\],
+  .bg-\[\#18191f\],
+  .bg-\[\#181920\],
+  .bg-\[\#1a1c22\],
+  .bg-\[\#0d0e11\],
+  .bg-\[\#0d0e12\],
+  .bg-\[\#0e0f13\],
+  .bg-\[\#111215\],
+  .bg-zinc-900 {
+    background-color: #ffffff !important;
+  }
+
+  /* Intermediate / Muted surface cards */
+  .bg-\[\#1f2229\],
+  .bg-\[\#1e2129\],
+  .bg-\[\#1d1f25\] {
+    background-color: #f1ede6 !important;
+  }
+
+  /* Inset light boxes on white cards (e.g. Services Deliverables box) */
+  .p-5.bg-black\/40,
+  .p-4.bg-black\/40,
+  .specialty-deliverables-box,
+  .bg-black\/40:not([class*="aspect-"] *, [class*="relative"] > .bg-black\/40, .photo-overlay *),
+  .bg-black\/50:not([class*="aspect-"] *, [class*="relative"] > .bg-black\/50, .photo-overlay *) {
+    background-color: #f4f0e8 !important;
+    border-color: #ded7c8 !important;
+  }
+
+  .p-5.bg-black\/40 *,
+  .p-4.bg-black\/40 *,
+  .specialty-deliverables-box,
+  .specialty-deliverables-box *,
+  .bg-black\/40:not([class*="aspect-"] *, [class*="relative"] > .bg-black\/40, .photo-overlay *) *,
+  .bg-black\/50:not([class*="aspect-"] *, [class*="relative"] > .bg-black\/50, .photo-overlay *) * {
+    color: #1a1c22 !important;
+  }
+
+  .p-5.bg-black\/40 .text-\[\#c6a87c\],
+  .p-4.bg-black\/40 .text-\[\#c6a87c\],
+  .specialty-deliverables-box .text-\[\#c6a87c\],
+  .specialty-deliverables-box svg,
+  .bg-black\/40:not([class*="aspect-"] *, [class*="relative"] > .bg-black\/40, .photo-overlay *) .text-\[\#c6a87c\] {
+    color: #8f6b32 !important;
+  }
+
+  .p-5.bg-black\/40 span,
+  .p-4.bg-black\/40 span,
+  .specialty-deliverables-box span,
+  .specialty-deliverables-box li,
+  .specialty-deliverables-box div {
+    color: #2b2f38 !important;
+  }
+
+  .specialty-deliverables-box .deliverable-title,
+  .specialty-deliverables-box [class*="font-semibold"] {
+    color: #111216 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Secondary outline buttons on light surfaces */
+  .bg-white\/5:not(#hero *, .page-hero-banner *, [class*="aspect-"] .absolute *, .absolute.bottom-6 *, .absolute.bottom-4 *) {
+    background-color: #f1ede6 !important;
+    border: 1px solid #dfd8cb !important;
+    color: #121316 !important;
+  }
+
+  .bg-white\/5:hover:not(#hero *, .page-hero-banner *, [class*="aspect-"] .absolute *) {
+    background-color: #e8e2d5 !important;
+    color: #000000 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     SERVICES & SPECIALTIES PAGE: COMPREHENSIVE LIGHT THEME CONTRAST
+     -------------------------------------------------------------------------- */
+  .services-page-container {
+    background-color: #f8f7f5 !important;
+    color: #121316 !important;
+  }
+
+  /* Specialty Cards & Content */
+  .specialty-card,
+  section[id^="esp-"] {
+    background-color: #ffffff !important;
+    border-color: #e5dfd5 !important;
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05) !important;
+  }
+  .specialty-card h2,
+  section[id^="esp-"] h2,
+  .specialty-title {
+    color: #111216 !important;
+  }
+  .specialty-card p,
+  section[id^="esp-"] p,
+  .specialty-description {
+    color: #374151 !important;
+  }
+  .specialty-card .font-medium.text-\[\#c6a87c\],
+  section[id^="esp-"] .font-medium.text-\[\#c6a87c\] {
+    color: #9a733e !important;
+  }
+  .specialty-card button.bg-white\/5,
+  section[id^="esp-"] button.bg-white\/5 {
+    background-color: #ede8df !important;
+    border: 1px solid #dfd8cb !important;
+    color: #121316 !important;
+  }
+  .specialty-card button.bg-white\/5 span,
+  section[id^="esp-"] button.bg-white\/5 span {
+    color: #121316 !important;
+  }
+  .specialty-card button.bg-white\/5:hover,
+  section[id^="esp-"] button.bg-white\/5:hover {
+    background-color: #dfd8cb !important;
+    color: #000000 !important;
+  }
+
+  /* Methodology & Phasing Section */
+  .services-methodology-section {
+    background-color: #f3efe7 !important;
+    border-color: #e4ded5 !important;
+  }
+  .services-methodology-section h2 {
+    color: #111216 !important;
+  }
+  .services-methodology-section p {
+    color: #4b5563 !important;
+  }
+  .methodology-step-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e4ded5 !important;
+    box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.04) !important;
+  }
+  .methodology-step-card h3 {
+    color: #111216 !important;
+  }
+  .methodology-step-card p {
+    color: #4b5563 !important;
+  }
+  .methodology-step-card .text-\[\#c6a87c\] {
+    color: #9a733e !important;
+  }
+
+  /* FAQ Accordion Section */
+  .services-faq-section {
+    background-color: #f8f7f5 !important;
+    border-color: #e4ded5 !important;
+  }
+  .services-faq-section h2 {
+    color: #111216 !important;
+  }
+  .services-faq-section p {
+    color: #4b5563 !important;
+  }
+  .services-faq-item {
+    background-color: #ffffff !important;
+    border: 1px solid #e4ded5 !important;
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04) !important;
+  }
+  .services-faq-item button {
+    background-color: #ffffff !important;
+  }
+  .services-faq-item button:hover {
+    background-color: #f7f5f0 !important;
+  }
+  .services-faq-item button span,
+  .services-faq-item span.text-white {
+    color: #111216 !important;
+  }
+  .services-faq-item .faq-answer {
+    color: #374151 !important;
+    border-top-color: #ebe5db !important;
+    background-color: #fcfbfa !important;
+  }
+
+  /* Services CTA Banner */
+  .services-cta-banner {
+    background: linear-gradient(to right, #f4f0e7, #ede7dc, #f4f0e7) !important;
+    border-color: #d8cfbe !important;
+  }
+  .services-cta-banner h3 {
+    color: #111216 !important;
+  }
+  .services-cta-banner p {
+    color: #4b5563 !important;
+  }
+
+  /* Gradient strips on homepage & sections */
+  .bg-gradient-to-r.from-\[\#111217\],
+  .bg-gradient-to-r.from-\[\#12141a\] {
+    background: linear-gradient(to right, #f4f0e7, #ede7dc, #f4f0e7) !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     3. Global Typography on Light Surfaces
+     -------------------------------------------------------------------------- */
+  h1:not(#hero h1, .page-hero-banner h1, [class*="bg-black"] h1, [class*="aspect-"] h1),
+  h2:not(#hero h2, .page-hero-banner h2, [class*="bg-black"] h2, [class*="aspect-"] h2),
+  h3:not(#hero h3, .page-hero-banner h3, [class*="bg-black"] h3, [class*="aspect-"] h3),
+  h4:not(#hero h4, .page-hero-banner h4, [class*="bg-black"] h4, [class*="aspect-"] h4, .absolute h4),
+  h5, h6 {
+    color: #121316 !important;
+  }
+
+  p:not(#hero p, .page-hero-banner p, [class*="bg-black"] p, [class*="aspect-"] .absolute p, .photo-overlay p, .absolute p) {
+    color: #374151 !important;
+  }
+
+  strong:not(#hero strong, .page-hero-banner strong, [class*="bg-black"] strong, [class*="aspect-"] strong) {
+    color: #121316 !important;
+  }
+
+  label {
+    color: #1f2937 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     4. Text Color Utility Mapping on Light Surfaces
+     (Strictly excludes any element sitting on a dark overlay/badge)
+     -------------------------------------------------------------------------- */
+  .text-white:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *, .absolute.bottom-6 *, .absolute.bottom-4 *, .absolute.bottom-3\.5 *, .absolute.top-4 *, .absolute.top-3\.5 *, .slider-badge *, .photo-badge *, .bg-\[\#c6a87c\] *),
+  .text-zinc-100:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-zinc-200:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#e8e8ea\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#f3f4f6\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#e5e7eb\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#d1d5db\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *, .absolute.bottom-6 *, .absolute.bottom-4 *, .absolute.bottom-3\.5 *),
+  .text-\[\#a2a6b2\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *) {
+    color: #121316 !important;
+  }
+
+  .text-white\/90:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *),
+  .text-white\/80:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *),
+  .text-white\/70:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *) {
+    color: #1f2937 !important;
+  }
+
+  /* Secondary & Muted text on Light Page Surfaces */
+  .text-\[\#b8bcc8\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#b0b4c0\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#a2a6b0\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .text-\[\#9ca3af\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *, .absolute.bottom-6 *, .absolute.bottom-4 *, .absolute.bottom-3\.5 *),
+  .text-\[\#8c909c\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *, .absolute.bottom-6 *, .absolute.bottom-4 *, .absolute.bottom-3\.5 *),
+  .text-zinc-300:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .text-zinc-400:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .text-gray-300:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .text-gray-400:not(#hero *, .page-hero-banner *, [class*="bg-black"] *) {
+    color: #4b5563 !important;
+  }
+
+  .text-\[\#6b7280\]:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .text-zinc-500:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .text-gray-500:not(#hero *, .page-hero-banner *, [class*="bg-black"] *) {
+    color: #64748b !important;
+  }
+
+  /* Gold accent on light page surfaces */
+  .text-\[\#c6a87c\]:not(.bg-\[\#c6a87c\] *, .page-hero-banner *, #hero *, [class*="bg-black"] *, [class*="bg-black\/"] *, [class*="aspect-"] .absolute *, .absolute.bottom-6 *, .absolute.bottom-4 *, .absolute.bottom-3\.5 *, .absolute.top-4 *, .absolute.top-3\.5 *) {
+    color: #9a733e !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     5. Borders & Dividers
+     -------------------------------------------------------------------------- */
+  .border-white\/5:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .border-white\/10:not(#hero *, .page-hero-banner *, [class*="bg-black"] *, [class*="aspect-"] .absolute *),
+  .border-white\/15:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .border-white\/20:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .border-zinc-800,
+  .border-zinc-700 {
+    border-color: #e4ded5 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     6. STRICT PROTECTION FOR ALL DARK OVERLAYS, PHOTO BADGES & MODAL MEDIA
+     (Guarantees that NO text on a dark overlay/badge is ever black)
+     -------------------------------------------------------------------------- */
+
+  /* Any element with bg-black / bg-black/* stays dark with luminous light text */
+  [class*="bg-black\/"]:not(.specialty-deliverables-box, .specialty-deliverables-box *, .p-5.bg-black\/40, .p-5.bg-black\/40 *),
+  .bg-black\/60,
+  .bg-black\/70,
+  .bg-black\/75,
+  .bg-black\/80,
+  .bg-black\/85,
+  .bg-black\/90 {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  [class*="bg-black\/"]:not(.specialty-deliverables-box, .specialty-deliverables-box *, .p-5.bg-black\/40, .p-5.bg-black\/40 *) span:not(.specialty-deliverables-box *, .p-5.bg-black\/40 *),
+  [class*="bg-black\/"]:not(.specialty-deliverables-box, .specialty-deliverables-box *, .p-5.bg-black\/40, .p-5.bg-black\/40 *) p:not(.specialty-deliverables-box *, .p-5.bg-black\/40 *),
+  [class*="bg-black\/"]:not(.specialty-deliverables-box, .specialty-deliverables-box *, .p-5.bg-black\/40, .p-5.bg-black\/40 *) h3,
+  [class*="bg-black\/"]:not(.specialty-deliverables-box, .specialty-deliverables-box *, .p-5.bg-black\/40, .p-5.bg-black\/40 *) h4,
+  [class*="bg-black\/"]:not(.specialty-deliverables-box, .specialty-deliverables-box *, .p-5.bg-black\/40, .p-5.bg-black\/40 *) div:not(.specialty-deliverables-box *, .p-5.bg-black\/40 *),
+  .bg-black\/60 *,
+  .bg-black\/70 *,
+  .bg-black\/75 *,
+  .bg-black\/80 *,
+  .bg-black\/85 *,
+  .bg-black\/90 * {
+    color: #ffffff !important;
+  }
+
+  /* Specific gold accents inside dark overlays */
+  [class*="bg-black\/"] .text-\[\#c6a87c\],
+  [class*="bg-black\/"] span.text-\[\#c6a87c\],
+  .bg-black\/80 .text-\[\#c6a87c\],
+  .bg-black\/75 .text-\[\#c6a87c\],
+  .bg-black\/70 .text-\[\#c6a87c\],
+  .bg-black\/60 .text-\[\#c6a87c\],
+  [class*="aspect-"] .absolute .text-\[\#c6a87c\] {
+    color: #c6a87c !important;
+  }
+
+  /* Secondary text inside dark photo overlays */
+  [class*="bg-black\/"] p,
+  .bg-black\/75 p,
+  .bg-black\/80 p,
+  [class*="aspect-"] .absolute p {
+    color: #d1d5db !important;
+  }
+
+  /* Floating badges over Project/Article cards */
+  .absolute.top-3\.5.left-3\.5.right-3\.5 *,
+  .absolute.top-4.left-4.right-4 *,
+  .absolute.top-4.left-4 *,
+  .absolute.top-3\.5.left-3\.5 *,
+  .absolute.bottom-3\.5.left-3\.5.right-3\.5 *,
+  .absolute.bottom-4.left-4.right-4 *,
+  .absolute.bottom-6.left-6.right-6 * {
+    color: #ffffff !important;
+  }
+
+  .absolute.top-3\.5.left-3\.5.right-3\.5 .text-\[\#c6a87c\],
+  .absolute.top-4.left-4 .text-\[\#c6a87c\],
+  .absolute.bottom-3\.5.left-3\.5.right-3\.5 .text-\[\#c6a87c\],
+  .absolute.bottom-4.left-4.right-4 .text-\[\#c6a87c\],
+  .absolute.bottom-6.left-6.right-6 .text-\[\#c6a87c\] {
+    color: #c6a87c !important;
+  }
+
+  .absolute.bottom-6.left-6.right-6 p,
+  .absolute.bottom-4.left-4.right-4 p {
+    color: #d1d5db !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     7. Hero Section & Page Hero Banners (Monumental Dark Header Consistency)
+     -------------------------------------------------------------------------- */
+  #hero,
+  .page-hero-banner {
+    background-color: #08090a !important;
+  }
+  
+  #hero h1,
+  .page-hero-banner h1,
+  #hero h2,
+  .page-hero-banner h2,
+  #hero h3,
+  .page-hero-banner h3 {
+    color: #ffffff !important;
+  }
+  
+  #hero p,
+  .page-hero-banner p {
+    color: #d1d5db !important;
+  }
+  
+  #hero .text-white,
+  #hero .text-\[\#f3f4f6\],
+  #hero .text-\[\#e5e7eb\],
+  #hero .text-\[\#e0e2ec\],
+  .page-hero-banner .text-white,
+  .page-hero-banner .text-\[\#f3f4f6\],
+  .page-hero-banner .text-\[\#e5e7eb\],
+  .page-hero-banner .text-\[\#e0e2ec\] {
+    color: #ffffff !important;
+  }
+  
+  #hero .text-\[\#b8bcc8\],
+  .page-hero-banner .text-\[\#b8bcc8\] {
+    color: #d1d5db !important;
+  }
+  
+  #hero .text-\[\#9ca3af\],
+  .page-hero-banner .text-\[\#9ca3af\] {
+    color: #a0a5b2 !important;
+  }
+  
+  #hero .text-\[\#c6a87c\],
+  .page-hero-banner .text-\[\#c6a87c\] {
+    color: #c6a87c !important;
+  }
+  
+  #hero .bg-white\/10,
+  .page-hero-banner .bg-white\/10 {
+    background-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+  }
+
+  .page-hero-banner .bg-black\/60 {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+
+  /* Floating active card inside Hero in light mode */
+  #hero .bg-\[\#111216\]\/85 {
+    background-color: rgba(255, 255, 255, 0.96) !important;
+    border-color: #e4ded5 !important;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25) !important;
+  }
+  #hero .bg-\[\#111216\]\/85 h3 {
+    color: #121316 !important;
+  }
+  #hero .bg-\[\#111216\]\/85 p,
+  #hero .bg-\[\#111216\]\/85 span:not(.text-\[\#c6a87c\]) {
+    color: #374151 !important;
+  }
+  #hero .bg-\[\#111216\]\/85 .text-\[\#c6a87c\] {
+    color: #9a733e !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     8. Buttons & Controls (High Contrast)
+     -------------------------------------------------------------------------- */
+
+  /* Primary Gold CTA Buttons - ALWAYS Crisp Bold Black Text */
+  .bg-\[\#c6a87c\] {
+    background-color: #c6a87c !important;
+    color: #000000 !important;
+  }
+  .bg-\[\#c6a87c\]:hover {
+    background-color: #d8bb90 !important;
+    color: #000000 !important;
+  }
+  .bg-\[\#c6a87c\] * {
+    color: #000000 !important;
+  }
+
+  /* Secondary / Ghost Buttons on Light Page */
+  .bg-white\/5:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .bg-white\/10:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .bg-white\/15:not(#hero *, .page-hero-banner *, [class*="bg-black"] *),
+  .bg-white\/20:not(#hero *, .page-hero-banner *, [class*="bg-black"] *) {
+    background-color: #ece7de !important;
+    color: #1e232a !important;
+    border-color: #d8d1c3 !important;
+  }
+
+  .hover\:bg-white\/10:hover:not(#hero *, .page-hero-banner *),
+  .hover\:bg-white\/15:hover:not(#hero *, .page-hero-banner *),
+  .hover\:bg-white\/20:hover:not(#hero *, .page-hero-banner *) {
+    background-color: #e0d9cc !important;
+    color: #111216 !important;
+  }
+
+  /* Inactive category pills */
+  .rounded-full.bg-\[\#14151a\] {
+    background-color: #ece7de !important;
+    border-color: #d8d1c3 !important;
+    color: #374151 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     9. Forms, Inputs & Placeholders
+     -------------------------------------------------------------------------- */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    background-color: #ffffff !important;
+    color: #121316 !important;
+    border: 1px solid #d4cebf !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #9a733e !important;
+    box-shadow: 0 0 0 2px rgba(154, 115, 62, 0.2) !important;
+    outline: none !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     10. Modals (ProjectModal, CmsModal, ArticleModal)
+     -------------------------------------------------------------------------- */
+  .fixed.inset-0.bg-black\/90,
+  .fixed.inset-0.bg-black\/80 {
+    background-color: rgba(0, 0, 0, 0.65) !important;
+  }
+  
+  .max-w-5xl.bg-\[\#111215\],
+  .max-w-6xl.bg-\[\#111215\],
+  .max-w-3xl.bg-\[\#111216\] {
+    background-color: #ffffff !important;
+    border-color: #e4ded5 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .border-b.border-white\/10.bg-\[\#0d0e11\],
+  .border-b.border-white\/10.bg-\[\#0e0f13\] {
+    background-color: #f8f6f2 !important;
+    border-bottom-color: #e4ded5 !important;
+  }
+
+  /* Modal Ficha Técnica card in ProjectModal */
+  .lg\:col-span-5.bg-\[\#17181d\] {
+    background-color: #f8f6f2 !important;
+    border-color: #e4ded5 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     11. Footer
+     -------------------------------------------------------------------------- */
+  footer {
+    background-color: #f1ede5 !important;
+    border-top: 1px solid #e0dad0 !important;
+  }
+  footer h3,
+  footer h4 {
+    color: #121316 !important;
+  }
+  footer p,
+  footer span {
+    color: #4b5563 !important;
+  }
+  footer a {
+    color: #374151 !important;
+  }
+  footer a:hover {
+    color: #121316 !important;
+  }
+  footer .bg-white\/5 {
+    background-color: #e4ded5 !important;
+    border-color: #d4cebf !important;
+    color: #374151 !important;
+  }
+  footer .text-\[\#9ca3af\] {
+    color: #4b5563 !important;
+  }
+}
+
+/* ==========================================================================
+   CUSTOM SCROLLBAR
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+html.dark ::-webkit-scrollbar-track,
+:root:not(.light) ::-webkit-scrollbar-track {
+  background: #090a0b;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f0ede8;
+}
+
+html.dark ::-webkit-scrollbar-thumb,
+:root:not(.light) ::-webkit-scrollbar-thumb {
+  background: #272a30;
+  border-radius: 3px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cfc8be;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c6a87c;
+}
+
+/* ==========================================================================
+   STAK ADMIN DASHBOARD - GUARANTEED 100% CONTRAST & WCAG AAA COMPLIANCE
+   Strictly isolated from website theme styles
+   ========================================================================== */
+.stak-admin-panel,
+#admin-root {
+  background-color: #f8f9fa !important;
+  color: #111827 !important;
+  color-scheme: light !important;
+}
+
+/* Explicit text color on dark surfaces inside admin panel */
+.stak-admin-panel .text-white,
+#admin-root .text-white,
+.stak-admin-panel [class*="bg-[#111827]"] .text-white,
+.stak-admin-panel [class*="bg-gray-900"] .text-white,
+.stak-admin-panel [class*="bg-black"] .text-white,
+.stak-admin-panel [class*="bg-emerald-"] .text-white,
+.stak-admin-panel button.text-white,
+.stak-admin-panel a.text-white,
+#admin-root button.text-white,
+#admin-root a.text-white {
+  color: #ffffff !important;
+}
+
+/* Guarantee dark text readability on light surfaces inside admin */
+.stak-admin-panel .text-gray-900,
+#admin-root .text-gray-900 {
+  color: #111827 !important;
+}
+
+.stak-admin-panel .text-gray-800,
+#admin-root .text-gray-800 {
+  color: #1f2937 !important;
+}
+
+.stak-admin-panel .text-gray-700,
+#admin-root .text-gray-700 {
+  color: #374151 !important;
+}
+
+.stak-admin-panel .text-gray-600,
+#admin-root .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.stak-admin-panel .text-gray-500,
+#admin-root .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+/* Inputs, textareas and selects inside admin */
+.stak-admin-panel input:not([type="checkbox"]):not([type="radio"]),
+.stak-admin-panel textarea,
+.stak-admin-panel select,
+#admin-root input:not([type="checkbox"]):not([type="radio"]),
+#admin-root textarea,
+#admin-root select {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+  border-color: #e5e7eb !important;
+}
+
+.stak-admin-panel input::placeholder,
+.stak-admin-panel textarea::placeholder,
+#admin-root input::placeholder,
+#admin-root textarea::placeholder {
+  color: #9ca3af !important;
+}
+

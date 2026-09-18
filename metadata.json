@@ -1,0 +1,6 @@
+{
+  "name": "STAK Arquitectura & Design de Interiores",
+  "description": "Website institucional e portfólio visual de alto padrão para atelier de arquitectura e design de interiores em Luanda, Angola.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
