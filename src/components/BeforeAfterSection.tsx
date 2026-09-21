@@ -79,7 +79,7 @@ export const BeforeAfterSection: React.FC<BeforeAfterSectionProps> = ({
 
   // Find projects that have a beforeImage configured and are toggled for before/after
   const dynamicProjectCases: BeforeAfterItem[] = projects
-    .filter((p) => p.beforeImage && (p.featuredInBeforeAfter ?? true))
+    .filter((p) => p.beforeImage && p.featuredInBeforeAfter === true)
     .map((p) => ({
       id: p.id,
       title: p.title,

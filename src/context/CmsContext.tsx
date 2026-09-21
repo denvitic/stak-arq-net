@@ -19,7 +19,7 @@ import {
   initialMediaLibrary,
   initialUsers,
 } from '../data/initialData';
-import { getSupabase, isSupabaseConfigured } from '../lib/supabase';
+import { getSupabase, isSupabaseConfigured, uploadFileToStorage } from '../lib/supabase';
 
 interface CmsContextType {
   projects: Project[];
@@ -36,6 +36,7 @@ interface CmsContextType {
   setActiveCmsTab: (tab: string) => void;
   // Supabase Status & Seeding
   isSupabaseLive: boolean;
+  isHydrated: boolean;
   seedSupabaseInitialData: () => Promise<{ success: boolean; message: string }>;
   // Actions
   addProject: (project: Omit<Project, 'id' | 'slug'>) => void;
@@ -92,6 +93,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isCmsOpen, setIsCmsOpen] = useState<boolean>(false);
   const [activeCmsTab, setActiveCmsTab] = useState<string>('projects');
   const [isSupabaseLive, setIsSupabaseLive] = useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
 
   const [projects, setProjects] = useState<Project[]>(() => {
     const saved =
@@ -368,9 +370,15 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Load live data from Supabase if tables exist
   useEffect(() => {
-    if (!isSupabaseConfigured()) return;
+    if (!isSupabaseConfigured()) {
+      setIsHydrated(true);
+      return;
+    }
     const client = getSupabase();
-    if (!client) return;
+    if (!client) {
+      setIsHydrated(true);
+      return;
+    }
 
     const hydrateFromSupabase = async () => {
       try {
@@ -406,7 +414,10 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                     especialidades: ['Arquitectura', 'Estruturas', 'Interiores'],
                   },
                   featured: Boolean(p.featured),
-                  featuredInBeforeAfter: Boolean(p.before_image || match?.featuredInBeforeAfter),
+                  featuredInBeforeAfter:
+                    typeof p.featured_in_before_after === 'boolean'
+                      ? p.featured_in_before_after
+                      : Boolean(match?.featuredInBeforeAfter),
                 };
               })
             );
@@ -414,23 +425,27 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
 
         // 2. Services
-        const { data: servData, error: servErr } = await client.from('services').select('*');
+        const { data: servData, error: servErr } = await client
+          .from('services')
+          .select('*')
+          .order('code', { ascending: true });
         if (!servErr && Array.isArray(servData) && servData.length > 0) {
-          setServices(
-            servData.map((s: any) => ({
-              id: s.id,
-              code: s.code,
-              title: s.title,
-              tagline: s.tagline,
-              description: s.description,
-              deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
-              ctaLabel: s.cta_label,
-              ctaAction: s.cta_action,
-              image: s.image,
-              typicalDuration: s.typical_duration,
-              icon: s.icon,
-            }))
-          );
+          const mapped = servData.map((s: any) => ({
+            id: s.id,
+            code: s.code,
+            title: s.title,
+            tagline: s.tagline,
+            description: s.description,
+            deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
+            ctaLabel: s.cta_label,
+            ctaAction: s.cta_action,
+            image: s.image,
+            typicalDuration: s.typical_duration,
+            icon: s.icon,
+          }));
+          // Sort deterministically 01..06
+          mapped.sort((a, b) => (a.code || '').localeCompare(b.code || '', undefined, { numeric: true }));
+          setServices(mapped);
         }
 
         // 3. Articles
@@ -538,11 +553,52 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       } catch (err) {
         console.warn('Supabase hydration check note:', err);
+      } finally {
+        setIsHydrated(true);
       }
     };
 
     hydrateFromSupabase();
   }, []);
+
+  // Supabase Safe Operation Helpers (Auto-adapts if schema is missing optional columns)
+  const safeUpsert = async (client: any, table: string, row: Record<string, any>) => {
+    let payload = { ...row };
+    let { error } = await client.from(table).upsert(payload);
+    let attempts = 0;
+    while (error && (error.code === 'PGRST204' || error.message?.includes('Could not find the')) && attempts < 6) {
+      attempts++;
+      const match = error.message?.match(/Could not find the '([^']+)' column/i);
+      if (match && match[1] && payload[match[1]] !== undefined) {
+        console.warn(`[Supabase Auto-Adapt] Coluna "${match[1]}" não existe na tabela ${table}. A reenviar sem ela...`);
+        delete payload[match[1]];
+        const res = await client.from(table).upsert(payload);
+        error = res.error;
+      } else {
+        break;
+      }
+    }
+    return { error };
+  };
+
+  const safeInsert = async (client: any, table: string, row: Record<string, any>) => {
+    let payload = { ...row };
+    let { error } = await client.from(table).insert(payload);
+    let attempts = 0;
+    while (error && (error.code === 'PGRST204' || error.message?.includes('Could not find the')) && attempts < 6) {
+      attempts++;
+      const match = error.message?.match(/Could not find the '([^']+)' column/i);
+      if (match && match[1] && payload[match[1]] !== undefined) {
+        console.warn(`[Supabase Auto-Adapt] Coluna "${match[1]}" não existe na tabela ${table}. A reenviar sem ela...`);
+        delete payload[match[1]];
+        const res = await client.from(table).insert(payload);
+        error = res.error;
+      } else {
+        break;
+      }
+    }
+    return { error };
+  };
 
   // Supabase Mapping Helpers
   const mapProjectToRow = (p: Project) => ({
@@ -649,16 +705,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const client = getSupabase();
     if (client) {
-      client
-        .from('projects')
-        .insert(mapProjectToRow(newProject))
-        .then(({ error }) => {
-          if (error) {
-            console.error('Erro ao registar projecto no Supabase:', error.message);
-          } else {
-            setIsSupabaseLive(true);
-          }
-        });
+      safeInsert(client, 'projects', mapProjectToRow(newProject)).then(({ error }) => {
+        if (error) {
+          console.error('Erro ao registar projecto no Supabase:', error.message);
+        } else {
+          setIsSupabaseLive(true);
+        }
+      });
     }
   };
 
@@ -667,16 +720,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const client = getSupabase();
     if (client) {
-      client
-        .from('projects')
-        .upsert(mapProjectToRow(updated))
-        .then(({ error }) => {
-          if (error) {
-            console.error('Erro ao actualizar projecto no Supabase:', error.message);
-          } else {
-            setIsSupabaseLive(true);
-          }
-        });
+      safeUpsert(client, 'projects', mapProjectToRow(updated)).then(({ error }) => {
+        if (error) {
+          console.error('Erro ao actualizar projecto no Supabase:', error.message);
+        } else {
+          setIsSupabaseLive(true);
+        }
+      });
     }
   };
 
@@ -1000,18 +1050,73 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setUsers((prev) => prev.filter((u) => u.id !== id));
   };
 
+  // Regista o ficheiro na tabela media_library do Supabase (usado após upload para o Storage)
+  const persistMediaItemToSupabase = (item: MediaItem) => {
+    const client = getSupabase();
+    if (!client) return;
+    client
+      .from('media_library')
+      .insert({
+        id: item.id,
+        name: item.name,
+        url: item.url,
+        type: item.type,
+        size: item.size,
+        category: item.category || 'Uploads',
+        uploaded_at: new Date().toISOString(),
+      })
+      .then(({ error }) => {
+        if (error) console.error('Erro ao registar media no Supabase:', error.message);
+      });
+  };
+
   // Robust Media Library Upload Handler
   const uploadMediaFile = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      try {
-        const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|ogg|mov|mkv)$/i);
+    return new Promise(async (resolve, reject) => {
+      const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|ogg|mov|mkv)$/i);
 
+      // Caminho preferencial: enviar directamente para o Supabase Storage.
+      // Isto é essencial para ficheiros pesados (vídeos MP4 longos), que rapidamente
+      // excedem a quota do localStorage do navegador se guardados como base64.
+      if (isSupabaseConfigured()) {
+        try {
+          const publicUrl = await uploadFileToStorage(file, isVideo ? 'videos' : 'imagens');
+          const sizeLabel =
+            file.size >= 1024 * 1024
+              ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+              : `${Math.round(file.size / 1024)} KB`;
+
+          const newItem: MediaItem = {
+            id: 'media-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+            name: file.name,
+            url: publicUrl,
+            type: isVideo ? 'video' : 'image',
+            size: sizeLabel,
+            uploadedAt: new Date().toISOString().split('T')[0],
+            category: isVideo ? 'Vídeos & Mídia' : 'Uploads do Dispositivo',
+          };
+          setMediaLibrary((prev) => [newItem, ...prev]);
+          persistMediaItemToSupabase(newItem);
+          resolve(publicUrl);
+          return;
+        } catch (storageErr) {
+          console.warn(
+            'Falha ao enviar para o Supabase Storage; a usar fallback local (base64) para este ficheiro.',
+            storageErr
+          );
+          // Continua para o fallback local abaixo em caso de erro (ex: bucket ainda não criado).
+        }
+      }
+
+      // Fallback local: usado apenas quando o Supabase não está configurado, ou o
+      // upload para o Storage falhou. Mantém o comportamento original em base64.
+      try {
         if (file.type.startsWith('image/')) {
           const reader = new FileReader();
           reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-              const maxDim = 1600;
+              const maxDim = 1200;
               let width = img.width;
               let height = img.height;
               if (width > maxDim || height > maxDim) {
@@ -1029,7 +1134,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               const ctx = canvas.getContext('2d');
               if (ctx) {
                 ctx.drawImage(img, 0, 0, width, height);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.80);
                 const newItem: MediaItem = {
                   id: 'media-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
                   name: file.name,
@@ -1186,7 +1291,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // 1. Projects
       const projectsToSeed = projects.length > 0 ? projects : initialProjects;
       for (const p of projectsToSeed) {
-        const { error: pErr } = await client.from('projects').upsert(mapProjectToRow(p));
+        const { error: pErr } = await safeUpsert(client, 'projects', mapProjectToRow(p));
         if (pErr) {
           throw new Error(`Erro na tabela "projects": ${pErr.message} (Código: ${pErr.code || 'RLS/Schema'})`);
         }
@@ -1195,7 +1300,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // 2. Services
       const servicesToSeed = services.length > 0 ? services : initialServices;
       for (const s of servicesToSeed) {
-        const { error: sErr } = await client.from('services').upsert(mapServiceToRow(s));
+        const { error: sErr } = await safeUpsert(client, 'services', mapServiceToRow(s));
         if (sErr) {
           throw new Error(`Erro na tabela "services": ${sErr.message} (Código: ${sErr.code || 'RLS/Schema'})`);
         }
@@ -1204,14 +1309,14 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // 3. Articles
       const articlesToSeed = articles.length > 0 ? articles : initialArticles;
       for (const a of articlesToSeed) {
-        const { error: aErr } = await client.from('articles').upsert(mapArticleToRow(a));
+        const { error: aErr } = await safeUpsert(client, 'articles', mapArticleToRow(a));
         if (aErr) {
           throw new Error(`Erro na tabela "articles": ${aErr.message} (Código: ${aErr.code || 'RLS/Schema'})`);
         }
       }
 
       // 4. Atelier info
-      const { error: infoErr } = await client.from('atelier_info').upsert(mapAtelierToRow(atelierInfo));
+      const { error: infoErr } = await safeUpsert(client, 'atelier_info', mapAtelierToRow(atelierInfo));
       if (infoErr) {
         throw new Error(`Erro na tabela "atelier_info": ${infoErr.message} (Código: ${infoErr.code || 'RLS/Schema'})`);
       }
@@ -1221,7 +1326,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       for (const [key, content] of pageEntries) {
         if (content && typeof content === 'object') {
           const anyContent = content as any;
-          const { error: pageErr } = await client.from('pages_content').upsert({
+          const { error: pageErr } = await safeUpsert(client, 'pages_content', {
             page_key: key,
             title: anyContent.title || anyContent.hero?.title || key,
             subtitle: anyContent.subtitle || anyContent.hero?.subtitle || null,
@@ -1239,7 +1344,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // 6. Media Library
       for (const m of mediaLibrary) {
         if (!m.url.startsWith('data:')) {
-          await client.from('media_library').upsert({
+          await safeUpsert(client, 'media_library', {
             id: m.id,
             name: m.name,
             url: m.url,
@@ -1282,6 +1387,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         activeCmsTab,
         setActiveCmsTab,
         isSupabaseLive,
+        isHydrated,
         seedSupabaseInitialData,
         addProject,
         updateProject,

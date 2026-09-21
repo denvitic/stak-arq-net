@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCms } from '../context/CmsContext';
 import { Project, NavPage } from '../types';
 import { Hero } from '../components/Hero';
@@ -32,8 +32,15 @@ export const HomePage: React.FC<HomePageProps> = ({
   onSelectProject,
   onSelectServiceForBriefing,
 }) => {
-  const { projects, atelierInfo, pagesContent } = useCms();
+  const { projects, services, atelierInfo, pagesContent } = useCms();
   const homeSec = pagesContent?.home?.sections;
+
+  // Sorted specialties (01 to 06)
+  const sortedServices = useMemo(() => {
+    return [...(services || [])].sort((a, b) =>
+      (a.code || '').localeCompare(b.code || '', undefined, { numeric: true })
+    );
+  }, [services]);
 
   // Materiality active showcase
   const [activeMaterial, setActiveMaterial] = useState(0);
@@ -483,53 +490,65 @@ export const HomePage: React.FC<HomePageProps> = ({
               </p>
             </div>
 
-          {/* 5 Service Pillars Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {[
+          {/* 6 Disciplinas de Especialidade STAK */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(sortedServices.length > 0 ? sortedServices : [
               {
-                num: '01',
-                title: 'Arquitectura Residencial',
-                desc: 'Moradias de luxo contemporâneas e condomínios unifamiliares.',
-                serviceKey: 'Arquitectura Residencial Contemporânea',
+                id: 'serv-1',
+                code: '01',
+                title: 'Projectos de Arquitectura',
+                tagline: 'Habitação Unifamiliar, Colectiva e Sedes Corporativas',
+                description: 'Desenvolvimento integral do conceito espacial com modelação 3D BIM.',
               },
               {
-                num: '02',
-                title: 'Comercial & Corporativo',
-                desc: 'Sedes de empresas, edifícios de escritórios e retail de prestígio.',
-                serviceKey: 'Comercial & Corporativo de Prestígio',
+                id: 'serv-2',
+                code: '02',
+                title: 'Design de Interiores & Decoração',
+                tagline: 'Arquitectura de Detalhe e Ambientes Exclusivos',
+                description: 'Marcenaria de autor, luminotécnica cénica e curadoria de materiais.',
               },
               {
-                num: '03',
-                title: 'Design de Interiores',
-                desc: 'Marcenaria de autor, luminotécnica cénica e curadoria de materiais.',
-                serviceKey: 'Design de Interiores & Arquitectura de Detalhe',
+                id: 'serv-3',
+                code: '03',
+                title: 'Licenciamento Municipal e Aprovação GPL',
+                tagline: 'Legalização Completa e Gestão Urbanística',
+                description: 'Tramitação burocrática e aprovação em todas as administrações de Luanda.',
               },
               {
-                num: '04',
-                title: 'Urbanismo & Masterplan',
-                desc: 'Loteamentos, ordenamento do território e praças urbanas.',
-                serviceKey: 'Urbanismo & Masterplanning',
+                id: 'serv-4',
+                code: '04',
+                title: 'Fiscalização e Direcção de Obra',
+                tagline: 'Rigor Construtivo e Controlo de Custos',
+                description: 'Acompanhamento permanente no estaleiro com auditoria de execução.',
               },
               {
-                num: '05',
-                title: 'Fiscalização & Obra',
-                desc: 'Controlo rigoroso de custos, cronogramas e licenciamento camarário.',
-                serviceKey: 'Fiscalização de Obra & Licenciamento',
+                id: 'serv-5',
+                code: '05',
+                title: 'Engenharia & Especialidades Integradas',
+                tagline: 'Cálculo Estrutural, Redes e AVAC',
+                description: 'Dimensionamento de estabilidade, redes hidráulicas e climatização.',
               },
-            ].map((s) => (
+              {
+                id: 'serv-6',
+                code: '06',
+                title: 'Consultoria e Avaliação de Terrenos',
+                tagline: 'Viabilidade Urbanística e Rentabilidade',
+                description: 'Estudos topográficos e análise prévia de risco e potencial de ocupação.',
+              },
+            ]).map((s) => (
               <div
-                key={s.num}
+                key={s.id || s.code}
                 className="p-6 rounded-lg bg-[#111216] border border-white/10 hover:border-[#c6a87c]/40 transition-all flex flex-col justify-between space-y-4 group"
               >
                 <div>
                   <span className="font-mono text-xs text-[#c6a87c] block mb-3 font-semibold">
-                    {s.num}
+                    {s.code || '01'}
                   </span>
                   <h3 className="text-base font-bold text-white font-heading group-hover:text-[#c6a87c] transition-colors leading-snug">
                     {s.title}
                   </h3>
                   <p className="text-xs text-[#9ca3af] mt-2 font-light leading-relaxed">
-                    {s.desc}
+                    {s.tagline || s.description}
                   </p>
                 </div>
 

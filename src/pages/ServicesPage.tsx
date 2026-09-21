@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCms } from '../context/CmsContext';
 import { NavPage } from '../types';
 import {
@@ -112,7 +112,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
     },
   ];
 
-  const specialties = services && services.length > 0 ? services : defaultSpecialties;
+  const specialties = useMemo(() => {
+    const list = services && services.length > 0 ? services : defaultSpecialties;
+    return [...list].sort((a, b) => (a.code || '').localeCompare(b.code || '', undefined, { numeric: true }));
+  }, [services, defaultSpecialties]);
 
   const handleStartBriefing = (title: string) => {
     onSelectServiceForBriefing(title);
@@ -185,14 +188,20 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
     },
   ];
 
-  const methodologySteps =
-    servicesData?.sections?.methodology?.steps && servicesData.sections.methodology.steps.length > 0
-      ? servicesData.sections.methodology.steps.map((s: any, idx: number) => ({
-          step: s.step || s.number || `Fase ${idx + 1}`,
-          title: s.title || '',
-          desc: s.desc || s.description || '',
-        }))
-      : defaultMethodologySteps;
+  const methodologySteps = useMemo(() => {
+    const rawSteps =
+      servicesData?.sections?.methodology?.steps && servicesData.sections.methodology.steps.length > 0
+        ? servicesData.sections.methodology.steps
+        : defaultMethodologySteps;
+
+    return [...rawSteps]
+      .map((s: any, idx: number) => ({
+        step: s.step || s.number || `Fase ${idx + 1}`,
+        title: s.title || '',
+        desc: s.desc || s.description || '',
+      }))
+      .sort((a, b) => (a.step || '').localeCompare(b.step || '', undefined, { numeric: true }));
+  }, [servicesData?.sections?.methodology?.steps]);
 
   return (
     <div className="services-page-container min-h-screen bg-[#090a0c] text-[#e8e8ea] pb-20">
@@ -327,11 +336,18 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
 
                   {/* Photography (5 cols) */}
                   <div className={`lg:col-span-5 ${isReversed ? 'lg:order-1' : 'lg:order-2'}`}>
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden border border-white/10 shadow-2xl relative">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden border border-white/10 shadow-2xl relative bg-[#18191e]">
                       <img
-                        src={spec.image}
+                        src={spec.image || 'https://images.unsplash.com/photo-1541888946425-d0fbb18f15f6?auto=format&fit=crop&w=1200&q=80'}
                         alt={spec.title}
                         referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          // Resilient fallback if the image link fails or is blocked
+                          const target = e.currentTarget;
+                          if (target.src !== 'https://images.unsplash.com/photo-1541888946425-d0fbb18f15f6?auto=format&fit=crop&w=1200&q=80') {
+                            target.src = 'https://images.unsplash.com/photo-1541888946425-d0fbb18f15f6?auto=format&fit=crop&w=1200&q=80';
+                          }
+                        }}
                         className="w-full h-full object-cover filter brightness-90 hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />

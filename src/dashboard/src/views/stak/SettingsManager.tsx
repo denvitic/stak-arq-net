@@ -33,6 +33,7 @@ export default function SettingsManager() {
   const [isSeeding, setIsSeeding] = useState(false);
   const [seedResult, setSeedResult] = useState<{ success: boolean; message: string } | null>(null);
   const [copiedSchema, setCopiedSchema] = useState(false);
+  const [copiedQuickFix, setCopiedQuickFix] = useState(false);
   const [healthStatus, setHealthStatus] = useState<SupabaseHealthResult | null>(null);
   const [isCheckingHealth, setIsCheckingHealth] = useState(false);
 
@@ -71,6 +72,33 @@ export default function SettingsManager() {
     } finally {
       setIsSeeding(false);
     }
+  };
+
+  const handleCopyQuickFix = () => {
+    const quickFixSql = `-- ==============================================================================
+-- CORRECÇÃO RÁPIDA: ADICIONAR COLUNAS QUE FALTAM NA TABELA PROJECTS
+-- ==============================================================================
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS subtitle TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS category_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS cover_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS architectural_concept TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS ficha_tecnica JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS featured_in_before_after BOOLEAN DEFAULT false;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_url TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_poster TEXT;
+
+-- Recarregar cache de schema do PostgREST
+NOTIFY pgrst, 'reload schema';`;
+
+    navigator.clipboard.writeText(quickFixSql);
+    setCopiedQuickFix(true);
+    setTimeout(() => setCopiedQuickFix(false), 3000);
   };
 
   const handleCopySchema = () => {
@@ -112,6 +140,24 @@ CREATE TABLE IF NOT EXISTS public.projects (
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Garantir colunas adicionais caso a tabela já existisse previamente
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS subtitle TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS category_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS cover_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS architectural_concept TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS ficha_tecnica JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS featured_in_before_after BOOLEAN DEFAULT false;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_url TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_poster TEXT;
+
+NOTIFY pgrst, 'reload schema';
 
 -- SERVICES TABLE
 CREATE TABLE IF NOT EXISTS public.services (
@@ -1076,6 +1122,50 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
                   <Icon icon="solar:users-group-two-rounded-bold" width="14" />
                   <span>Gerir Utilizadores</span>
                 </Link>
+              </div>
+            </div>
+
+            {/* Quick Fix Column Alert */}
+            <div className="border border-amber-200 bg-amber-50/70 rounded-xl p-4 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Icon icon="solar:shield-warning-bold" width="18" className="text-amber-600" />
+                    <h3 className="text-xs font-bold text-amber-950 uppercase tracking-wider">
+                      Correção Rápida: Colunas em Falta (Ex: 'after_image')
+                    </h3>
+                  </div>
+                  <p className="text-xs text-amber-900/90">
+                    Se a tabela <code>projects</code> já existia antes, execute este comando de 1 clique no SQL Editor para adicionar todas as novas colunas e atualizar o cache do Supabase:
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleCopyQuickFix}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer shrink-0"
+                >
+                  <Icon icon={copiedQuickFix ? 'solar:check-circle-bold' : 'solar:copy-bold'} width="14" />
+                  <span>{copiedQuickFix ? 'Copiado!' : 'Copiar Comando de Correção'}</span>
+                </button>
+              </div>
+
+              <div className="bg-amber-950/90 text-amber-100 p-2.5 rounded-lg font-mono text-[10px] overflow-x-auto">
+                <pre>{`ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS subtitle TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS category_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS cover_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_label TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS architectural_concept TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS ficha_tecnica JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS featured_in_before_after BOOLEAN DEFAULT false;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_url TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_poster TEXT;
+NOTIFY pgrst, 'reload schema';`}</pre>
               </div>
             </div>
 

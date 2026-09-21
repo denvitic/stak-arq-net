@@ -36,8 +36,11 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProject, onOpenBriefing }) =
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
   const activeProject = displayProjects[currentIndex] || displayProjects[0];
-  const activeVideoUrl =
-    activeProject?.videoUrl || (currentIndex === 0 ? (heroData?.videoUrl || atelierInfo.heroVideoUrl) : undefined);
+  // A slide only plays video if it has an explicit videoUrl.
+  // The general heroVideoUrl is only applied to the first slide if the project doesn't have an empty/falsy override.
+  const activeVideoUrl = activeProject?.videoUrl?.trim()
+    ? activeProject.videoUrl.trim()
+    : undefined;
   const hasActiveVideo = Boolean(activeVideoUrl);
 
   // Auto-advance slideshow timer (unified across all slides)
@@ -200,8 +203,8 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProject, onOpenBriefing }) =
       <div className="absolute inset-0 z-0 overflow-hidden">
         {displayProjects.map((project, idx) => {
           const isCurrent = idx === currentIndex;
-          const projVideoUrl =
-            project.videoUrl || (idx === 0 ? atelierInfo.heroVideoUrl : undefined);
+          // Only play video if this specific project explicitly has a video configured
+          const projVideoUrl = project.videoUrl?.trim() ? project.videoUrl.trim() : undefined;
 
           return (
             <div
@@ -220,7 +223,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProject, onOpenBriefing }) =
                 }`}
               />
 
-              {/* Interior House Video (Rendered when project has videoUrl) */}
+              {/* Interior House Video (Rendered strictly when project has videoUrl) */}
               {projVideoUrl && (
                 <video
                   ref={(el) => {
@@ -390,7 +393,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectProject, onOpenBriefing }) =
               <div className="flex items-center gap-2">
                 {displayProjects.map((p, idx) => {
                   const isCurrent = idx === currentIndex;
-                  const hasVideo = Boolean(p.videoUrl || (idx === 0 && atelierInfo.heroVideoUrl));
+                  const hasVideo = Boolean(p.videoUrl?.trim());
 
                   return (
                     <button

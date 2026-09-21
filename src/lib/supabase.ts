@@ -38,6 +38,48 @@ export const getSupabase = (): SupabaseClient | null => {
 
 export const supabase = getSupabase();
 
+// Bucket dedicado a ficheiros pesados (vídeos MP4, imagens grandes) da Biblioteca de Mídia.
+// É criado automaticamente pelo script supabase/schema.sql.
+export const MEDIA_BUCKET = 'stak-media';
+
+/**
+ * Envia um ficheiro directamente para o Supabase Storage (em vez de o converter
+ * para base64 no navegador). Essencial para vídeos MP4 longos, que rapidamente
+ * excedem a quota do localStorage. Devolve o URL público do ficheiro.
+ */
+export const uploadFileToStorage = async (
+  file: File,
+  folder: 'videos' | 'imagens' | 'diversos' = 'diversos'
+): Promise<string> => {
+  const client = getSupabase();
+  if (!client) {
+    throw new Error('Supabase não está configurado.');
+  }
+
+  const safeName = file.name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9.]+/g, '-');
+  const path = `${folder}/${Date.now()}-${safeName}`;
+
+  const { error: uploadError } = await client.storage.from(MEDIA_BUCKET).upload(path, file, {
+    cacheControl: '31536000',
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  const { data } = client.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+  if (!data?.publicUrl) {
+    throw new Error('Não foi possível obter o URL público do ficheiro.');
+  }
+
+  return data.publicUrl;
+};
+
 export const getSupabaseProjectRef = (): string => {
   try {
     const url = new URL(supabaseUrl);

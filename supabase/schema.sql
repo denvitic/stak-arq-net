@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS subtitle TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS category_label TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS cover_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_image TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_image TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_label TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS after_label TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS before_description TEXT;
@@ -55,6 +57,9 @@ ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS description TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS featured_in_before_after BOOLEAN DEFAULT false;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_url TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS video_poster TEXT;
+
+-- Recarregar cache de schema do PostgREST
+NOTIFY pgrst, 'reload schema';
 
 -- 3. SERVICES & ESPECIALIDADES TABLE
 CREATE TABLE IF NOT EXISTS public.services (
@@ -230,8 +235,36 @@ DROP POLICY IF EXISTS "Manage Atelier Info" ON public.atelier_info;
 CREATE POLICY "Manage Atelier Info" ON public.atelier_info FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Authenticated Manage Pages Content" ON public.pages_content;
-DROP POLICY IF EXISTS "Manage Pages Content" ON public.pages_content FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Manage Pages Content" ON public.pages_content;
+CREATE POLICY "Manage Pages Content" ON public.pages_content FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Authenticated Manage Media Library" ON public.media_library;
 DROP POLICY IF EXISTS "Manage Media Library" ON public.media_library;
 CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+-- ==============================================================================
+-- 9. STORAGE BUCKET (MÍDIA PESADA: VÍDEOS MP4 LONGOS, IMAGENS GRANDES)
+-- ==============================================================================
+-- Em vez de guardar uploads como base64 no navegador (localStorage), os ficheiros
+-- pesados passam a ser enviados directamente para este bucket público do Supabase.
+INSERT INTO storage.buckets (id, name, public, file_size_limit)
+VALUES ('stak-media', 'stak-media', true, 524288000) -- limite de 500 MB por ficheiro
+ON CONFLICT (id) DO UPDATE SET public = true, file_size_limit = 524288000;
+
+-- Leitura pública dos ficheiros do bucket (necessário para exibir imagens/vídeos no site)
+DROP POLICY IF EXISTS "Public Read Stak Media" ON storage.objects;
+CREATE POLICY "Public Read Stak Media" ON storage.objects
+  FOR SELECT USING (bucket_id = 'stak-media');
+
+-- Upload / substituição / eliminação de ficheiros a partir do painel administrativo
+DROP POLICY IF EXISTS "Manage Stak Media Uploads" ON storage.objects;
+CREATE POLICY "Manage Stak Media Uploads" ON storage.objects
+  FOR INSERT TO anon, authenticated WITH CHECK (bucket_id = 'stak-media');
+
+DROP POLICY IF EXISTS "Manage Stak Media Updates" ON storage.objects;
+CREATE POLICY "Manage Stak Media Updates" ON storage.objects
+  FOR UPDATE TO anon, authenticated USING (bucket_id = 'stak-media');
+
+DROP POLICY IF EXISTS "Manage Stak Media Deletes" ON storage.objects;
+CREATE POLICY "Manage Stak Media Deletes" ON storage.objects
+  FOR DELETE TO anon, authenticated USING (bucket_id = 'stak-media');

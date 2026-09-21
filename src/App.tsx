@@ -24,7 +24,7 @@ import DashboardApp from './dashboard/src/App';
 
 function StakApp() {
   const { isDark, theme } = useTheme();
-  const { atelierInfo } = useCms();
+  const { atelierInfo, isHydrated } = useCms();
   const { isAuthenticated, user, signOut } = useAuth();
 
   // Dynamic SEO Metatags & Favicon Synchronization
@@ -204,7 +204,12 @@ function StakApp() {
   }
 
   return (
-    <div id="stak-website" className="min-h-screen bg-[#090a0c] dark:bg-[#090a0c] light:bg-[#f8f7f5] text-[#e8e8ea] dark:text-[#e8e8ea] light:text-[#18191d] flex flex-col selection:bg-[#c6a87c] selection:text-black font-sans transition-colors duration-300">
+    <div
+      id="stak-website"
+      className={`min-h-screen bg-[#090a0c] dark:bg-[#090a0c] light:bg-[#f8f7f5] text-[#e8e8ea] dark:text-[#e8e8ea] light:text-[#18191d] flex flex-col selection:bg-[#c6a87c] selection:text-black font-sans transition-all duration-500 ${
+        isHydrated ? 'opacity-100' : 'opacity-90'
+      }`}
+    >
       {/* 1. Uncluttered, Focused Navbar */}
       <Navbar
         currentPage={currentPage}

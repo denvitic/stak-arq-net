@@ -592,23 +592,75 @@ function HomePageEditor({
 
                     {/* Collapsible Slide Media Editor */}
                     {editingSlideProjectId === proj.id && (
-                      <div className="pt-3 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in bg-gray-50/50 p-3 rounded-lg">
-                        <ImagePickerInput
-                          label="Fotografia de Capa do Slide (HD)"
-                          description="Imagem de grande escala exibida no slide"
-                          value={proj.coverImage}
-                          onChange={(url) => updateProject({ ...proj, coverImage: url })}
-                          acceptedType="image"
-                        />
+                      <div className="pt-3 border-t border-gray-100 space-y-4 animate-fade-in bg-gray-50/70 p-4 rounded-xl border border-gray-200">
+                        {/* Selector de Modo de Mídia para o Slide */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-lg border border-gray-200">
+                          <div>
+                            <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                              <Icon
+                                icon={proj.videoUrl ? 'solar:videocamera-record-bold' : 'solar:gallery-bold'}
+                                className={proj.videoUrl ? 'text-emerald-600' : 'text-[#c6a87c]'}
+                                width="16"
+                              />
+                              Modo de Exibição deste Slide:
+                            </span>
+                            <p className="text-[11px] text-gray-500">
+                              {proj.videoUrl
+                                ? 'Actualmente exibe vídeo em loop contínuo sobre a fotografia de capa.'
+                                : 'Actualmente exibe apenas fotografia estática em alta resolução (sem vídeo sobreposto).'}
+                            </p>
+                          </div>
 
-                        <ImagePickerInput
-                          label="Vídeo do Slide (MP4 Opcional)"
-                          description="Vídeo cinematográfico em loop para este projecto"
-                          value={proj.videoUrl || ''}
-                          onChange={(url) => updateProject({ ...proj, videoUrl: url })}
-                          acceptedType="video"
-                          placeholder="/videos/hero-interior.mp4"
-                        />
+                          <div className="flex items-center gap-2">
+                            {proj.videoUrl && (
+                              <button
+                                type="button"
+                                onClick={() => updateProject({ ...proj, videoUrl: '' })}
+                                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+                                title="Remover vídeo e deixar apenas a fotografia"
+                              >
+                                <Icon icon="solar:trash-bin-trash-bold" width="13" />
+                                <span>Remover Vídeo (Usar Apenas Foto)</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <ImagePickerInput
+                            label="Fotografia de Capa do Slide (HD)"
+                            description="Imagem de grande escala exibida no slide (ou como fundo se houver vídeo)"
+                            value={proj.coverImage}
+                            onChange={(url) => updateProject({ ...proj, coverImage: url })}
+                            acceptedType="image"
+                          />
+
+                          <div className="space-y-2">
+                            <ImagePickerInput
+                              label="Vídeo do Slide (MP4 Opcional)"
+                              description="Deixe em branco para usar APENAS a fotografia acima sem sobreposição de vídeo"
+                              value={proj.videoUrl || ''}
+                              onChange={(url) => updateProject({ ...proj, videoUrl: url })}
+                              acceptedType="video"
+                              placeholder="/videos/hero-interior.mp4"
+                            />
+                            {proj.videoUrl && (
+                              <div className="flex items-center justify-between text-[11px] text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                                <span className="flex items-center gap-1 font-medium">
+                                  <Icon icon="solar:check-circle-bold" width="13" />
+                                  Vídeo activo neste slide
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => updateProject({ ...proj, videoUrl: '' })}
+                                  className="text-xs text-rose-600 hover:text-rose-800 underline font-semibold cursor-pointer"
+                                >
+                                  Limpar vídeo
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -805,9 +857,9 @@ function HomePageEditor({
                 </div>
 
                 {/* Hero Video Picker */}
-                <div className="sm:col-span-2 pt-2">
+                <div className="sm:col-span-2 pt-2 space-y-2">
                   <ImagePickerInput
-                    label="Vídeo Geral de Fundo da Hero (MP4 de Reserva)"
+                    label="Vídeo Geral de Fundo da Hero (MP4 de Reserva Opcional)"
                     acceptedType="video"
                     value={draft.hero.videoUrl}
                     onChange={(url) =>
@@ -816,8 +868,25 @@ function HomePageEditor({
                         hero: { ...prev.hero, videoUrl: url },
                       }))
                     }
-                    description="Vídeo cinematográfico geral caso um slide específico não tenha vídeo próprio."
+                    description="Vídeo cinematográfico geral caso um slide específico não tenha vídeo próprio. Deixe em branco se preferir exibir apenas fotografias."
                   />
+                  {draft.hero.videoUrl && (
+                    <div className="flex items-center justify-between text-[11px] text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-md border border-amber-200">
+                      <span>Vídeo geral de reserva configurado: <strong className="font-mono text-[10px]">{draft.hero.videoUrl}</strong></span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onChange((prev) => ({
+                            ...prev,
+                            hero: { ...prev.hero, videoUrl: '' },
+                          }))
+                        }
+                        className="text-xs text-rose-600 hover:text-rose-800 underline font-semibold cursor-pointer"
+                      >
+                        Limpar vídeo geral
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Hero Video Poster */}
