@@ -21,21 +21,21 @@ export const initialAtelierInfo: AtelierInfo = {
     'Concebemos espaços onde a luz tropical de Angola, a pureza geométrica e os materiais nobres dialogam em perfeita harmonia. Da residência unifamiliar de luxo à sede corporativa contemporânea, cada projecto é uma resposta singular à paisagem, ao clima e à identidade de quem o habita.',
   history:
     'Fundado em Luanda, o atelier STAK consolidou-se como uma referência de excelência no panorama arquitectónico angolano. Aliando pesquisa conceitual avançada a um controlo rigoroso de execução, oferecemos soluções integradas desde o primeiro traço do estudo prévio até à entrega final da obra licenciada.',
-  locationAddress: 'Edifício Kilamba Executivo, 4º Andar, Av. 4 de Fevereiro',
+  locationAddress: 'Luanda, Angola',
   city: 'Luanda',
   country: 'Angola',
-  phone: '+244 928 058 840',
-  whatsapp: '+244928058840',
-  email: 'geral@stak.ao',
+  phone: '+244 937 826 963',
+  whatsapp: '+244 937 826 963',
+  email: 'geral@stakarquitectura.com',
   instagram: '@stak.arquitectura',
   linkedin: 'https://www.linkedin.com/company/stak-arquitectura',
   facebook: 'https://www.facebook.com/stak.arquitectura',
   workingHours: 'Segunda a Sexta: 08:30 – 18:00',
   stats: {
-    yearsOfExperience: '14+',
-    completedProjects: '85+',
+    yearsOfExperience: '9+',
+    completedProjects: '20+',
     designedArea: '140.000 m²',
-    architecturalAwards: '6',
+    architecturalAwards: '2',
   },
   heroMediaType: 'video',
   heroVideoUrl: '/videos/hero-interior-living.mp4',
@@ -58,331 +58,325 @@ export const initialAtelierInfo: AtelierInfo = {
 
 export const initialProjects: Project[] = [
   {
-    id: 'proj-1',
-    title: 'Moradia Horizon Miramar',
-    subtitle: 'Residência Unifamiliar de Alto Padrão com Vista para o Atlântico',
-    slug: 'moradia-horizon-miramar',
-    category: 'residencial',
-    categoryLabel: 'Arquitectura Residencial',
-    coverImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-    beforeImage: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1600&q=85',
-    beforeLabel: 'Fase Estrutural em Estaleiro',
-    afterLabel: 'Obra Concluída & Entregue',
-    beforeDescription: 'Cálculo de laje protendida com vãos contínuos de 11 metros sem pilares intermediários para integrar a sala à piscina com borda infinita.',
-    featuredInBeforeAfter: true,
-    videoUrl: '/videos/hero-interior-living.mp4',
-    videoPoster: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-    galleryImages: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
+    "id": "proj-1789791971269",
+    "title": "Terraço Bioclimático com Spa Exterior",
+    "subtitle": "Área de Lazer e Cozinha Exterior Integrada",
+    "slug": "terraco-bioclimatico-com-spa-exterior",
+    "category": "residencial",
+    "categoryLabel": "Residencial",
+    "coverImage": "/img/projects/proj-1789791971269-cover.jpg",
+    "beforeImage": "/img/projects/proj-1789791971269-before.jpg",
+    "beforeLabel": "Fase Inicial de Estruturas",
+    "afterLabel": "Conclusão STAK",
+    "featuredInBeforeAfter": true,
+    "videoUrl": "/videos/projects/proj-1789791971269.mp4",
+    "galleryImages": [
+      "/img/projects/proj-1789791971269-gallery-0.jpg",
+      "/img/projects/proj-1789791971269-gallery-1.jpg"
     ],
-    description:
-      'Uma moradia escultural implantada na encosta nobre de Miramar, tirando partido da orografia natural e da orientação solar para ventilação cruzada contínua.',
-    architecturalConcept:
-      'A volumetria assenta sobre dois blocos perpendiculares de betão branco aparente e painéis de madeira teca tratada para o clima costeiro de Luanda. Amplos vãos envidraçados integram a sala de estar à piscina com borda infinita sobre a baía.',
-    fichaTecnica: {
-      localizacao: 'Miramar, Luanda - Angola',
-      ano: '2024',
-      area: '820 m²',
-      tipologia: 'Moradia Unifamiliar Isolada V5',
-      estadoObra: 'Concluído',
-      cliente: 'Cliente Privado',
-      especialidades: ['Arquitectura', 'Estruturas de Betão Armado', 'Projecto Luminotécnico', 'Paisagismo Tropical', 'Domótica'],
+    "description": "Espaço social exterior organizado em torno de uma cozinha em ilha com churrasqueira, bancada bar e sala de jantar semi-coberta, complementado por um spa exterior integrado na relva através de um percurso em lajes de pedra. Iluminação indirecta e vegetação ornamental reforçam o carácter contemplativo do espaço ao entardecer.",
+    "architecturalConcept": "Extensão da vida interior para o exterior, através de uma cobertura contínua que une cozinha, sala de jantar e zona de spa num único gesto arquitectónico voltado ao jardim.",
+    "fichaTecnica": {
+      "ano": "2026",
+      "area": "120 m²",
+      "cliente": "Privado",
+      "tipologia": "Moradia Contemporânea",
+      "estadoObra": "Concluído",
+      "localizacao": "Talatona, Luanda • Angola",
+      "especialidades": [
+        "Arquitectura",
+        "Paisagismo",
+        "Gestão de Obra"
+      ]
     },
-    featured: true,
-    highlightOrder: 1,
+    "featured": true
   },
   {
-    id: 'proj-2',
-    title: 'Edifício Sede Baía Corporate',
-    subtitle: 'Edifício Institucional de Escritórios com Fachada Bioclimática',
-    slug: 'edificio-baia-corporate',
-    category: 'comercial',
-    categoryLabel: 'Comercial & Corporativo',
-    coverImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=85',
-    beforeImage: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=85',
-    beforeLabel: 'Piso Comercial em Tosco',
-    afterLabel: 'Átrio Corporativo Entregue',
-    beforeDescription: 'Reconversão de um piso obsoleto num átrio monumental de pé-direito duplo com mármore branco do Namibe e granito negro da Huíla.',
-    featuredInBeforeAfter: true,
-    videoUrl: '/videos/hero-interior-dining.mp4',
-    videoPoster: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=85',
-    galleryImages: [
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1600&q=85',
+    "id": "proj-2",
+    "title": "Edifício Sede Baía Corporate",
+    "subtitle": "Edifício Institucional de Escritórios com Fachada Bioclimática",
+    "slug": "edificio-baia-corporate",
+    "category": "comercial",
+    "categoryLabel": "Comercial & Corporativo",
+    "coverImage": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=85",
+    "beforeImage": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=85",
+    "beforeLabel": "Piso Comercial em Tosco",
+    "afterLabel": "Átrio Corporativo Entregue",
+    "featuredInBeforeAfter": false,
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1600&q=85"
     ],
-    description:
-      'Sede corporativa concebida para albergar instituições financeiras e multinacionais, combinando eficiência espacial e identidade visual arrojada.',
-    architecturalConcept:
-      'A envoltória exterior é equipada com brise-soleils verticais em alumínio anodizado dourado-champagne que reduzem o ganho térmico solar em 42%, enquanto preservam a vista panorâmica para o porto de Luanda.',
-    fichaTecnica: {
-      localizacao: 'Avenida 4 de Fevereiro, Luanda',
-      ano: '2023',
-      area: '6.400 m²',
-      tipologia: 'Edifício de Escritórios & Retail no Rés-do-chão',
-      estadoObra: 'Concluído',
-      cliente: 'Fundo Imobiliário Atlântico',
-      especialidades: ['Arquitectura', 'Engenharia Estrutural', 'Sistemas de AVAC Central', 'Eficiência Energética', 'Segurança Contra Incêndios'],
+    "description": "Sede corporativa concebida para albergar instituições financeiras e multinacionais, combinando eficiência espacial e identidade visual arrojada.",
+    "architecturalConcept": "A envoltória exterior é equipada com brise-soleils verticais em alumínio anodizado dourado-champagne que reduzem o ganho térmico solar em 42%, enquanto preservam a vista panorâmica para o porto de Luanda.",
+    "fichaTecnica": {
+      "localizacao": "Baía de Luanda, Angola",
+      "ano": "2024",
+      "area": "3.800 m²",
+      "tipologia": "Edifício Corporativo",
+      "estadoObra": "Concluído",
+      "cliente": "Privado",
+      "especialidades": [
+        "Arquitectura",
+        "Estruturas",
+        "Eficiência Energética",
+        "Fiscalização"
+      ]
     },
-    featured: true,
-    highlightOrder: 2,
+    "featured": false
   },
   {
-    id: 'proj-3',
-    title: 'Penthouse Terraza Talatona',
-    subtitle: 'Design de Interiores & Arquitectura de Ambientes Exclusivos',
-    slug: 'penthouse-terraza-talatona',
-    category: 'interiores',
-    categoryLabel: 'Design de Interiores',
-    coverImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=85',
-    beforeImage: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1600&q=85',
-    beforeLabel: 'Estado Tosco & Demolição',
-    afterLabel: 'Interiores Concluídos STAK',
-    beforeDescription: 'Substituição integral de alvenarias cegas por painéis em nogueira ripada e iluminação linear oculta em sanca de 2700K.',
-    featuredInBeforeAfter: true,
-    videoUrl: '/videos/hero-interior-kitchen.mp4',
-    videoPoster: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=85',
-    galleryImages: [
-      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1600&q=85',
+    "id": "proj-1789792290924",
+    "title": "Cozinha Gourmet em Ilha Central",
+    "subtitle": "Cozinha Residencial de Alto Padrão",
+    "slug": "cozinha-gourmet-em-ilha-central",
+    "category": "interiores",
+    "categoryLabel": "Interiores",
+    "coverImage": "/img/projects/proj-1789792290924-cover.jpg",
+    "beforeImage": "/img/projects/proj-1789792290924-before.jpg",
+    "beforeLabel": "Fase Inicial de Estruturas",
+    "afterLabel": "Conclusão STAK",
+    "featuredInBeforeAfter": true,
+    "galleryImages": [
+      "/img/projects/proj-1789792290924-gallery-0.jpg",
+      "/img/projects/proj-1789792290924-gallery-1.jpg"
     ],
-    description:
-      'Intervenção integral de interiores numa cobertura duplex em Talatona, com desenho à medida de toda a marcenaria, iluminação cénica e selecção de pedras naturais.',
-    architecturalConcept:
-      'Utilização de mármore Travertino Navona e painéis de nogueira escura ripada para unificar os espaços de convívio social. A iluminação indirecta integrada no gesso enfatiza as texturas e confere uma atmosfera acolhedora e sofisticada.',
-    fichaTecnica: {
-      localizacao: 'Condomínio Quinta dos Cedros, Talatona - Luanda',
-      ano: '2024',
-      area: '480 m²',
-      tipologia: 'Cobertura Duplex Residencial',
-      estadoObra: 'Concluído',
-      cliente: 'Coleccionador de Arte Privado',
-      especialidades: ['Design de Interiores', 'Marcenaria por Medida', 'Projecto Luminotécnico', 'Curadoria de Mobiliário', 'Climatização'],
+    "description": "Cozinha ampla equipada com fornos duplos, dois exaustores piramidais em aço inoxidável e frigorífico americano de grandes dimensões. A ilha central em granito serve simultaneamente de bancada de trabalho e ponto de encontro informal, enquanto as bancadas perimetrais garantem armazenamento generoso.",
+    "architecturalConcept": "Organização funcional em torno de uma grande ilha central, conjugando bancadas em pedra natural, equipamento profissional embutido e luz natural abundante vinda de uma janela em arco.",
+    "fichaTecnica": {
+      "ano": "2026",
+      "area": "42 m²",
+      "cliente": "Privado",
+      "tipologia": "Moradia Contemporânea",
+      "estadoObra": "Concluído",
+      "localizacao": "Miraflores, Luanda - Angola",
+      "especialidades": [
+        "Arquitectura",
+        "Paisagismo",
+        "Gestão de Obra"
+      ]
     },
-    featured: true,
-    highlightOrder: 3,
+    "featured": true
   },
   {
-    id: 'proj-4',
-    title: 'Masterplan & Condomínio Palmeiras do Kwanza',
-    subtitle: 'Planeamento Urbano, Loteamento e Lazer Integrado',
-    slug: 'masterplan-palmeiras-kwanza',
-    category: 'urbanismo',
-    categoryLabel: 'Urbanismo & Masterplanning',
-    coverImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=85',
-    beforeImage: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1600&q=85',
-    beforeLabel: 'Topografia Natural & Desmatação',
-    afterLabel: 'Masterplan em Execução',
-    beforeDescription: 'Organização territorial em anéis concêntricos que priorizam a mobilidade suave e uma praça cívica arborizada.',
-    featuredInBeforeAfter: false,
-    galleryImages: [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=85',
+    "id": "proj-1789793105941",
+    "title": "Sala de Estar Minimalista",
+    "subtitle": "Apartamento Residencial - Zona Social",
+    "slug": "sala-de-estar-minimalista",
+    "category": "residencial",
+    "categoryLabel": "Residencial",
+    "coverImage": "/img/projects/proj-1789793105941-cover.jpg",
+    "beforeImage": "/img/projects/proj-1789793105941-before.jpg",
+    "beforeLabel": "Fase Inicial de Estruturas",
+    "afterLabel": "Conclusão STAK",
+    "featuredInBeforeAfter": false,
+    "galleryImages": [
+      "/img/projects/proj-1789793105941-gallery-0.jpg",
+      "/img/projects/proj-1789793105941-gallery-1.jpg"
     ],
-    description:
-      'Projecto urbanístico abrangendo 42 moradias de luxo, clubhouse central, circuito pedonal contínuo e preservação da mata nativa adjacente.',
-    architecturalConcept:
-      'Organização territorial em anéis concêntricos que priorizam a mobilidade suave, segurança perimetral discreta e uma praça cívica arborizada com espelhos de água que atenuam a temperatura ambiente.',
-    fichaTecnica: {
-      localizacao: 'Via Expressa / Benfica Sul, Luanda',
-      ano: '2023 - 2025',
-      area: '85.000 m² de Terreno',
-      tipologia: 'Loteamento Fechado & Espaço de Lazer Colectivo',
-      estadoObra: 'Em Execução',
-      cliente: 'Promotora Imobiliária Luanda Sul',
-      especialidades: ['Masterplanning', 'Traçado Viário', 'Drenagem e Infraestruturas', 'Paisagismo Ambiental', 'Aprovação Governamental'],
+    "description": "Sala de estar com sofá amplo em tom cinza, mesas de centro em madeira clara sobrepostas e tapete neutro a delimitar a zona de convívio. Um candeeiro suspenso em metal cria um ponto focal central, enquanto o pavimento em madeira e as paredes brancas ampliam a percepção de espaço, com a zona de jantar integrada ao fundo.",
+    "architecturalConcept": "Composição de linhas limpas e paleta neutra, onde o mobiliário de escala reduzida e a iluminação escultural criam um ambiente funcional sem comprometer a amplitude visual do espaço.",
+    "fichaTecnica": {
+      "ano": "2026",
+      "area": "28 m²",
+      "cliente": "Privado",
+      "tipologia": "Moradia Contemporânea",
+      "estadoObra": "Concluído",
+      "localizacao": "Talatona, Luanda • Angola",
+      "especialidades": [
+        "Arquitectura",
+        "Paisagismo",
+        "Gestão de Obra"
+      ]
     },
-    featured: false,
+    "featured": true
   },
   {
-    id: 'proj-5',
-    title: 'Villa Belas Golf Bioclimática',
-    subtitle: 'Habitação Unifamiliar Integrada no Campo de Golfe',
-    slug: 'villa-belas-golf-bioclimatica',
-    category: 'residencial',
-    categoryLabel: 'Arquitectura Residencial',
-    coverImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
-    beforeImage: 'https://images.unsplash.com/photo-1590496793929-36417d3117de?auto=format&fit=crop&w=1600&q=80',
-    beforeLabel: 'Escavação & Fundações',
-    afterLabel: 'Residência Entregue',
-    featuredInBeforeAfter: false,
-    galleryImages: [
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85',
+    "id": "proj-1789793742761",
+    "title": "Sala Integrada com Lareira e Cozinha Aberta",
+    "subtitle": "Sala de Estar, Jantar e Cozinha em Conceito Aberto",
+    "slug": "sala-integrada-com-lareira-e-cozinha-aberta",
+    "category": "interiores",
+    "categoryLabel": "Interiores",
+    "coverImage": "/img/projects/proj-1789793742761-cover.jpg",
+    "beforeImage": "/img/projects/proj-1789793742761-before.jpg",
+    "beforeLabel": "Fase Inicial de Estruturas",
+    "afterLabel": "Conclusão STAK",
+    "beforeDescription": "Espaço social contínuo que articula sala de estar, cozinha e varanda através de grandes portas de vidro deslizantes, com uma parede central em pedra e lareira a marcar a transição entre zonas, e um painel em madeira que confere calor visual ao ambiente.",
+    "featuredInBeforeAfter": false,
+    "galleryImages": [
+      "/img/projects/proj-1789793742761-gallery-0.jpg",
+      "/img/projects/proj-1789793742761-gallery-1.jpg"
     ],
-    description:
-      'Concepção de moradia de linhas puras com grandes beirais de protecção solar, pátio central ajardinado e lâminas de água para refrigeração passiva.',
-    architecturalConcept:
-      'Abertura total da fachada poente para o campo de golfe, mediada por brise-soleils motorizados em madeira teca tratada.',
-    fichaTecnica: {
-      localizacao: 'Belas Clube de Campo, Luanda Sul',
-      ano: '2024',
-      area: '640 m²',
-      tipologia: 'Moradia Unifamiliar V4',
-      estadoObra: 'Concluído',
-      cliente: 'Privado',
-      especialidades: ['Arquitectura', 'Estruturas', 'Luminotecnia', 'AVAC', 'Piscina Biológica'],
+    "description": "Sala de estar ampla com sofá modular cinzento e mesas de centro em mármore e metal, voltada para uma cozinha em ilha com armários brancos e de madeira natural, iluminada por candeeiros pendentes pretos. A lareira revestida a pedra em espinha divide visualmente o espaço social do banco de estar suspenso, integrado numa parede de madeira com obra de arte em destaque. Portas envidraçadas de piso a tecto ligam o interior a uma varanda exterior com zona de refeições.",
+    "architecturalConcept": "Espaço social contínuo que articula sala de estar, cozinha e varanda através de grandes portas de vidro deslizantes, com uma parede central em pedra e lareira a marcar a transição entre zonas, e um painel em madeira que confere calor visual ao ambiente.",
+    "fichaTecnica": {
+      "ano": "2026",
+      "area": "65 m²",
+      "cliente": "Privado",
+      "tipologia": "Moradia Contemporânea",
+      "estadoObra": "Concluído",
+      "localizacao": "Talatona, Luanda • Angola",
+      "especialidades": [
+        "Arquitectura",
+        "Paisagismo",
+        "Gestão de Obra"
+      ]
     },
-    featured: true,
-    highlightOrder: 4,
+    "featured": true
   },
   {
-    id: 'proj-6',
-    title: 'Edifício Residencial Ilha de Luanda',
-    subtitle: 'Apartamentos Premium com Fachada Náutica Ventilada',
-    slug: 'edificio-residencial-ilha-luanda',
-    category: 'em-construcao',
-    categoryLabel: 'Em Construção',
-    coverImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=85',
-    galleryImages: [
-      'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=85',
+    "id": "proj-1789792789842",
+    "title": "Cozinha em Arco com Bancada Bar",
+    "subtitle": "Remodelação de Cozinha Contemporânea",
+    "slug": "cozinha-em-arco-com-bancada-bar",
+    "category": "interiores",
+    "categoryLabel": "Interiores",
+    "coverImage": "/img/projects/proj-1789792789842-cover.jpg",
+    "beforeImage": "/img/projects/proj-1789792789842-before.jpg",
+    "beforeLabel": "Fase Inicial de Estruturas",
+    "afterLabel": "Conclusão STAK",
+    "beforeDescription": "Uso de uma moldura arqueada em madeira para delimitar a cozinha sem a isolar dos espaços sociais adjacentes, criando continuidade visual e uma transição suave de materiais e luz.",
+    "featuredInBeforeAfter": true,
+    "galleryImages": [
+      "/img/projects/proj-1789792789842-gallery-0.jpg",
+      "/img/projects/proj-1789792789842-gallery-1.jpg"
     ],
-    description:
-      'Edifício de 6 pisos com 8 fracções exclusivas viradas para a baía e o mar aberto, com materiais imunes à maresia de Luanda.',
-    architecturalConcept:
-      'Grelha estrutural em betão naval hidrofugado e painéis de alumínio compósito perfurado que filtram a luz oceânica.',
-    fichaTecnica: {
-      localizacao: 'Ilha do Cabo, Luanda',
-      ano: '2024 - 2026',
-      area: '3.200 m²',
-      tipologia: 'Edifício Plurifamiliar T3 e T4 Duplex',
-      estadoObra: 'Em Execução',
-      cliente: 'Grupo Imobiliário Ilha Prime',
-      especialidades: ['Projecto Geral', 'Engenharia Hidráulica', 'Fiscalização de Obra'],
+    "description": "Cozinha em formato de U com armários em tom cinza-acastanhado, iluminação LED integrada sob os móveis e prateleiras abertas iluminadas. A bancada em pedra clara prolonga-se numa zona de bar com bancos estofados, iluminada por candeeiros pendentes esféricos que reforçam o ambiente contemporâneo.",
+    "architecturalConcept": "Uso de uma moldura arqueada em madeira para delimitar a cozinha sem a isolar dos espaços sociais adjacentes, criando continuidade visual e uma transição suave de materiais e luz.",
+    "fichaTecnica": {
+      "ano": "2026",
+      "area": "18 m²",
+      "cliente": "Privado",
+      "tipologia": "Moradia Contemporânea",
+      "estadoObra": "Concluído",
+      "localizacao": "Talatona, Luanda • Angola",
+      "especialidades": [
+        "Arquitectura",
+        "Paisagismo",
+        "Gestão de Obra"
+      ]
     },
-    featured: false,
-  },
+    "featured": true
+  }
 ];
 
 export const initialServices: ServiceItem[] = [
   {
-    id: 'serv-1',
-    code: '01',
-    title: 'Projectos de Arquitectura',
-    tagline: 'Habitação Unifamiliar, Colectiva e Sedes Corporativas',
-    description:
-      'Desenvolvimento integral do conceito espacial, desde o estudo prévio volumétrico, anteprojecto e projecto de execução detalhado com modelação 3D BIM.',
-    deliverables: [
-      'Estudo Prévio e Análise de Ocupação de Terreno',
-      'Anteprojecto e Modelação 3D Hiper-realista',
-      'Projecto de Execução com Pormenorização 1:20 e 1:5',
-      'Caderno de Encargos e Mapa de Quantidades',
-      'Compatibilização com todas as Especialidades de Engenharia',
+    "id": "serv-1",
+    "code": "01",
+    "title": "Projectos de Arquitectura",
+    "tagline": "Habitação Unifamiliar, Colectiva e Sedes Corporativas",
+    "description": "Desenvolvimento integral do conceito espacial, desde o estudo prévio volumétrico, anteprojecto e projecto de execução detalhado com modelação 3D BIM.",
+    "deliverables": [
+      "Estudo Prévio e Análise de Ocupação de Terreno",
+      "Anteprojecto e Modelação 3D Hiper-realista",
+      "Projecto de Execução com Pormenorização 1:20 e 1:5",
+      "Caderno de Encargos e Mapa de Quantidades",
+      "Compatibilização com todas as Especialidades de Engenharia"
     ],
-    ctaLabel: 'Solicitar Projecto de Arquitectura',
-    ctaAction: 'briefing',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    typicalDuration: '8 a 16 semanas',
-    icon: 'solar:buildings-3-linear',
+    "ctaLabel": "Solicitar Projecto de Arquitectura",
+    "ctaAction": "briefing",
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    "typicalDuration": "8 a 16 semanas",
+    "icon": "solar:buildings-3-linear"
   },
   {
-    id: 'serv-2',
-    code: '02',
-    title: 'Design de Interiores & Marcenaria',
-    tagline: 'Espaços Sofisticados, Conforto Táctil e Curadoria Exclusiva',
-    description:
-      'Transformação de ambientes residenciais e comerciais com desenho de marcenaria por medida, selecção de pedras nobres, iluminação cénica e mobiliário de autor.',
-    deliverables: [
-      'Layout Espacial e Zonamento Funcional',
-      'Desenho de Marcenaria Detalhada (Cozinhas, Closets, Painéis)',
-      'Projecto Luminotécnico e Cenários de Luz',
-      'Curadoria e Especificação de Mobiliário e Obras de Arte',
-      'Acompanhamento de Produção e Montagem em Obra',
+    "id": "serv-2",
+    "code": "02",
+    "title": "Design de Interiores & Mobiliário ",
+    "tagline": "Espaços Sofisticados, Conforto Táctil e Curadoria Exclusiva",
+    "description": "Transformação de ambientes residenciais e comerciais com desenho de marcenaria por medida, selecção de pedras nobres, iluminação cénica e mobiliário de autor.",
+    "deliverables": [
+      "Layout Espacial e Zonamento Funcional",
+      "Desenho de Marcenaria Detalhada (Cozinhas, Closets, Painéis)",
+      "Projecto Luminotécnico e Cenários de Luz",
+      "Curadoria e Especificação de Mobiliário e Obras de Arte",
+      "Acompanhamento de Produção e Montagem em Obra"
     ],
-    ctaLabel: 'Solicitar Design de Interiores',
-    ctaAction: 'briefing',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
-    typicalDuration: '6 a 12 semanas',
-    icon: 'solar:palette-round-linear',
+    "ctaLabel": "Solicitar Design de Interiores",
+    "ctaAction": "briefing",
+    "image": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+    "typicalDuration": "6 a 12 semanas",
+    "icon": "solar:palette-round-linear"
   },
   {
-    id: 'serv-3',
-    code: '03',
-    title: 'Licenciamento Municipal (GPL)',
-    tagline: 'Aprovação de Projectos junto do Governo Provincial de Luanda',
-    description:
-      'Tratamento completo da tramitação legal de projectos de arquitectura e engenharia junto das Administrações Municipais e GPL, garantindo total conformidade jurídica.',
-    deliverables: [
-      'Montagem de Processo Técnico de Licenciamento',
-      'Termos de Responsabilidade Técnica de Arquitecto e Engenheiros',
-      'Compatibilização com o Plano Director de Luanda',
-      'Acompanhamento Presencial nas Comissões de Apreciação',
-      'Obtenção do Alvará de Construção Definitivo',
+    "id": "serv-3",
+    "code": "03",
+    "title": "Arquitectura Comercial & Corporativa",
+    "tagline": "Projectos Corporativos e comerciais",
+    "description": "Projectos de escritórios, lojas, espaços comerciais, empresariais e institucionais.",
+    "deliverables": [
+      "Montagem de Processo Técnico de Licenciamento",
+      "Termos de Responsabilidade Técnica de Arquitecto e Engenheiros",
+      "Compatibilização com o Plano Director de Luanda",
+      "Acompanhamento Presencial nas Comissões de Apreciação",
+      "Obtenção do Alvará de Construção Definitivo"
     ],
-    ctaLabel: 'Consultar Assessoria de Licenciamento',
-    ctaAction: 'briefing',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
-    typicalDuration: '4 a 12 semanas',
-    icon: 'solar:document-text-linear',
+    "ctaLabel": "Consultar Assessoria de Licenciamento",
+    "ctaAction": "briefing",
+    "image": "https://fxdcearoepqdhycfwtcq.supabase.co/storage/v1/object/public/stak-media/imagens/1790031620738-Penthouse-Antes.jpg",
+    "typicalDuration": "4 a 12 semanas",
+    "icon": "solar:document-text-linear"
   },
   {
-    id: 'serv-4',
-    code: '04',
-    title: 'Fiscalização e Direcção de Obra',
-    tagline: 'Rigor Construtivo, Controlo de Custos e Cumprimento de Prazos',
-    description:
-      'Acompanhamento permanente no estaleiro de obras por arquitectos e engenheiros residentes, assegurando que a execução segue rigorosamente o caderno de encargos.',
-    deliverables: [
-      'Vistorias Semanais e Auditoria de Qualidade de Materiais',
-      'Autos de Medição e Validação de Facturas de Empreiteiro',
-      'Resolução Imediata de Dúvidas Técnicas em Estaleiro',
-      'Relatórios Fotográficos Quinzenais para o Dono de Obra',
-      'Vistoria Final e Recepção Provisória/Definitiva da Empreitada',
+    "id": "serv-4",
+    "code": "04",
+    "title": "Fiscalização e Direcção de Obra",
+    "tagline": "Rigor Construtivo, Controlo de Custos e Cumprimento de Prazos",
+    "description": "Acompanhamento permanente no estaleiro de obras por arquitectos e engenheiros residentes, assegurando que a execução segue rigorosamente o caderno de encargos.",
+    "deliverables": [
+      "Vistorias Semanais e Auditoria de Qualidade de Materiais",
+      "Autos de Medição e Validação de Facturas de Empreiteiro",
+      "Resolução Imediata de Dúvidas Técnicas em Estaleiro",
+      "Relatórios Fotográficos Quinzenais para o Dono de Obra",
+      "Vistoria Final e Recepção Provisória/Definitiva da Empreitada"
     ],
-    ctaLabel: 'Solicitar Fiscalização de Obra',
-    ctaAction: 'briefing',
-    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb18f15f6?auto=format&fit=crop&w=1200&q=80',
-    typicalDuration: 'Duração da Empreitada',
-    icon: 'solar:shield-check-linear',
+    "ctaLabel": "Solicitar Fiscalização de Obra",
+    "ctaAction": "briefing",
+    "image": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80",
+    "typicalDuration": "Duração da Empreitada",
+    "icon": "solar:shield-check-linear"
   },
   {
-    id: 'serv-5',
-    code: '05',
-    title: 'Engenharia & Especialidades Integradas',
-    tagline: 'Cálculo Estrutural, Redes Hidráulicas, Electricidade e AVAC',
-    description:
-      'Coordenação global dos projectos complementares de engenharia civil, com cálculo sismorresistente e sistemas de eficiência energética adaptados a Luanda.',
-    deliverables: [
-      'Cálculo e Dimensionamento de Estruturas de Betão e Metálicas',
-      'Projecto de Distribuição de Água e Drenagem de Esgotos',
-      'Redes Eléctricas, Postos de Transformação e Geradores',
-      'Projecto de Climatização (AVAC) Central e Ventilação',
-      'Segurança Contra Incêndios e Saídas de Emergência',
+    "id": "serv-5",
+    "code": "05",
+    "title": "Urbanismo & Paisagismo",
+    "tagline": "Planeamento urbano, implantação, estudos de organização...",
+    "description": "Planeamento urbano, implantação, estudos de organização espacial, desenvolvimento de espaços exteriores, paisagismo e soluções de integração com o território.",
+    "deliverables": [
+      "Cálculo e Dimensionamento de Estruturas de Betão e Metálicas",
+      "Projecto de Distribuição de Água e Drenagem de Esgotos",
+      "Redes Eléctricas, Postos de Transformação e Geradores",
+      "Projecto de Climatização (AVAC) Central e Ventilação",
+      "Segurança Contra Incêndios e Saídas de Emergência"
     ],
-    ctaLabel: 'Solicitar Projectos de Especialidades',
-    ctaAction: 'briefing',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
-    typicalDuration: '6 a 10 semanas',
-    icon: 'solar:tuning-square-linear',
+    "ctaLabel": "Solicitar Projectos de Especialidades",
+    "ctaAction": "briefing",
+    "image": "https://fxdcearoepqdhycfwtcq.supabase.co/storage/v1/object/public/stak-media/imagens/1790067854702-Praca-1-.jpg",
+    "typicalDuration": "6 a 10 semanas",
+    "icon": "solar:tuning-square-linear"
   },
   {
-    id: 'serv-6',
-    code: '06',
-    title: 'Consultoria e Avaliação de Terrenos',
-    tagline: 'Estudos de Viabilidade Urbanística e Rentabilidade Imobiliária',
-    description:
-      'Análise técnica antes da aquisição de terrenos ou edifícios para reabilitação em Luanda, avaliando índices de ocupação, infraestruturas e riscos geológicos.',
-    deliverables: [
-      'Levantamento Topográfico e Sondagens Geotécnicas',
-      'Verificação de Índices Urbanísticos e Alinhamentos',
-      'Estudo Volumétrico de Aproveitamento Máximo de Área',
-      'Estimativa Orçamental Preliminar de Construção',
-      'Parecer Técnico Fundamentado para Decisão de Investimento',
+    "id": "serv-6",
+    "code": "06",
+    "title": "Consultoria e Avaliação de Terrenos",
+    "tagline": "Estudos de Viabilidade Urbanística e Rentabilidade Imobiliária",
+    "description": "Análise técnica antes da aquisição de terrenos ou edifícios para reabilitação em Luanda, avaliando índices de ocupação, infraestruturas e riscos geológicos.",
+    "deliverables": [
+      "Levantamento Topográfico e Sondagens Geotécnicas",
+      "Verificação de Índices Urbanísticos e Alinhamentos",
+      "Estudo Volumétrico de Aproveitamento Máximo de Área",
+      "Estimativa Orçamental Preliminar de Construção",
+      "Parecer Técnico Fundamentado para Decisão de Investimento"
     ],
-    ctaLabel: 'Solicitar Avaliação de Terreno',
-    ctaAction: 'briefing',
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
-    typicalDuration: '2 a 4 semanas',
-    icon: 'solar:chart-square-linear',
-  },
+    "ctaLabel": "Solicitar Avaliação de Terreno",
+    "ctaAction": "briefing",
+    "image": "https://fxdcearoepqdhycfwtcq.supabase.co/storage/v1/object/public/stak-media/imagens/1790068051252-images-1-.jpg",
+    "typicalDuration": "2 a 4 semanas",
+    "icon": "solar:chart-square-linear"
+  }
 ];
 
 export const initialMethodology: MethodologyStep[] = [
@@ -448,43 +442,46 @@ export const initialTestimonials: TestimonialItem[] = [
     location: 'Miramar, Luanda',
     projectType: 'Moradia Unifamiliar V5',
     quote:
-      'A equipa da STAK transformou a nossa visão numa casa verdadeiramente extraordinária. O conforto térmico sem necessidade constante de ar condicionado e a precisão do betão aparente superaram todas as nossas expectativas.',
+      'A equipa da STAK compreendeu desde o primeiro dia a nossa exigência de conciliar sobriedade com conforto térmico no Miramar. O acompanhamento em obra foi implacável com os acabamentos.',
     rating: 5,
+    year: '2024',
   },
   {
     id: 'test-2',
-    author: 'Dra. Ana Paula Carvalho',
-    role: 'Directora de Operações',
+    author: 'Dra. Luísa van-Dúnem',
+    role: 'Directora Financeira',
     location: 'Talatona, Luanda',
-    projectType: 'Design de Interiores & Penthouse',
+    projectType: 'Design de Interiores & Cozinha Gourmet',
     quote:
-      'O detalhe da marcenaria por medida e o estudo de iluminação indirecta deram à nossa cobertura uma elegância acolhedora. O rigor no cumprimento do orçamento foi exemplar.',
+      'A transformação da nossa zona social e cozinha gourmet foi impecável. A elegância dos materiais e o aproveitamento da luz transformaram totalmente a vivência da casa.',
     rating: 5,
+    year: '2025',
   },
   {
     id: 'test-3',
-    author: 'Dr. Sebastião Luvumbo',
+    author: 'Dr. Sebastião Gaspar',
     role: 'Promotor Imobiliário',
-    location: 'Avenida 4 de Fevereiro, Luanda',
-    projectType: 'Sede Corporativa de Escritórios',
+    location: 'Baía de Luanda',
+    projectType: 'Edifício Corporativo',
     quote:
-      'A gestão do processo de licenciamento no GPL e a compatibilização 3D das especialidades evitaram custos imprevistos durante a fase de fundações e estrutura.',
+      'O rigor no cumprimento de prazos de projecto de execução e a gestão do licenciamento municipal junto do GPL foram exemplares. Recomendo sem hesitação.',
     rating: 5,
+    year: '2024',
   },
 ];
 
 export const initialAssurances: GuaranteePillar[] = [
   {
     id: 'assure-1',
-    title: '100% Conformidade no GPL',
-    description: 'Processos instruídos com total rigor jurídico e técnico, garantindo aprovação municipal célere em Luanda.',
-    icon: 'solar:shield-check-linear',
+    title: 'Rigor Orçamental Sem Desvios',
+    description: 'Mapas de quantidades exaustivos e controlo permanente de custos em todas as fases.',
+    icon: 'solar:dollar-minimalistic-linear',
   },
   {
     id: 'assure-2',
-    title: 'Rigor Orçamental & Medições',
-    description: 'Mapas de quantidades exaustivos e cadernos de encargos que eliminam desvios de custo imprevistos.',
-    icon: 'solar:calculator-linear',
+    title: 'Conformidade GPL Garantida',
+    description: 'Todos os projectos cumprem integralmente as exigências urbanísticas de Luanda.',
+    icon: 'solar:shield-check-linear',
   },
   {
     id: 'assure-3',
@@ -562,7 +559,7 @@ export const initialFaqs: FaqItem[] = [
     id: 'faq-6',
     question: 'Como posso solicitar uma reunião ou estimativa orçamental inicial?',
     answer:
-      'Pode preencher o nosso formulário de Briefing Online na página de Contactos, enviar os dados do terreno por WhatsApp (+244 928 058 840) ou visitar o nosso atelier na Av. 4 de Fevereiro mediante marcação prévia.',
+      'Pode preencher o nosso formulário de Briefing Online na página de Contactos, enviar os dados do terreno por WhatsApp (+244 937 826 963) ou agendar uma reunião técnica.',
     category: 'Contactos',
   },
 ];
@@ -586,7 +583,7 @@ export const initialNavigation: SiteNavigationContent = {
       'Atelier de Arquitectura & Design de Interiores sediado em Luanda. Sobriedade espacial, rigor construtivo e respeito bioclimático.',
     socialLinks: {
       instagram: '@stak.arquitectura',
-      whatsapp: '+244928058840',
+      whatsapp: '+244 937 826 963',
       linkedin: 'https://www.linkedin.com/company/stak-arquitectura',
       facebook: 'https://www.facebook.com/stak.arquitectura',
     },
@@ -604,51 +601,59 @@ export const initialNavigation: SiteNavigationContent = {
 
 export const initialArticles: Article[] = [
   {
-    id: 'art-1',
-    title: 'A Arquitectura Bioclimática no Clima Tropical Costeiro de Luanda',
-    category: 'Pesquisa & Sustentabilidade',
-    date: '14 de Fevereiro, 2026',
-    readTime: '6 min de leitura',
-    excerpt:
-      'Como a orientação solar, a ventilação cruzada passiva e o uso de brise-soleils reduzem o consumo energético em edifícios residenciais e corporativos na costa angolana.',
-    content: [
-      'Projetar em Luanda exige um entendimento profundo do microclima costeiro, caracterizado por temperaturas elevadas e humidade relativa considerável durante a estação das chuvas.',
-      'A arquitectura não pode depender exclusivamente de sistemas mecânicos de ar condicionado. O uso criterioso de beirais, elementos de sombreamento dinâmico e paredes de betão com grande massa térmica permite criar microclimas interiores confortáveis.',
-      'Neste artigo, apresentamos os cálculos de ganho térmico e as soluções passivas aplicadas na Moradia Horizon Miramar e no Edifício Baía Corporate.',
+    "id": "art-1789798008535",
+    "title": "Trinta e dois arquitectos escolhidos para requalificar cidades de Angola",
+    "category": "Arquitectura & Cidade",
+    "date": "19/09/2026",
+    "readTime": "5 min",
+    "excerpt": "Trinta e dois arquitectos escolhidos para requalificar cidades de Angola",
+    "content": [
+      "Trinta e dois profissionais altamente especializados nas mais diversas vertentes da arquitetura, do urbanismo e do planeamento territorial foram rigorosamente selecionados para integrar o ambicioso e transformador projeto nacional de requalificação e reconstrução das cidades em Angola.",
+      "Idealizada e promovida centralmente pelo Executivo, esta iniciativa de grande escala visa reestruturar a malha urbana do país, otimizar a mobilidade e modernizar as infraestruturas públicas. O objetivo fundamental da intervenção vai além do aspeto estético: procura conferir maior viabilidade económica e funcional às centralidades locais, garantindo a criação de espaços públicos integrados, seguros e inclusivos. Desta forma, o projeto pretende assegurar um ambiente de convivência verdadeiramente salutar, equilibrado e propício ao bem-estar e ao desenvolvimento de todas as famílias angolanas.",
+      "Para compreender os detalhes desta estratégia, o cronograma das obras e as expetativas de impacto socioeconómico nas várias províncias, clique no áudio abaixo e acompanhe a reportagem completa com o jornalista Martinho."
     ],
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    author: 'Arqt. Paulo Silveira & Arqt.ª Helena Van-Dúnem',
+    "image": "/img/articles/art-1789798008535.jpg",
+    "author": "Atelier STAK"
   },
   {
-    id: 'art-2',
-    title: 'O Betão Aparente como Linguagem Construtiva Contemporânea',
-    category: 'Tectónica & Materiais',
-    date: '28 de Janeiro, 2026',
-    readTime: '5 min de leitura',
-    excerpt:
-      'A honestidade dos materiais na arquitectura do atelier STAK. O controlo da cofragem de madeira, a cura do cimento e a durabilidade face à maresia de Luanda.',
-    content: [
-      'O betão aparente é uma declaração de permanência. Ao contrário de revestimentos efémeros que se degradam com a humidade marítima, o betão bem dosado e tratado envelhece com nobreza.',
-      'A escolha do tipo de cofragem — madeira ripada de tábuas estreitas ou painéis lisos fenólicos — define o carácter táctil das superfícies interiores e exteriores.',
+    "id": "art-1789798784087",
+    "title": "Angola reforça protagonismo no maior congresso mundial de arquitectura",
+    "category": "Arquitectura & Cidade",
+    "date": "19/09/2026",
+    "readTime": "5 min",
+    "excerpt": "A participação da Ordem dos Arquitectos de Angola (OA) no Congresso Mundial da União Internacional dos Arquitectos (UIA 2026), realizado em Barcelona, Reino de Espanha, ficou marcada pelo reforço da presença e influência do país na maior plataforma internacional dedicada à arquitectura e ao urbanismo.",
+    "content": [
+      "Ao longo do evento, a delegação angolana desenvolveu uma intensa agenda institucional e diplomática, acompanhada pela Missão Diplomática de Angola em Espanha, consolidando a projeção da arquitectura nacional e fortalecendo a cooperação com representantes de organizações e ordens profissionais de vários continentes.",
+      "Um dos marcos da participação angolana foi a instalação, pela primeira vez, de um pavilhão próprio no Disseny Hub Barcelona, onde foram apresentados projectos, experiências e o potencial técnico dos arquitectos nacionais perante milhares de participantes do congresso.",
+      "A presença de uma delegação superior a 500 profissionais constituiu igualmente um feito inédito para a classe, evidenciando o crescente interesse dos arquitectos angolanos pelos grandes debates internacionais sobre cidades sustentáveis, inovação, património, alterações climáticas e desenvolvimento urbano.",
+      "Durante a Assembleia Geral da UIA, o bastonário da Ordem dos Arquitectos de Angola, Vity Claude Nsalambi, candidatou-se à presidência da organização, obtendo o segundo maior número de votos entre os candidatos.",
+      "A Ordem considera que o resultado traduz o reconhecimento do trabalho desenvolvido por Angola e pelo continente africano no seio da organização internacional.",
+      "A agenda incluiu ainda a participação em cerimónias institucionais de elevado nível e encontros com dirigentes da UIA e representantes governamentais, reforçando o posicionamento de Angola nos principais espaços de decisão da arquitectura mundial."
     ],
-    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-    author: 'Arqt. Paulo Silveira',
+    "image": "/img/articles/art-1789798784087.jpg",
+    "author": "Atelier STAK"
   },
   {
-    id: 'art-3',
-    title: 'Licenciamento de Projectos em Luanda: Guia Prático para Promotores',
-    category: 'Legislação & Prática',
-    date: '10 de Janeiro, 2026',
-    readTime: '8 min de leitura',
-    excerpt:
-      'As etapas indispensáveis para aprovação de projectos de arquitectura e especialidades de engenharia no Governo Provincial de Luanda (GPL).',
-    content: [
-      'A obtenção do Alvará de Construção em Luanda requer uma rigorosa instrução do processo técnico, incluindo estudos geológicos, cálculo sismo-resistente e conformidade com os regulamentos urbanísticos em vigor.',
-      'A coordenação antecipada entre arquitectos e engenheiros evita atrasos administrativos e garante que a obra decorra sem embargos legais.',
+    "id": "art-1789799013683",
+    "title": "Angola candidata-se à liderança da União Internacional dos Arquitectos para 2026-2029",
+    "category": "Arquitectura & Cidade",
+    "date": "19/09/2026",
+    "readTime": "5 min",
+    "excerpt": "O país vai candidatar-se à presidência da União Internacional dos Arquitectos (UIA) para o mandato 2026–2029, anunciou a Ordem dos Arquitectos de Angola (OAA), em comunicado.",
+    "content": [
+      "Para concorrer ao cargo está nomeado, o actual vice-presidente da UIA para a região africana, Vity Claude Nsalambi, segundo uma nota enviada ao JA Online.",
+      "A cerimónia de eleição do mais alto cargo da Organização Mundial dos Arquitectos terá lugar durante a Assembleia Geral da UIA, a decorrer entre os dias 2 e 4 do mês em curso, na cidade de Barcelona, Espanha.\n“A candidatura representa um momento de grande relevância para Angola e para a arquitectura africana, reforçando o posicionamento do país nas principais instâncias internacionais da profissão”, lê-se no documento.",
+      "De acordo com a mesma fonte, este marco histórico coincide com uma participação inédita de Angola no Congresso Mundial de Arquitectos e nas actividades da Barcelona Capital Mundial da Arquitectura (UNESCO-UIA).",
+      "Angola candidata-se à presidência da União Internacional dos Arquitectos",
+      "Angola vai candidatar-se à presidência da União Internacional dos Arquitectos para o mandato 2026–2029, anunciou a Ordem dos Arquitectos de Angola, em comunicado.",
+      "Para o cargo foi indicado o actual vice-presidente da UIA para a região africana, Vity Claude Nsalambi, segundo uma nota enviada ao JA Online.",
+      "A eleição para a presidência da organização mundial dos arquitectos decorrerá durante a Assembleia Geral da UIA, marcada para os dias 2 a 4 de Julho, na Barcelona, em Espanha.",
+      "Segundo a Ordem dos Arquitectos de Angola, a candidatura representa um momento de grande relevância para o país e para a arquitectura africana, reforçando o posicionamento de Angola nas principais instâncias internacionais da profissão.",
+      "O comunicado destaca, ainda, que este marco histórico coincide com a participação inédita de Angola no Congresso Mundial de Arquitectos e nas actividades da Barcelona Capital Mundial da Arquitectura, iniciativa promovida pela UNESCO e pela UIA."
     ],
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
-    author: 'Eng.º Manuel Kiala',
-  },
+    "image": "/img/articles/art-1789799013683.jpg",
+    "author": "Atelier STAK"
+  }
 ];
 
 export const initialBriefings: BriefingSubmission[] = [
@@ -686,106 +691,112 @@ export const initialBriefings: BriefingSubmission[] = [
 export const initialPagesContent: SitePagesContent = {
   home: {
     hero: {
-      enabled: true,
-      badgeTag: 'Atelier de Arquitectura & Design de Interiores | Luanda, Angola',
-      titleLine1: 'O rigor da estrutura.',
-      titleLine2Italic: 'A nobreza do',
-      titleLine2Gradient: 'espaço habitado.',
-      description:
-        'Desenvolvemos projectos residenciais de luxo, sedes corporativas de prestígio e interiores de autor. Soluções completas desde o estudo prévio ao licenciamento e fiscalização presencial de obra em Luanda.',
-      ctaPrimaryLabel: 'Explorar Obras & Projectos',
-      ctaSecondaryLabel: 'Solicitar Estudo Prévio',
-      mediaType: 'video',
-      videoUrl: '/videos/hero-interior-living.mp4',
-      videoPoster: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85',
-      slideshowImages: [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85',
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=85',
-        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=85',
-      ],
-    },
+  "enabled": true,
+  "badgeTag": "Atelier de Arquitectura & Design de Interiores | Luanda, Angola",
+  "videoUrl": "/videos/hero-interior-living.mp4",
+  "mediaType": "video",
+  "titleLine1": "O rigor da estrutura.",
+  "description": "Desenvolvemos projectos residenciais de luxo, sedes corporativas de prestígio e interiores de autor. Soluções completas desde o estudo prévio ao licenciamento e fiscalização presencial de obra em Luanda. ",
+  "videoPoster": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85",
+  "ctaPrimaryLabel": "Explorar Obras & Projectos",
+  "slideshowImages": [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=85",
+    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=85"
+  ],
+  "titleLine2Italic": "A nobreza do",
+  "ctaSecondaryLabel": "Solicitar Estudo Prévio",
+  "titleLine2Gradient": "espaço habitado."
+},
     sections: {
       synthesis: {
-        enabled: true,
-        tag: 'Identidade & Rigor / O Atelier',
-        title: 'Espaços desenhados para perdurar. Precisão geométrica aliada à alma de Luanda.',
-        description:
-          'A STAK Arquitectura & Designer de Interiores é um gabinete independente sediado em Luanda, fundado na convicção de que a arquitectura deve transcender a forma passageira. Procuramos uma relação profunda com a luz natural de Angola, a eficiência térmica e o rigor de execução.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
-        imageCaption: 'Projecto de Referência: Moradia Miramar Contemporary',
-        feature1Title: 'Sustentabilidade Bioclimática',
-        feature1Desc:
-          'Ventilação cruzada, brises de sombreamento e isolamento térmico estudados para o clima tropical costeiro.',
-        feature2Title: 'Fiscalização & Conformidade',
-        feature2Desc:
-          'Acompanhamento de estaleiro e controlo de qualidade que asseguram que a obra física coincide com o projecto.',
-        buttonLabel: 'Conhecer o Atelier & Filosofia',
-      },
+  "tag": "Identidade & Rigor / O Atelier",
+  "image": "https://fxdcearoepqdhycfwtcq.supabase.co/storage/v1/object/public/stak-media/imagens/1790031630753-Cozinha-2.jpg",
+  "title": "Espaços desenhados para perdurar. Precisão geométrica aliada à alma de Luanda.",
+  "enabled": true,
+  "buttonLabel": "Conhecer o Atelier & Filosofia",
+  "description": "A STAK Arquitectura & Designer de Interiores é um gabinete independente sediado em Luanda, fundado na convicção de que a arquitectura deve transcender a forma passageira. Procuramos uma relação profunda com a luz natural de Angola, a eficiência térmica e o rigor de execução.",
+  "feature1Desc": "Ventilação cruzada, brises de sombreamento e isolamento térmico estudados para o clima tropical costeiro.",
+  "feature2Desc": "Acompanhamento de estaleiro e controlo de qualidade que asseguram que a obra física coincide com o projecto.",
+  "imageCaption": "Projecto de Referência: Moradia Miramar Contemporary",
+  "feature1Title": "Sustentabilidade Bioclimática",
+  "feature2Title": "Fiscalização & Conformidade"
+},
       featuredProjects: {
-        enabled: true,
-        tag: 'Catálogo Seleccionado / Obras Emblemáticas',
-        title: 'Projectos que moldam a nova paisagem de Luanda.',
-        description:
-          'Conheça a selecção de residências unifamiliares de alto padrão, sedes corporativas e edifícios em execução assinados pelo atelier.',
-        buttonLabel: 'Ver Todos os Projectos',
-      },
+  "tag": "Catálogo Seleccionado / Obras Emblemáticas",
+  "title": "Projectos que moldam a nova paisagem de Luanda.",
+  "enabled": true,
+  "buttonLabel": "Ver Todos os Projectos",
+  "description": "Conheça a selecção de residências unifamiliares de alto padrão, sedes corporativas e edifícios em execução assinados pelo atelier."
+},
       materials: {
-        enabled: true,
-        tag: 'Tectónica & Autenticidade',
-        title: 'Matéria, texturas e atmosfera construtiva.',
-        description:
-          'Seleccionamos matérias-primas nobres com elevada inércia térmica e resistência comprovada ao clima costeiro de Luanda.',
-        items: [
-          {
-            id: 'betao',
-            name: 'Betão Aparente Estrutural',
-            tag: 'Tectónica & Massa Térmica',
-            description:
-              'Trabalhado com cofragem ripada de madeira nobre que imprime veios naturais na sua superfície. Garante inércia térmica indispensável para regular as temperaturas no clima costeiro de Luanda, dispensando revestimentos efémeros.',
-            properties: ['Elevada Inércia Térmica', 'Resistência ao Ar Marítimo', 'Estética Brutalista Nobre'],
-            image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-          },
-          {
-            id: 'madeira',
-            name: 'Madeiras Nobres Tropicais',
-            tag: 'Conforto Táctil & Protecção Solar',
-            description:
-              'Iroko, Teca e Pau-Rosa seleccionados e tratados com óleos naturais repelentes de humidade. Aplicados em pérgolas, brise-soleils dinâmicos, painéis de ripado e decks que conectam as áreas sociais aos jardins e piscinas.',
-            properties: ['Origem Certificada', 'Tratamento UV & Fungicida', 'Regulação Térmica Passiva'],
-            image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-          },
-          {
-            id: 'rochas',
-            name: 'Rochas Ornamentais & Mármores de Angola',
-            tag: 'Autenticidade Geológica',
-            description:
-              'Valorização do património mineral angolano. Mármores claros do Namibe e granitos negros da Huíla paginados com precisão milimétrica em ilhas de cozinha, banhos suite e planos de água.',
-            properties: ['Extracção Sustentável', 'Polimento Mate ou Flamejado', 'Durabilidade Perpétua'],
-            image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
-          },
-          {
-            id: 'vidro',
-            name: 'Vidros de Alta Eficiência & Brises',
-            tag: 'Luminosidade & Eficiência Energética',
-            description:
-              'Panos de vidro duplo com corte térmico e factor solar optimizado. Permitem banhar os interiores com a extraordinária luz natural de Luanda enquanto barram mais de 72% da radiação térmica directa.',
-            properties: ['Controlo Solar Low-E', 'Atenuação Acústica 42dB', 'Pérdida de Calor Minimizada'],
-            image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-          },
-        ],
-      },
+  "tag": "Tectónica & Autenticidade",
+  "items": [
+    {
+      "id": "betao",
+      "tag": "Tectónica & Massa Térmica",
+      "name": "Betão Aparente Estrutural",
+      "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+      "properties": [
+        "Elevada Inércia Térmica",
+        "Resistência ao Ar Marítimo",
+        "Estética Brutalista Nobre"
+      ],
+      "description": "Trabalhado com cofragem ripada de madeira nobre que imprime veios naturais na sua superfície. Garante inércia térmica indispensável para regular as temperaturas no clima costeiro de Luanda, dispensando revestimentos efémeros."
+    },
+    {
+      "id": "madeira",
+      "tag": "Conforto Táctil & Protecção Solar",
+      "name": "Madeiras Nobres Tropicais",
+      "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "properties": [
+        "Origem Certificada",
+        "Tratamento UV & Fungicida",
+        "Regulação Térmica Passiva"
+      ],
+      "description": "Iroko, Teca e Pau-Rosa seleccionados e tratados com óleos naturais repelentes de humidade. Aplicados em pérgolas, brise-soleils dinâmicos, painéis de ripado e decks que conectam as áreas sociais aos jardins e piscinas."
+    },
+    {
+      "id": "rochas",
+      "tag": "Autenticidade Geológica",
+      "name": "Rochas Ornamentais & Mármores de Angola",
+      "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
+      "properties": [
+        "Extracção Sustentável",
+        "Polimento Mate ou Flamejado",
+        "Durabilidade Perpétua"
+      ],
+      "description": "Valorização do património mineral angolano. Mármores claros do Namibe e granitos negros da Huíla paginados com precisão milimétrica em ilhas de cozinha, banhos suite e planos de água."
+    },
+    {
+      "id": "vidro",
+      "tag": "Luminosidade & Eficiência Energética",
+      "name": "Vidros de Alta Eficiência & Brises",
+      "image": "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80",
+      "properties": [
+        "Controlo Solar Low-E",
+        "Atenuação Acústica 42dB",
+        "Pérdida de Calor Minimizada"
+      ],
+      "description": "Panos de vidro duplo com corte térmico e factor solar optimizado. Permitem banhar os interiores com a extraordinária luz natural de Luanda enquanto barram mais de 72% da radiação térmica directa."
+    }
+  ],
+  "title": "Matéria, texturas e atmosfera construtiva.",
+  "enabled": true,
+  "description": "Seleccionamos matérias-primas nobres com elevada inércia térmica e resistência comprovada ao clima costeiro de Luanda."
+},
       specialties: {
-        enabled: true,
-        tag: 'Disciplinas & Especialidades Técnicas',
-        title: 'Do estudo de viabilidade à fiscalização em estaleiro.',
-        description: 'Capacidade técnica integrada para responder a todas as exigências do investimento imobiliário em Angola.',
-      },
+  "tag": "Disciplinas & Especialidades Técnicas",
+  "title": "Do estudo de viabilidade à fiscalização em estaleiro.",
+  "enabled": true,
+  "description": "Capacidade técnica integrada para responder a todas as exigências do investimento imobiliário em Angola."
+},
       beforeAfter: {
-        enabled: true,
-        tag: 'Transformação & Reabilitação',
-        title: 'Do estaleiro bruto à perfeição do espaço habitado.',
-        description: 'Veja o rigor do processo construtivo da STAK e a evolução real das nossas obras em Luanda.',
-      },
+  "tag": "Transformação & Reabilitação",
+  "title": "Do estaleiro bruto à perfeição do espaço habitado.",
+  "enabled": true,
+  "description": "Veja o rigor do processo construtivo da STAK e a evolução real das nossas obras em Luanda."
+},
       testimonials: {
         enabled: true,
         tag: 'Testemunhos & Reconhecimento',
@@ -795,87 +806,84 @@ export const initialPagesContent: SitePagesContent = {
         assurances: initialAssurances,
       },
       cta: {
-        enabled: true,
-        tag: 'Inicie a Sua Obra',
-        title: 'Pronto para materializar a sua visão arquitectónica?',
-        description: 'Agende uma sessão técnica presencial no nosso atelier ou submeta o seu briefing online.',
-        buttonLabel: 'Iniciar Briefing de Projecto',
-        secondaryButtonLabel: 'Falar pelo WhatsApp',
-      },
+  "tag": "Inicie a Sua Obra",
+  "title": "Pronto para materializar a sua visão arquitectónica?",
+  "enabled": true,
+  "buttonLabel": "Iniciar Briefing de Projecto",
+  "description": "Agende uma sessão técnica presencial no nosso atelier ou submeta o seu briefing online.",
+  "secondaryButtonLabel": "Falar pelo WhatsApp"
+},
     },
   },
   atelier: {
     hero: {
-      enabled: true,
-      badge: 'Início / O Atelier',
-      title: 'A arquitectura como síntese de rigor, proporção e identidade espacial.',
-      description:
-        'Fundado em Luanda, o atelier STAK desenvolve intervenções que combinam a autenticidade dos materiais angolanos com as mais elevadas exigências de conforto contemporâneo e engenharia de detalhe.',
-      bgImage: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2000&q=85',
-    },
+  "badge": "Início / O Atelier",
+  "title": "A arquitectura como síntese de rigor, proporção e identidade espacial.",
+  "bgImage": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2000&q=85",
+  "enabled": true,
+  "description": "Fundado em Luanda, o atelier STAK desenvolve intervenções que combinam a autenticidade dos materiais angolanos com as mais elevadas exigências de conforto contemporâneo e engenharia de detalhe."
+},
     sections: {
       manifesto: {
-        enabled: true,
-        tag: 'Filosofia & Rigor Espacial',
-        title: 'Manifesto Arquitectónico',
-        content:
-          'Concebemos espaços onde a luz tropical de Angola, a pureza geométrica e os materiais nobres dialogam em perfeita harmonia. Da residência unifamiliar de luxo à sede corporativa contemporânea, cada projecto é uma resposta singular à paisagem, ao clima e à identidade de quem o habita.',
-        sideImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85',
-        sideImageCaption: 'Atelier STAK — Estudo de Maquetes e Amostras de Materiais em Luanda',
-      },
+  "tag": "Filosofia & Rigor Espacial",
+  "title": "Manifesto Arquitectónico",
+  "content": "Concebemos espaços onde a luz tropical de Angola, a pureza geométrica e os materiais nobres dialogam em perfeita harmonia. Da residência unifamiliar de luxo à sede corporativa contemporânea, cada projecto é uma resposta singular à paisagem, ao clima e à identidade de quem o habita.",
+  "enabled": false,
+  "sideImage": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85",
+  "sideImageCaption": "Atelier STAK — Estudo de Maquetes e Amostras de Materiais em Luanda"
+},
       pillars: {
-        enabled: true,
-        tag: 'Pilares Estruturantes',
-        title: 'Os 4 Princípios da Nossa Prática',
-        description: 'Critérios indispensáveis que regem cada traço e cada decisão de projecto no gabinete.',
-        items: [
-          {
-            title: 'Sobriedade & Clareza Geométrica',
-            desc: 'Privilegiamos a volumetria pura, linhas horizontais expressivas e a eliminação de adornos supérfluos.',
-          },
-          {
-            title: 'Arquitectura Bioclimática Tropical',
-            desc: 'Em Luanda, a resposta climática é elementar. Projectamos protecções solares dinâmicas e ventilação cruzada.',
-          },
-          {
-            title: 'Compatibilização & Rigor Construtivo',
-            desc: 'A arquitectura só existe quando é construída com perfeição. Compatibilizamos minuciosamente todas as especialidades.',
-          },
-          {
-            title: 'Curadoria de Materiais & Identidade',
-            desc: 'Exploramos o contraste equilibrado entre betão aparente, pedras locais, madeiras nobres e amplos panos de vidro.',
-          },
-        ],
-      },
+  "tag": "Pilares Estruturantes",
+  "items": [
+    {
+      "desc": "Desenvolver projectos de arquitectura e design de interiores que conciliem estética, funcionalidade, técnica e identidade, transformando necessidades em espaços de qualidade",
+      "title": "Missão"
+    },
+    {
+      "desc": "Tornar a STAK uma referência em arquitectura e design de interiores em Angola, com capacidade de desenvolver projectos contemporâneos e alcançar uma presença internacional.",
+      "title": "Visão"
+    },
+    {
+      "desc": "Criamos projetos arquitetônicos inovadores e funcionais, unindo precisão, qualidade e compromisso total com a identidade de cada cliente.",
+      "title": "Valores"
+    },
+    {
+      "desc": "Na STAK, cada projecto é desenvolvido a partir da relação entre forma, função, contexto e identidade. A nossa abordagem combina arquitectura, design de interiores, tecnologia de representação e atenção ao detalhe.",
+      "title": "Filosofia"
+    }
+  ],
+  "title": "Os 4 Princípios da Nossa Prática",
+  "enabled": true,
+  "description": "Conjunto de diretrizes que definem a nossa identidade, propósito e a cultura da nossa empresa."
+},
       history: {
-        enabled: true,
-        tag: 'Origens & Evolução',
-        title: 'Uma Trajectória Dedicada à Excelência Construtiva',
-        content:
-          'Desde a fundação na Baía de Luanda, o gabinete tem sido impulsionado pela paixão de construir obras que dignificam a paisagem urbana de Angola.',
-        timeline: [
-          {
-            year: '2010',
-            title: 'Fundação do Atelier em Luanda',
-            desc: 'Início da atividade com foco em habitações unifamiliares e consultoria técnica independente.',
-          },
-          {
-            year: '2015',
-            title: 'Expansão para Edifícios Corporativos',
-            desc: 'Primeiros grandes concursos ganhos para sedes empresariais e centros logísticos na província de Luanda.',
-          },
-          {
-            year: '2019',
-            title: 'Consolidação do Departamento de Fiscalização',
-            desc: 'Criação de equipa residente para auditoria e fiscalização permanente de estaleiro.',
-          },
-          {
-            year: '2024',
-            title: 'Reconhecimento & Prática Bioclimática de Ponta',
-            desc: 'Consolidação de mais de 85 projectos executados e distinções de arquitectura sustentável em Angola.',
-          },
-        ],
-      },
+  "tag": "Origens & Evolução",
+  "title": "Uma Trajectória Dedicada à Excelência Construtiva",
+  "content": "A STAK nasce como uma marca dedicada à arquitectura e ao design de interiores, com uma abordagem contemporânea, funcional e orientada para a criação de espaços com identidade.\nO atelier pretende integrar arquitectura, interiores, representação visual, soluções técnicas e acompanhamento de projecto, desenvolvendo soluções personalizadas para clientes residenciais e empresariais.\nA STAK encontra-se em processo de consolidação da sua identidade como estúdio de arquitectura e design de interiores com posicionamento premium e visão contemporânea\n",
+  "enabled": true,
+  "timeline": [
+    {
+      "desc": "Início da atividade com foco em habitações unifamiliares e consultoria técnica independente.",
+      "year": "2010",
+      "title": "Fundação do Atelier em Luanda"
+    },
+    {
+      "desc": "Primeiros grandes concursos ganhos para sedes empresariais e centros logísticos na província de Luanda.",
+      "year": "2015",
+      "title": "Expansão para Edifícios Corporativos"
+    },
+    {
+      "desc": "Criação de equipa residente para auditoria e fiscalização permanente de estaleiro.",
+      "year": "2019",
+      "title": "Consolidação do Departamento de Fiscalização"
+    },
+    {
+      "desc": "Consolidação de mais de 85 projectos executados e distinções de arquitectura sustentável em Angola.",
+      "year": "2024",
+      "title": "Reconhecimento & Prática Bioclimática de Ponta"
+    }
+  ]
+},
       methodology: {
         enabled: true,
         tag: 'Processo & Metodologia',
@@ -884,106 +892,90 @@ export const initialPagesContent: SitePagesContent = {
         steps: initialMethodology,
       },
       bioclimatic: {
-        enabled: true,
-        tag: 'Sustentabilidade & Resiliência',
-        title: 'Arquitectura Bioclimática Tropical em Luanda',
-        description: 'Respostas técnicas inteligentes concebidas para o clima tropical costeiro de Angola.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
-        features: [
-          {
-            title: 'Protecção Solar Dinâmica',
-            desc: 'Brise-soleils exteriores e beirais calculados para cortar o sol nascente e poente sem roubar a luz difusa.',
-          },
-          {
-            title: 'Ventilação Cruzada Passiva',
-            desc: 'Aberturas orientadas para captar a brisa marítima do Atlântico e evacuar o ar quente pelo efeito chaminé.',
-          },
-          {
-            title: 'Inércia Térmica & Sombreamento',
-            desc: 'Betão aparente e paredes duplas que estabilizam a temperatura interior durante as horas de pico térmico.',
-          },
-        ],
-      },
+  "tag": "Sustentabilidade & Resiliência",
+  "image": "https://fxdcearoepqdhycfwtcq.supabase.co/storage/v1/object/public/stak-media/imagens/1790067371755-Model-1.webp",
+  "title": "Arquitectura Bioclimática Tropical em Luanda",
+  "enabled": true,
+  "features": [
+    {
+      "desc": "Brise-soleils exteriores e beirais calculados para cortar o sol nascente e poente sem roubar a luz difusa.",
+      "title": "Protecção Solar Dinâmica"
+    },
+    {
+      "desc": "Aberturas orientadas para captar a brisa marítima do Atlântico e evacuar o ar quente pelo efeito chaminé.",
+      "title": "Ventilação Cruzada Passiva"
+    },
+    {
+      "desc": "Betão aparente e paredes duplas que estabilizam a temperatura interior durante as horas de pico térmico.",
+      "title": "Inércia Térmica & Sombreamento"
+    }
+  ],
+  "description": "Respostas técnicas inteligentes concebidas para o clima tropical costeiro de Angola."
+},
       team: {
-        enabled: true,
-        tag: 'A Nossa Equipa',
-        title: 'Liderança & Coordenação Técnica',
-        description: 'Arquitectos, designers de interiores e coordenadores de obra dedicados à precisão de cada projecto.',
-        members: [
-          {
-            name: 'Arqt. Paulo Silveira',
-            role: 'Sócio-Fundador & Director Criativo',
-            bio: 'Formado em Arquitectura com mais de 16 anos de experiência em Angola e Portugal. Especialista em volumetria contemporânea e bioclimática.',
-            image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-          },
-          {
-            name: 'Arqt.ª Helena Van-Dúnem',
-            role: 'Directora de Projecto & Sustentabilidade',
-            bio: 'Mestrado em Arquitectura Sustentável. Lidera a compatibilização técnica, certificação energética e soluções de ventilação passiva.',
-            image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
-          },
-          {
-            name: 'Arqt. David Mbanza',
-            role: 'Coordenador de Interiores & Marcenaria',
-            bio: 'Com vasta experiência em arquitectura de interiores e mobiliário por medida, alia a sobriedade contemporânea ao conforto táctil.',
-            image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
-          },
-        ],
-      },
+  "tag": "A Nossa Equipa",
+  "title": "Liderança & Coordenação Técnica",
+  "enabled": true,
+  "members": [
+    {
+      "bio": "Arquitecto e urbanista, com formação em Arquitectura e Urbanismo pela Faculdade de Engenharia da Universidade Agostinho Neto e formação técnica em Construção Civil / Desenhador Projectista.",
+      "name": "Kuamina Stanie",
+      "role": "Fundador & Arquitecto Principal",
+      "image": "https://fxdcearoepqdhycfwtcq.supabase.co/storage/v1/object/public/stak-media/imagens/1790067096827-Kuamina-Stanie-1-.png"
+    }
+  ],
+  "description": "Arquitectos, designers de interiores e coordenadores de obra dedicados à precisão de cada projecto."
+},
       cta: {
-        enabled: true,
-        tag: 'Atendimento Personalizado',
-        title: 'Agende uma Reunião Técnica no Nosso Atelier',
-        description: 'Venha conhecer o nosso espaço de trabalho, maquetes físicas e amostras de materiais em Luanda.',
-        buttonLabel: 'Agendar Sessão Presencial',
-        secondaryButtonLabel: 'Enviar Mensagem WhatsApp',
-      },
+  "tag": "Atendimento Personalizado",
+  "title": "Agende uma Reunião Técnica no Nosso Atelier",
+  "enabled": true,
+  "buttonLabel": "Agendar Sessão Presencial",
+  "description": "Venha conhecer o nosso espaço de trabalho, maquetes físicas e amostras de materiais em Luanda.",
+  "secondaryButtonLabel": "Enviar Mensagem WhatsApp"
+},
     },
   },
   projects: {
     hero: {
-      enabled: true,
-      badge: 'Início / Portfólio',
-      title: 'Obras & Projectos de Arquitectura',
-      description:
-        'Residências unifamiliares de luxo, edifícios corporativos e intervenções de interior concebidos com rigor técnico, volumetria arrojada e atenção minuciosa ao detalhe construtivo.',
-      bgImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85',
-    },
+  "badge": "Início / Portfólio",
+  "title": "Obras & Projectos de Arquitectura",
+  "bgImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85",
+  "enabled": true,
+  "description": "Residências unifamiliares de luxo, edifícios corporativos e intervenções de interior concebidos com rigor técnico, volumetria arrojada e atenção minuciosa ao detalhe construtivo."
+},
     sections: {
       catalogIntro: {
-        enabled: true,
-        tag: 'Filtragem por Tipologia',
-        title: 'Portfólio Seleccionado',
-        description:
-          'Explore as nossas intervenções por categoria: habitação de alto padrão, sedes empresariais, design de interiores, planeamento urbanístico e obras em execução.',
-      },
+  "tag": "Filtragem por Tipologia",
+  "title": "Portfólio Seleccionado",
+  "enabled": true,
+  "description": "Explore as nossas intervenções por categoria: habitação de alto padrão, sedes empresariais, design de interiores, planeamento urbanístico e obras em execução."
+},
       cta: {
-        enabled: true,
-        tag: 'Estudo de Viabilidade',
-        title: 'Tem um terreno ou imóvel para desenvolver em Angola?',
-        description:
-          'A nossa equipa realiza a análise preliminar de ocupação, parâmetros urbanísticos do GPL e estudo volumétrico de rentabilidade.',
-        buttonLabel: 'Solicitar Avaliação de Terreno',
-      },
+  "tag": "Estudo de Viabilidade",
+  "title": "Tem um terreno ou imóvel para desenvolver em Angola?",
+  "enabled": true,
+  "buttonLabel": "Solicitar Avaliação de Terreno",
+  "description": "A nossa equipa realiza a análise preliminar de ocupação, parâmetros urbanísticos do GPL e estudo volumétrico de rentabilidade."
+},
     },
   },
   services: {
     hero: {
-      enabled: true,
-      badge: 'Início / Serviços',
-      title: 'Soluções Integradas de Arquitectura e Engenharia',
-      description:
-        'Acompanhamento rigoroso em todas as fases: do primeiro croquis à entrega das chaves da obra concluída.',
-      bgImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=85',
-      tagPills: [
-        'Arquitectura Residencial V3-V6',
-        'Sedes Corporativas & Escritórios',
-        'Design de Interiores & Marcenaria',
-        'Licenciamento Municipal GPL',
-        'Fiscalização Permanente de Obra',
-        'Masterplans & Urbanismo',
-      ],
-    },
+  "badge": "Início / Serviços",
+  "title": "Soluções Integradas de Arquitectura e Engenharia",
+  "bgImage": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=85",
+  "enabled": true,
+  "tagPills": [
+    "Arquitectura Residencial V3-V6",
+    "Sedes Corporativas & Escritórios",
+    "Design de Interiores & Marcenaria",
+    "Licenciamento Municipal GPL",
+    "Fiscalização Permanente de Obra",
+    "Masterplans & Urbanismo"
+  ],
+  "description": "Acompanhamento rigoroso em todas as fases: do primeiro croquis à entrega das chaves da obra concluída."
+},
     sections: {
       methodology: {
         enabled: true,
@@ -994,12 +986,11 @@ export const initialPagesContent: SitePagesContent = {
         steps: initialMethodology,
       },
       servicesList: {
-        enabled: true,
-        tag: 'Áreas de Actuação',
-        title: 'As Nossas Especialidades Técnicas',
-        description:
-          'Conheça em pormenor o alcance dos nossos serviços, desde habitação unifamiliar a licenciamento municipal.',
-      },
+  "tag": "Áreas de Actuação",
+  "title": "As Nossas Especialidades Técnicas",
+  "enabled": true,
+  "description": "Conheça em pormenor o alcance dos nossos serviços, desde habitação unifamiliar a licenciamento municipal."
+},
       faq: {
         enabled: true,
         tag: 'Esclarecimentos & FAQs',
@@ -1008,56 +999,54 @@ export const initialPagesContent: SitePagesContent = {
         items: initialFaqs,
       },
       cta: {
-        enabled: true,
-        title: 'Precisa de uma proposta técnica ou assessoria para a sua obra?',
-        description: 'Entre em contacto com a nossa equipa de coordenação para avaliarmos os requisitos do seu investimento.',
-        buttonLabel: 'Agendar Consulta de Projecto',
-      },
+  "title": "Precisa de uma proposta técnica ou assessoria para a sua obra?",
+  "enabled": true,
+  "buttonLabel": "Agendar Consulta de Projecto",
+  "description": "Entre em contacto com a nossa equipa de coordenação para avaliarmos os requisitos do seu investimento."
+},
     },
   },
   articles: {
     hero: {
-      enabled: true,
-      badge: 'Início / Publicações',
-      title: 'Caderno Técnico & Publicações do Atelier',
-      description:
-        'Reflexões sobre arquitectura bioclimática, materiais de construção, diários de obra e tendências de design em Angola.',
-      bgImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=85',
-    },
+  "badge": "Início / Publicações",
+  "title": "Caderno Técnico & Publicações do Atelier",
+  "bgImage": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=85",
+  "enabled": true,
+  "description": "Reflexões sobre arquitectura bioclimática, materiais de construção, diários de obra e tendências de design em Angola."
+},
     sections: {
       editorialIntro: {
-        enabled: true,
-        tag: 'Conhecimento Partilhado',
-        title: 'Artigos Recentes & Diários de Obra',
-        description: 'Documentamos a nossa experiência prática de estaleiro e pesquisa teórica.',
-      },
+  "tag": "Conhecimento Partilhado",
+  "title": "Artigos Recentes & Diários de Obra",
+  "enabled": true,
+  "description": "Documentamos a nossa experiência prática de estaleiro e pesquisa teórica."
+},
       newsletter: {
-        enabled: true,
-        title: 'Subscreva as Nossas Publicações Técnicas',
-        description: 'Receba trimestralmente no seu e-mail análises arquitectónicas e novidades do atelier.',
-        buttonLabel: 'Subscrever Caderno',
-      },
+  "title": "Subscreva as Nossas Publicações Técnicas",
+  "enabled": true,
+  "buttonLabel": "Subscrever Caderno",
+  "description": "Receba trimestralmente no seu e-mail análises arquitectónicas e novidades do atelier."
+},
     },
   },
   contacts: {
     hero: {
-      enabled: true,
-      badge: 'Início / Contactos',
-      title: 'Inicie o Seu Projecto Connosco',
-      description:
-        'Visite o nosso atelier na Av. 4 de Fevereiro ou agende uma reunião preliminar com a nossa equipa.',
-      bgImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85',
-    },
+  "badge": "Início / Contactos",
+  "title": "Inicie o Seu Projecto Connosco",
+  "bgImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85",
+  "enabled": true,
+  "description": "Visite o nosso atelier na Av. 4 de Fevereiro ou agende uma reunião preliminar com a nossa equipa."
+},
     sections: {
       info: {
         enabled: true,
         tag: 'Atendimento & Localização',
         title: 'O Nosso Gabinete em Luanda',
-        description: 'Estamos localizados na marginal de Luanda, no Edifício Kilamba Executivo.',
-        address: 'Edifício Kilamba Executivo, 4º Andar, Av. 4 de Fevereiro, Luanda, Angola',
-        phone: '+244 928 058 840',
-        whatsapp: '+244928058840',
-        email: 'geral@stak.ao',
+        description: 'Estamos localizados em Luanda, Angola.',
+        address: 'Luanda, Angola',
+        phone: '+244 937 826 963',
+        whatsapp: '+244 937 826 963',
+        email: 'geral@stakarquitectura.com',
         workingHours: 'Segunda a Sexta: 08:30 – 18:00',
         receptionNotice: 'Reuniões presenciais sujeitas a agendamento prévio com a equipa técnica.',
       },
@@ -1102,101 +1091,11 @@ export const initialMediaLibrary: MediaItem[] = [
   {
     id: 'media-vid-3',
     name: 'Vídeo Master Suite & Varanda (MP4)',
-    url: '/videos/hero-interior-suite.mp4',
+    url: '/videos/hero-interior-kitchen.mp4',
     type: 'video',
     size: '3.5 MB',
     uploadedAt: '2026-03-10',
     category: 'Vídeos Hero',
-  },
-  {
-    id: 'media-img-1',
-    name: 'Moradia Miramar Contemporary - Fachada Poente',
-    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85',
-    type: 'image',
-    size: '1.4 MB',
-    uploadedAt: '2026-03-05',
-    category: 'Projectos Residenciais',
-  },
-  {
-    id: 'media-img-2',
-    name: 'Moradia Miramar - Terreno Inicial (Antes)',
-    url: 'https://images.unsplash.com/photo-1590496793929-36417d3117de?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    size: '890 KB',
-    uploadedAt: '2026-03-05',
-    category: 'Antes & Depois',
-  },
-  {
-    id: 'media-img-3',
-    name: 'Edifício Kilamba Prime Corporativo',
-    url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=85',
-    type: 'image',
-    size: '1.8 MB',
-    uploadedAt: '2026-03-02',
-    category: 'Comercial & Escritórios',
-  },
-  {
-    id: 'media-img-4',
-    name: 'Penthouse Baía de Luanda - Sala Panorâmica',
-    url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=85',
-    type: 'image',
-    size: '1.6 MB',
-    uploadedAt: '2026-02-28',
-    category: 'Design de Interiores',
-  },
-  {
-    id: 'media-img-5',
-    name: 'Villa Talatona Bioclimática - Fachada com Brises',
-    url: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=2000&q=85',
-    type: 'image',
-    size: '1.2 MB',
-    uploadedAt: '2026-02-24',
-    category: 'Projectos Residenciais',
-  },
-  {
-    id: 'media-img-6',
-    name: 'Residência Belas Golf - Espelho de Água',
-    url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=85',
-    type: 'image',
-    size: '1.5 MB',
-    uploadedAt: '2026-02-20',
-    category: 'Projectos Residenciais',
-  },
-  {
-    id: 'media-img-7',
-    name: 'Sede Corporativa Baía - Fachada de Vidro',
-    url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=85',
-    type: 'image',
-    size: '1.7 MB',
-    uploadedAt: '2026-02-15',
-    category: 'Comercial & Escritórios',
-  },
-  {
-    id: 'media-img-8',
-    name: 'Betão Aparente Estrutural - Textura Construtiva',
-    url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    size: '950 KB',
-    uploadedAt: '2026-02-10',
-    category: 'Materiais & Texturas',
-  },
-  {
-    id: 'media-img-9',
-    name: 'Arqa. Sofia de Castro - Fundadora & Directora de Projecto',
-    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
-    type: 'image',
-    size: '620 KB',
-    uploadedAt: '2026-02-05',
-    category: 'Equipa & Atelier',
-  },
-  {
-    id: 'media-img-10',
-    name: 'Eng.º Manuel Kiala - Director de Engenharia',
-    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
-    type: 'image',
-    size: '590 KB',
-    uploadedAt: '2026-02-05',
-    category: 'Equipa & Atelier',
   },
 ];
 
@@ -1204,53 +1103,14 @@ export const initialUsers: AtelierUser[] = [
   {
     id: 'user-admin-master',
     name: 'Administrador STAK',
-    email: 'denvitic@gmail.com',
+    email: 'stak@denvitic.com',
     role: 'super_admin',
     roleLabel: 'Super Administrador',
     status: 'Activo',
-    phone: '+244 928 058 840',
+    phone: '+244 937 826 963',
     department: 'Direcção Geral & Coordenação',
     createdAt: '2025-01-10',
-    lastLogin: 'Hoje, 10:25',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'user-manuel-costa',
-    name: 'Arq. Manuel da Costa',
-    email: 'm.costa@stak.ao',
-    role: 'administrador',
-    roleLabel: 'Arquitecto Sénior & Director Técnico',
-    status: 'Activo',
-    phone: '+244 923 112 334',
-    department: 'Gabinete de Projectos & Urbanismo',
-    createdAt: '2025-02-01',
-    lastLogin: 'Ontem, 16:40',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'user-sofia-castro',
-    name: 'Arqa. Sofia de Castro',
-    email: 's.castro@stak.ao',
-    role: 'arquitecto',
-    roleLabel: 'Arquitecta de Interiores',
-    status: 'Activo',
-    phone: '+244 934 556 778',
-    department: 'Design de Interiores & Paisagismo',
-    createdAt: '2025-03-12',
-    lastLogin: '16 Mar 2026',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'user-teresa-bento',
-    name: 'Dra. Teresa Bento',
-    email: 'comunicacao@stak.ao',
-    role: 'editor',
-    roleLabel: 'Gestora Editorial & Comunicação',
-    status: 'Activo',
-    phone: '+244 921 998 877',
-    department: 'Comunicação, Mídia & Notícias',
-    createdAt: '2025-04-05',
-    lastLogin: '14 Mar 2026',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+    lastLogin: 'Hoje',
+    avatar: '',
   },
 ];

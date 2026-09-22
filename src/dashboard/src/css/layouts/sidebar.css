@@ -1,8 +1,20 @@
-/* tailwind-sidebar package override styles */
-[data-slot='collapsible'] [data-slot='sidebar-menu-item'] [data-slot='sidebar-menu-button']:hover {
-  background-color: transparent !important;
+/* STAK Admin Sidebar & Mobile Menu Text Clarity */
+.stak-sidebar,
+.stak-sidebar * {
+  box-sizing: border-box;
+}
+
+.stak-sidebar nav a:not([class*='text-[#9a733e]']) span,
+.stak-sidebar nav a:not([class*='text-[#9a733e]']) {
+  color: #374151 !important;
+}
+
+.stak-sidebar nav a:hover span,
+.stak-sidebar nav a:hover {
+  color: #111827 !important;
 }
 
 [data-slot='badge'] {
   font-size: x-small;
 }
+

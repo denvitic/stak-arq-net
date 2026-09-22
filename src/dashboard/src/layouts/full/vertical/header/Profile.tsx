@@ -74,14 +74,19 @@ const Profile = () => {
               variant="outline"
               className="w-full text-xs font-medium border-gray-200 hover:bg-gray-100 text-gray-800 h-8 cursor-pointer"
             >
-              <a
-                href="#inicio"
+              <button
+                type="button"
                 onClick={() => {
+                  localStorage.removeItem('stak_admin_active_view');
                   window.location.hash = 'inicio';
+                  if (window.location.pathname !== '/') {
+                    window.history.pushState(null, '', '/#inicio');
+                  }
+                  window.location.reload();
                 }}
               >
                 ← Voltar ao Website
-              </a>
+              </button>
             </Button>
           </div>
         </DropdownMenuContent>

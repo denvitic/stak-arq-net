@@ -20,7 +20,7 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
 ];
 
 export default function ProjectsManager() {
-  const { projects, addProject, updateProject, deleteProject, toggleFeaturedProject } = useCms();
+  const { projects, addProject, updateProject, deleteProject, toggleFeaturedProject, toggleBeforeAfterProject } = useCms();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>('todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -46,8 +46,11 @@ export default function ProjectsManager() {
     coverImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
     galleryImages: [],
     featured: false,
+    featuredInBeforeAfter: false,
     beforeImage: '',
     beforeLabel: 'Fase de Construção',
+    afterLabel: 'Conclusão STAK',
+    beforeDescription: '',
     fichaTecnica: {
       localizacao: 'Luanda, Angola',
       ano: new Date().getFullYear().toString(),
@@ -82,7 +85,7 @@ export default function ProjectsManager() {
         'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
       ],
       featured: false,
-      featuredInBeforeAfter: true,
+      featuredInBeforeAfter: false,
       beforeImage: '',
       beforeLabel: 'Fase Inicial de Estruturas',
       afterLabel: 'Conclusão STAK',
@@ -113,7 +116,7 @@ export default function ProjectsManager() {
       coverImage: project.coverImage,
       galleryImages: [...(project.galleryImages || [])],
       featured: project.featured,
-      featuredInBeforeAfter: project.featuredInBeforeAfter ?? true,
+      featuredInBeforeAfter: Boolean(project.featuredInBeforeAfter),
       beforeImage: project.beforeImage || '',
       beforeLabel: project.beforeLabel || 'Fase de Construção',
       afterLabel: project.afterLabel || 'Conclusão STAK',
@@ -288,12 +291,34 @@ export default function ProjectsManager() {
                 {project.featured ? '★ Destaque' : '☆ Promover'}
               </button>
 
-              {/* Before/After Indicator */}
-              {project.beforeImage && (
-                <span className="absolute bottom-2.5 left-2.5 bg-[#c6a87c]/90 text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-                  Antes / Depois Activo
-                </span>
-              )}
+              {/* Before/After Toggle Check Button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!project.beforeImage && !project.featuredInBeforeAfter) {
+                    showToast('Nota: Certifique-se de adicionar uma foto de "Antes" ao projecto.');
+                  }
+                  toggleBeforeAfterProject(project.id);
+                  showToast(
+                    !project.featuredInBeforeAfter
+                      ? `"${project.title}" adicionado à secção Antes & Depois da Página Inicial!`
+                      : `"${project.title}" removido do Antes & Depois.`
+                  );
+                }}
+                className={`absolute bottom-2.5 left-2.5 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer shadow-sm flex items-center gap-1.5 ${
+                  project.featuredInBeforeAfter
+                    ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                    : 'bg-black/75 text-gray-300 hover:bg-black hover:text-white'
+                }`}
+                title={project.featuredInBeforeAfter ? 'Activo na secção Antes & Depois da Página Inicial (Clique para desactivar)' : 'Clique para exibir na secção Antes & Depois da Página Inicial'}
+              >
+                <Icon
+                  icon={project.featuredInBeforeAfter ? 'solar:check-circle-bold' : 'solar:circle-linear'}
+                  width="13"
+                />
+                <span>{project.featuredInBeforeAfter ? 'Antes/Depois Activo' : 'Antes/Depois'}</span>
+              </button>
 
               {/* Image Count Indicator */}
               <span className="absolute bottom-2.5 right-2.5 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
@@ -616,9 +641,9 @@ export default function ProjectsManager() {
                   <label className="flex items-center gap-2 cursor-pointer select-none bg-white px-3 py-1.5 rounded-lg border border-gray-200 hover:border-[#c6a87c] transition-colors">
                     <input
                       type="checkbox"
-                      checked={formData.featuredInBeforeAfter ?? true}
+                      checked={Boolean(formData.featuredInBeforeAfter)}
                       onChange={(e) => setFormData({ ...formData, featuredInBeforeAfter: e.target.checked })}
-                      className="w-4 h-4 text-[#c6a87c] rounded border-gray-300 focus:ring-[#c6a87c]"
+                      className="w-4 h-4 text-[#c6a87c] rounded border-gray-300 focus:ring-[#c6a87c] cursor-pointer"
                     />
                     <span className="text-[11px] font-semibold text-gray-800">
                       Exibir na Página Inicial (Antes & Depois)

@@ -80,10 +80,57 @@ function StakApp() {
     }
   }, [atelierInfo]);
 
-  // Navigation state initialized from URL hash or default to 'inicio'
+  // Check whether current URL (hash or pathname) or persistent state refers to the admin panel
+  const checkIsAdminRoute = () => {
+    const hash = window.location.hash.replace('#', '').toLowerCase();
+    const pathname = window.location.pathname.toLowerCase();
+
+    // 1. Direct hash matches
+    if (hash === 'admin' || hash === 'dashboard' || hash === 'painel' || hash.startsWith('admin/')) {
+      return true;
+    }
+
+    // 2. Direct pathname matches (e.g. if loaded at /admin, /dashboard, or subroutes from dashboard)
+    const adminPathPrefixes = [
+      '/admin',
+      '/dashboard',
+      '/painel',
+      '/frontweb',
+      '/media',
+      '/projects',
+      '/briefings',
+      '/users',
+      '/settings',
+      '/atelier',
+      '/faqs',
+      '/menus',
+      '/articles',
+      '/services',
+    ];
+    if (adminPathPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(prefix + '/'))) {
+      return true;
+    }
+
+    // 3. User session persistence: if admin was active and user is authenticated
+    const savedActiveView = localStorage.getItem('stak_admin_active_view');
+    const hasActiveSession =
+      localStorage.getItem('stak_admin_demo_session') === 'true' ||
+      !!localStorage.getItem('stak_admin_cached_user');
+
+    if (savedActiveView === 'admin' && hasActiveSession) {
+      // If user refreshed while on root URL without an explicit non-admin hash
+      if (pathname === '/' && (hash === '' || hash === 'admin' || hash === 'dashboard')) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  // Navigation state initialized from URL or persistent session
   const [currentPage, setCurrentPage] = useState<NavPage>(() => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash === 'admin' || hash === 'dashboard' || hash === 'painel') return 'admin';
+    if (checkIsAdminRoute()) return 'admin';
+    const hash = window.location.hash.replace('#', '').toLowerCase();
     if (hash === 'sobre-nos' || hash === 'atelier') return 'sobre-nos';
     if (hash === 'projectos' || hash === 'portfolio') return 'projectos';
     if (hash === 'servicos' || hash === 'especialidades') return 'servicos';
@@ -91,6 +138,18 @@ function StakApp() {
     if (hash === 'contactos' || hash === 'briefing') return 'contactos';
     return 'inicio';
   });
+
+  // Keep admin active view and hash synchronized
+  useEffect(() => {
+    if (currentPage === 'admin') {
+      localStorage.setItem('stak_admin_active_view', 'admin');
+      if (!window.location.hash || window.location.hash === '#inicio') {
+        window.location.hash = 'admin';
+      }
+    } else {
+      localStorage.removeItem('stak_admin_active_view');
+    }
+  }, [currentPage]);
 
   // Ensure HTML root classes are synchronized: Admin is ALWAYS light, Website follows user theme
   useEffect(() => {
@@ -113,28 +172,52 @@ function StakApp() {
   // Sync route changes with browser URL hash
   const navigateTo = (page: NavPage) => {
     setCurrentPage(page);
-    window.location.hash = page;
+    if (page === 'admin') {
+      localStorage.setItem('stak_admin_active_view', 'admin');
+      window.location.hash = 'admin';
+    } else {
+      localStorage.removeItem('stak_admin_active_view');
+      window.location.hash = page;
+      if (window.location.pathname !== '/') {
+        window.history.pushState(null, '', `/#${page}`);
+      }
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Listen to hash changes (back/forward buttons)
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (hash === 'admin' || hash === 'dashboard' || hash === 'painel') {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      const pathname = window.location.pathname.toLowerCase();
+
+      if (
+        hash === 'admin' ||
+        hash === 'dashboard' ||
+        hash === 'painel' ||
+        pathname === '/admin'
+      ) {
         setCurrentPage('admin');
+        localStorage.setItem('stak_admin_active_view', 'admin');
       } else if (hash === 'sobre-nos' || hash === 'atelier') {
         setCurrentPage('sobre-nos');
+        localStorage.removeItem('stak_admin_active_view');
       } else if (hash === 'projectos' || hash === 'portfolio') {
         setCurrentPage('projectos');
+        localStorage.removeItem('stak_admin_active_view');
       } else if (hash === 'servicos' || hash === 'especialidades') {
         setCurrentPage('servicos');
+        localStorage.removeItem('stak_admin_active_view');
       } else if (hash === 'artigos' || hash === 'publicacoes') {
         setCurrentPage('artigos');
+        localStorage.removeItem('stak_admin_active_view');
       } else if (hash === 'contactos' || hash === 'briefing') {
         setCurrentPage('contactos');
-      } else {
-        setCurrentPage('inicio');
+        localStorage.removeItem('stak_admin_active_view');
+      } else if (hash === 'inicio' || hash === '') {
+        if (localStorage.getItem('stak_admin_active_view') !== 'admin') {
+          setCurrentPage('inicio');
+        }
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -150,9 +233,23 @@ function StakApp() {
     navigateTo('contactos');
   };
 
+  const handleBackToWebsite = () => {
+    localStorage.removeItem('stak_admin_active_view');
+    navigateTo('inicio');
+    if (window.location.pathname !== '/') {
+      window.history.pushState(null, '', '/#inicio');
+    }
+  };
+
+  const handleSignOut = async () => {
+    localStorage.removeItem('stak_admin_active_view');
+    await signOut();
+    handleBackToWebsite();
+  };
+
   if (currentPage === 'admin') {
     if (!isAuthenticated) {
-      return <AdminLogin onBackToWebsite={() => navigateTo('inicio')} />;
+      return <AdminLogin onBackToWebsite={handleBackToWebsite} />;
     }
 
     return (
@@ -178,7 +275,7 @@ function StakApp() {
 
             <button
               type="button"
-              onClick={() => signOut()}
+              onClick={handleSignOut}
               className="inline-flex items-center gap-1 px-2.5 py-1 text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors cursor-pointer text-xs font-medium"
             >
               <span>Terminar Sessão</span>
@@ -186,7 +283,7 @@ function StakApp() {
 
             <button
               type="button"
-              onClick={() => navigateTo('inicio')}
+              onClick={handleBackToWebsite}
               className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#111827] hover:bg-black text-white font-medium rounded-lg transition-colors cursor-pointer text-xs shadow-xs"
               style={{ color: '#ffffff' }}
             >
@@ -206,9 +303,7 @@ function StakApp() {
   return (
     <div
       id="stak-website"
-      className={`min-h-screen bg-[#090a0c] dark:bg-[#090a0c] light:bg-[#f8f7f5] text-[#e8e8ea] dark:text-[#e8e8ea] light:text-[#18191d] flex flex-col selection:bg-[#c6a87c] selection:text-black font-sans transition-all duration-500 ${
-        isHydrated ? 'opacity-100' : 'opacity-90'
-      }`}
+      className="min-h-screen bg-[#090a0c] dark:bg-[#090a0c] light:bg-[#f8f7f5] text-[#e8e8ea] dark:text-[#e8e8ea] light:text-[#18191d] flex flex-col selection:bg-[#c6a87c] selection:text-black font-sans opacity-100"
     >
       {/* 1. Uncluttered, Focused Navbar */}
       <Navbar

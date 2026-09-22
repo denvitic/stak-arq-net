@@ -23,19 +23,49 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const DEFAULT_ADMIN_USER: any = {
   id: 'stak-admin-master',
-  email: 'denvitic@gmail.com',
+  email: 'stak@denvitic.com',
   user_metadata: {
     full_name: 'Administrador STAK',
     role: 'super_admin',
     department: 'Direcção Geral & Coordenação',
-    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+    avatar_url: '',
   },
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    try {
+      const savedDemo = localStorage.getItem('stak_admin_demo_session');
+      if (savedDemo === 'true') {
+        return DEFAULT_ADMIN_USER;
+      }
+      const cached = localStorage.getItem('stak_admin_cached_user');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === 'object') {
+          // Normalize to stak@denvitic.com if old email
+          if (parsed.email === 'denvitic@gmail.com') {
+            parsed.email = 'stak@denvitic.com';
+          }
+          if (parsed.user_metadata) {
+            parsed.user_metadata.avatar_url = '';
+          }
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  });
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(() => {
+    // If we already have a synchronous user, initial loading is false
+    const hasCached =
+      localStorage.getItem('stak_admin_demo_session') === 'true' ||
+      !!localStorage.getItem('stak_admin_cached_user');
+    return !hasCached;
+  });
   const [authError, setAuthError] = useState<string | null>(null);
   const [isAdminRegistrationLocked, setIsAdminRegistrationLocked] = useState<boolean>(() => {
     const isLocked = localStorage.getItem('stak_admin_registration_locked');
@@ -112,6 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // 1. Direct validation for predefined default admin account
     const isDefaultAdmin =
+      (normalizedEmail === 'stak@denvitic.com' && password === 'Admin2026@') ||
       (normalizedEmail === 'denvitic@gmail.com' && password === 'Admin2026@') ||
       (normalizedEmail === 'admin@stak.ao' &&
         (password === 'stak.arquitectura' || password === 'stak2025' || password === 'admin123'));
@@ -121,7 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let matchedUserName = 'Administrador STAK';
     let matchedUserRole = 'super_admin';
     try {
-      const savedUsers = localStorage.getItem('stak_architects_users_v1');
+      const savedUsers = localStorage.getItem('stak_architects_users_v4') || localStorage.getItem('stak_architects_users_v1');
       if (savedUsers) {
         const parsed = JSON.parse(savedUsers);
         const match = parsed.find((u: any) => u.email?.toLowerCase() === normalizedEmail);
@@ -141,6 +172,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (isDefaultAdmin) {
       setUser(DEFAULT_ADMIN_USER);
       localStorage.setItem('stak_admin_demo_session', 'true');
+      localStorage.setItem('stak_admin_cached_user', JSON.stringify(DEFAULT_ADMIN_USER));
+      localStorage.setItem('stak_admin_active_view', 'admin');
       localStorage.setItem('stak_admin_registered', 'true');
       localStorage.setItem('stak_admin_registration_locked', 'true');
       setIsAdminRegistrationLocked(true);
@@ -149,15 +182,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (!client) {
       if (isRegisteredStudioUser) {
-        setUser({
+        const customUser = {
           id: 'user-' + normalizedEmail.replace(/[^a-z0-9]/g, '-'),
           email: normalizedEmail,
           user_metadata: {
             full_name: matchedUserName,
             role: matchedUserRole,
+            avatar_url: '',
           },
-        } as any);
+        } as any;
+        setUser(customUser);
         localStorage.setItem('stak_admin_demo_session', 'true');
+        localStorage.setItem('stak_admin_cached_user', JSON.stringify(customUser));
+        localStorage.setItem('stak_admin_active_view', 'admin');
         return { error: null };
       }
       return { error: 'Credenciais incorrectas. Verifique o seu e-mail e palavra-passe.' };
@@ -172,15 +209,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         // Fallback for registered studio user or default admin credentials
         if (isRegisteredStudioUser) {
-          setUser({
+          const customUser = {
             id: 'user-' + normalizedEmail.replace(/[^a-z0-9]/g, '-'),
             email: normalizedEmail,
             user_metadata: {
               full_name: matchedUserName,
               role: matchedUserRole,
+              avatar_url: '',
             },
-          } as any);
+          } as any;
+          setUser(customUser);
           localStorage.setItem('stak_admin_demo_session', 'true');
+          localStorage.setItem('stak_admin_cached_user', JSON.stringify(customUser));
+          localStorage.setItem('stak_admin_active_view', 'admin');
           return { error: null };
         }
         const friendlyMsg =
@@ -193,6 +234,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(data.user);
       setSession(data.session);
+      localStorage.setItem('stak_admin_cached_user', JSON.stringify(data.user));
+      localStorage.setItem('stak_admin_active_view', 'admin');
       localStorage.removeItem('stak_admin_demo_session');
       localStorage.setItem('stak_admin_registered', 'true');
       localStorage.setItem('stak_admin_registration_locked', 'true');
@@ -202,6 +245,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (isRegisteredStudioUser) {
         setUser(DEFAULT_ADMIN_USER);
         localStorage.setItem('stak_admin_demo_session', 'true');
+        localStorage.setItem('stak_admin_cached_user', JSON.stringify(DEFAULT_ADMIN_USER));
+        localStorage.setItem('stak_admin_active_view', 'admin');
         return { error: null };
       }
       const msg = 'Erro ao processar a autenticação. Verifique os dados inseridos.';
@@ -267,6 +312,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     const client = getSupabase();
     localStorage.removeItem('stak_admin_demo_session');
+    localStorage.removeItem('stak_admin_cached_user');
+    localStorage.removeItem('stak_admin_active_view');
     if (client) {
       try {
         await client.auth.signOut();
@@ -307,6 +354,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAsDemo = () => {
     setUser(DEFAULT_ADMIN_USER);
     localStorage.setItem('stak_admin_demo_session', 'true');
+    localStorage.setItem('stak_admin_cached_user', JSON.stringify(DEFAULT_ADMIN_USER));
+    localStorage.setItem('stak_admin_active_view', 'admin');
     setAuthError(null);
   };
 

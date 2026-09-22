@@ -5,12 +5,10 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  ShieldCheck,
   AlertCircle,
   CheckCircle2,
   Building2,
   ArrowLeft,
-  KeyRound,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -24,8 +22,8 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToWebsite }) => {
   const { signIn, resetPassword, authError, clearAuthError } = useAuth();
 
   const [mode, setMode] = useState<AuthMode>('signin');
-  const [email, setEmail] = useState('denvitic@gmail.com');
-  const [password, setPassword] = useState('Admin2026@');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -67,12 +65,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToWebsite }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleApplyPreset = () => {
-    setEmail('denvitic@gmail.com');
-    setPassword('Admin2026@');
-    setFormError(null);
   };
 
   return (
@@ -144,7 +136,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToWebsite }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="denvitic@gmail.com"
+                  placeholder="exemplo@dominio.com"
                   className="w-full bg-[#181a22] border border-white/10 rounded-lg pl-9.5 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:border-[#c6a87c] focus:outline-none transition-colors"
                 />
               </div>
@@ -222,37 +214,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToWebsite }) => {
               )}
             </button>
           </form>
-
-          {/* Pre-configured default admin credentials reminder */}
-          <div className="pt-4 border-t border-white/10 space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-300">
-                <ShieldCheck className="w-4 h-4 text-[#c6a87c]" />
-                <span>Conta Padrão de Administrador</span>
-              </span>
-              <button
-                type="button"
-                onClick={handleApplyPreset}
-                className="text-[11px] text-[#c6a87c] hover:underline cursor-pointer font-medium"
-              >
-                Auto-preencher
-              </button>
-            </div>
-
-            <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1 text-xs font-mono">
-              <div className="flex items-center justify-between text-gray-400">
-                <span>E-mail:</span>
-                <span className="text-gray-200">denvitic@gmail.com</span>
-              </div>
-              <div className="flex items-center justify-between text-gray-400">
-                <span>Palavra-passe:</span>
-                <span className="text-[#c6a87c]">Admin2026@</span>
-              </div>
-            </div>
-            <p className="text-[11px] text-gray-500 font-light">
-              Poderá criar, editar ou gerir utilizadores e arquitectos adicionais dentro do menu de utilizadores no painel.
-            </p>
-          </div>
         </div>
       </main>
 

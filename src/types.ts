@@ -151,6 +151,7 @@ export interface TestimonialItem {
   projectType: string;
   quote: string;
   rating: number;
+  year?: string;
 }
 
 export interface GuaranteePillar {

@@ -62,11 +62,11 @@ const Header = () => {
 
       {/* Mobile Sidebar */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="left" className="w-[280px] sm:w-[300px] p-0 bg-white text-gray-900 border-r border-gray-200 shadow-2xl">
           <VisuallyHidden>
-            <SheetTitle>sidebar</SheetTitle>
+            <SheetTitle>Menu Administrativo</SheetTitle>
           </VisuallyHidden>
-          <SidebarLayout onClose={() => setIsOpen(false)} />
+          <SidebarLayout isMobile onClose={() => setIsOpen(false)} />
         </SheetContent>
       </Sheet>
     </>

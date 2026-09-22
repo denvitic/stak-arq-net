@@ -78,7 +78,7 @@ export default function UsersManager() {
       role: 'arquitecto',
       status: 'Activo',
       password: '',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+      avatar: '',
     });
     setIsModalOpen(true);
   };
@@ -128,7 +128,7 @@ export default function UsersManager() {
         role: formData.role,
         roleLabel: roleInfo.label,
         status: formData.status,
-        avatar: formData.avatar.trim() || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80',
+        avatar: formData.avatar.trim(),
       });
       showToast(`Utilizador "${formData.name}" adicionado com sucesso.`);
     }
@@ -145,6 +145,7 @@ export default function UsersManager() {
   const confirmDelete = () => {
     if (!userToDelete) return;
     if (
+      userToDelete.email === 'stak@denvitic.com' ||
       userToDelete.email === 'denvitic@gmail.com' ||
       userToDelete.email === 'admin@stak.ao' ||
       userToDelete.id === 'user-admin-master'
@@ -331,14 +332,17 @@ export default function UsersManager() {
                       {/* Name & Avatar */}
                       <td className="py-3.5 px-5">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={
-                              item.avatar ||
-                              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80'
-                            }
-                            alt={item.name}
-                            className="w-9 h-9 rounded-xl object-cover border border-gray-200 shrink-0"
-                          />
+                          {item.avatar ? (
+                            <img
+                              src={item.avatar}
+                              alt={item.name}
+                              className="w-9 h-9 rounded-xl object-cover border border-gray-200 shrink-0"
+                            />
+                          ) : (
+                            <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs shrink-0 select-none uppercase">
+                              {item.name ? item.name.charAt(0) : 'U'}
+                            </div>
+                          )}
                           <div>
                             <div className="font-semibold text-gray-900 flex items-center gap-1.5">
                               <span>{item.name}</span>
@@ -411,7 +415,8 @@ export default function UsersManager() {
                             <Icon icon="solar:pen-new-square-linear" width="16" />
                           </button>
 
-                          {item.email !== 'denvitic@gmail.com' &&
+                          {item.email !== 'stak@denvitic.com' &&
+                            item.email !== 'denvitic@gmail.com' &&
                             item.email !== 'admin@stak.ao' &&
                             item.id !== 'user-admin-master' && (
                               <button

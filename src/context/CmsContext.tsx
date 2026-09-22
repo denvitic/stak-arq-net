@@ -70,15 +70,18 @@ interface CmsContextType {
 const CmsContext = createContext<CmsContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  PROJECTS: 'stak_architects_projects_v4',
-  SERVICES: 'stak_architects_services_v2',
-  ARTICLES: 'stak_architects_articles_v4',
-  BRIEFINGS: 'stak_architects_briefings_v3',
-  ATELIER: 'stak_architects_atelier_v3',
-  PAGES: 'stak_architects_pages_v3',
-  MEDIA: 'stak_architects_media_v2',
-  USERS: 'stak_architects_users_v1',
+  PROJECTS: 'stak_architects_projects_v7',
+  SERVICES: 'stak_architects_services_v5',
+  ARTICLES: 'stak_architects_articles_v7',
+  BRIEFINGS: 'stak_architects_briefings_v5',
+  ATELIER: 'stak_architects_atelier_v7',
+  PAGES: 'stak_architects_pages_v7',
+  MEDIA: 'stak_architects_media_v4',
+  USERS: 'stak_architects_users_v4',
 };
+
+// Fast JSON comparison helper to prevent redundant React re-renders and flicker
+const isEqualJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
 // Safe LocalStorage setter helper with quota error catch
 const safeSetLocalStorage = (key: string, data: unknown) => {
@@ -93,24 +96,25 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isCmsOpen, setIsCmsOpen] = useState<boolean>(false);
   const [activeCmsTab, setActiveCmsTab] = useState<string>('projects');
   const [isSupabaseLive, setIsSupabaseLive] = useState<boolean>(false);
-  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+  // Default to true so real pre-configured data renders instantly on frame 1 without delay
+  const [isHydrated, setIsHydrated] = useState<boolean>(true);
 
   const [projects, setProjects] = useState<Project[]>(() => {
-    const saved =
-      localStorage.getItem(STORAGE_KEYS.PROJECTS) ||
-      localStorage.getItem('stak_architects_projects_v3') ||
-      localStorage.getItem('stak_architects_projects_v2');
+    const saved = localStorage.getItem(STORAGE_KEYS.PROJECTS);
     if (saved) {
       try {
         const parsed: Project[] = JSON.parse(saved);
-        return parsed.map((p) => {
-          const match = initialProjects.find((ip) => ip.id === p.id);
-          return {
-            ...match,
-            ...p,
-            featuredInBeforeAfter: p.featuredInBeforeAfter ?? (match?.featuredInBeforeAfter ?? false),
-          };
-        });
+        // Ignore stale cache containing old template projects
+        if (Array.isArray(parsed) && parsed.length > 0 && !parsed.some((p) => p.id === 'proj-1')) {
+          return parsed.map((p) => {
+            const match = initialProjects.find((ip) => ip.id === p.id);
+            return {
+              ...match,
+              ...p,
+              featuredInBeforeAfter: p.featuredInBeforeAfter ?? (match?.featuredInBeforeAfter ?? false),
+            };
+          });
+        }
       } catch (e) {
         console.error('Error parsing projects from localStorage', e);
       }
@@ -119,10 +123,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [services, setServices] = useState<ServiceItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.SERVICES) || localStorage.getItem('stak_architects_services_v1');
+    const saved = localStorage.getItem(STORAGE_KEYS.SERVICES);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch (e) {
         console.error('Error parsing services from localStorage', e);
       }
@@ -131,12 +136,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [articles, setArticles] = useState<Article[]>(() => {
-    const saved =
-      localStorage.getItem(STORAGE_KEYS.ARTICLES) ||
-      localStorage.getItem('stak_architects_articles_v3');
+    const saved = localStorage.getItem(STORAGE_KEYS.ARTICLES);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0 && !parsed.some((a: any) => a.id === 'art-1')) {
+          return parsed;
+        }
       } catch (e) {
         console.error('Error parsing articles from localStorage', e);
       }
@@ -282,11 +288,14 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Sync master admin email to denvitic@gmail.com if previously stored as admin@stak.ao
-          return parsed.map((u: AtelierUser) =>
-            u.id === 'user-admin-master' || u.email === 'admin@stak.ao'
-              ? { ...u, email: 'denvitic@gmail.com' }
-              : u
+          // Sync master admin email to stak@denvitic.com and clear profile photos
+          const filtered = parsed.filter((u: AtelierUser) =>
+            !['user-manuel-costa', 'user-sofia-castro', 'user-teresa-bento'].includes(u.id)
+          );
+          return filtered.map((u: AtelierUser) =>
+            u.id === 'user-admin-master' || u.email === 'admin@stak.ao' || u.email === 'denvitic@gmail.com'
+              ? { ...u, email: 'stak@denvitic.com', avatar: '' }
+              : { ...u, avatar: '' }
           );
         }
       } catch (e) {
@@ -382,54 +391,91 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const hydrateFromSupabase = async () => {
       try {
+        // Fetch all tables in parallel to eliminate waterfall delay
+        const [
+          projRes,
+          servRes,
+          artRes,
+          briefRes,
+          infoRes,
+          pagesRes,
+          mediaRes
+        ] = await Promise.allSettled([
+          client.from('projects').select('*'),
+          client.from('services').select('*').order('code', { ascending: true }),
+          client.from('articles').select('*'),
+          client.from('briefings').select('*').order('created_at', { ascending: false }),
+          client.from('atelier_info').select('*').limit(1).maybeSingle(),
+          client.from('pages_content').select('*'),
+          client.from('media_library').select('*').order('uploaded_at', { ascending: false }),
+        ]);
+
+        setIsSupabaseLive(true);
+
         // 1. Projects
-        const { data: projData, error: projErr } = await client.from('projects').select('*');
-        if (!projErr && Array.isArray(projData)) {
-          setIsSupabaseLive(true);
-          if (projData.length > 0) {
-            setProjects(
-              projData.map((p: any) => {
-                const match = initialProjects.find((ip) => ip.id === p.id);
-                return {
-                  id: p.id,
-                  slug: p.slug || (match?.slug ?? p.id),
-                  title: p.title || (match?.title ?? 'Projecto STAK'),
-                  subtitle: p.subtitle || (match?.subtitle ?? 'Arquitectura'),
-                  category: p.category || (match?.category ?? 'residencial'),
-                  categoryLabel: p.category_label || (match?.categoryLabel ?? 'Residencial'),
-                  coverImage: p.cover_image || p.hero_image || (match?.coverImage ?? ''),
-                  beforeImage: p.before_image || match?.beforeImage,
-                  afterLabel: p.after_label || match?.afterLabel,
-                  beforeLabel: p.before_label || match?.beforeLabel,
-                  galleryImages: Array.isArray(p.gallery_images) ? p.gallery_images : (match?.galleryImages ?? []),
-                  description: p.description || (match?.description ?? ''),
-                  architecturalConcept: p.architectural_concept || p.concept || (match?.architecturalConcept ?? ''),
-                  fichaTecnica: p.ficha_tecnica || match?.fichaTecnica || {
-                    localizacao: p.location || 'Luanda, Angola',
-                    ano: p.year || '2024',
-                    area: p.area || '450 m²',
-                    tipologia: p.typology || 'Habitacional',
-                    estadoObra: p.status || 'Concluído',
-                    cliente: p.client || 'Privado',
-                    especialidades: ['Arquitectura', 'Estruturas', 'Interiores'],
-                  },
-                  featured: Boolean(p.featured),
-                  featuredInBeforeAfter:
-                    typeof p.featured_in_before_after === 'boolean'
-                      ? p.featured_in_before_after
-                      : Boolean(match?.featuredInBeforeAfter),
-                };
-              })
-            );
-          }
+        if (projRes.status === 'fulfilled' && !projRes.value.error && Array.isArray(projRes.value.data) && projRes.value.data.length > 0) {
+          const projData = projRes.value.data;
+          const mappedProjects = projData.map((p: any) => {
+            const match = initialProjects.find((ip) => ip.id === p.id);
+            const coverImage = (p.cover_image?.startsWith('data:image') && match?.coverImage)
+              ? match.coverImage
+              : (p.cover_image || p.hero_image || match?.coverImage || '');
+
+            const beforeImage = (p.before_image?.startsWith('data:image') && match?.beforeImage)
+              ? match.beforeImage
+              : (p.before_image || match?.beforeImage);
+
+            const videoUrl = (p.video_url?.startsWith('data:video') && match?.videoUrl)
+              ? match.videoUrl
+              : (p.video_url || match?.videoUrl);
+
+            const galleryImages = Array.isArray(p.gallery_images)
+              ? p.gallery_images.map((g: string, idx: number) => (g?.startsWith('data:image') && match?.galleryImages?.[idx]) ? match.galleryImages[idx] : g)
+              : (match?.galleryImages ?? []);
+
+            return {
+              id: p.id,
+              slug: p.slug || (match?.slug ?? p.id),
+              title: p.title || (match?.title ?? 'Projecto STAK'),
+              subtitle: p.subtitle || (match?.subtitle ?? 'Arquitectura'),
+              category: p.category || (match?.category ?? 'residencial'),
+              categoryLabel: p.category_label || (match?.categoryLabel ?? 'Residencial'),
+              coverImage,
+              beforeImage,
+              afterLabel: p.after_label || match?.afterLabel,
+              beforeLabel: p.before_label || match?.beforeLabel,
+              beforeDescription: p.before_description || match?.beforeDescription,
+              videoUrl,
+              videoPoster: p.video_poster || match?.videoPoster,
+              galleryImages,
+              description: p.description || (match?.description ?? ''),
+              architecturalConcept: p.architectural_concept || p.concept || (match?.architecturalConcept ?? ''),
+              fichaTecnica: p.ficha_tecnica || match?.fichaTecnica || {
+                localizacao: p.location || 'Luanda, Angola',
+                ano: p.year || '2026',
+                area: p.area || '120 m²',
+                tipologia: p.typology || 'Moradia Contemporânea',
+                estadoObra: p.status || 'Concluído',
+                cliente: p.client || 'Privado',
+                especialidades: ['Arquitectura', 'Paisagismo', 'Gestão de Obra'],
+              },
+              featured: Boolean(p.featured),
+              featuredInBeforeAfter:
+                typeof p.featured_in_before_after === 'boolean'
+                  ? p.featured_in_before_after
+                  : Boolean(match?.featuredInBeforeAfter),
+            };
+          });
+          setProjects((prev) => {
+            if (isEqualJson(prev, mappedProjects)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.PROJECTS, mappedProjects);
+            return mappedProjects;
+          });
         }
 
         // 2. Services
-        const { data: servData, error: servErr } = await client
-          .from('services')
-          .select('*')
-          .order('code', { ascending: true });
-        if (!servErr && Array.isArray(servData) && servData.length > 0) {
+        if (servRes.status === 'fulfilled' && !servRes.value.error && Array.isArray(servRes.value.data) && servRes.value.data.length > 0) {
+          const servData = servRes.value.data;
           const mapped = servData.map((s: any) => ({
             id: s.id,
             code: s.code,
@@ -443,113 +489,126 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             typicalDuration: s.typical_duration,
             icon: s.icon,
           }));
-          // Sort deterministically 01..06
-          mapped.sort((a, b) => (a.code || '').localeCompare(b.code || '', undefined, { numeric: true }));
-          setServices(mapped);
+          mapped.sort((a: any, b: any) => (a.code || '').localeCompare(b.code || '', undefined, { numeric: true }));
+          setServices((prev) => {
+            if (isEqualJson(prev, mapped)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.SERVICES, mapped);
+            return mapped;
+          });
         }
 
         // 3. Articles
-        const { data: artData, error: artErr } = await client.from('articles').select('*');
-        if (!artErr && Array.isArray(artData) && artData.length > 0) {
-          setArticles(
-            artData.map((a: any) => ({
+        if (artRes.status === 'fulfilled' && !artRes.value.error && Array.isArray(artRes.value.data) && artRes.value.data.length > 0) {
+          const artData = artRes.value.data;
+          const mappedArticles = artData.map((a: any) => {
+            const match = initialArticles.find((ia) => ia.id === a.id);
+            const image = (a.image?.startsWith('data:image') && match?.image) ? match.image : a.image;
+            return {
               id: a.id,
               title: a.title,
               category: a.category,
               date: a.date,
               readTime: a.read_time,
-              image: a.image,
+              image,
               excerpt: a.excerpt,
               content: Array.isArray(a.content) ? a.content : [],
               author: a.author,
-            }))
-          );
+            };
+          });
+          setArticles((prev) => {
+            if (isEqualJson(prev, mappedArticles)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.ARTICLES, mappedArticles);
+            return mappedArticles;
+          });
         }
 
         // 4. Briefings
-        const { data: briefData, error: briefErr } = await client
-          .from('briefings')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (!briefErr && Array.isArray(briefData) && briefData.length > 0) {
-          setBriefings(
-            briefData.map((b: any) => ({
-              id: b.id,
-              clientName: b.client_name,
-              clientEmail: b.client_email || '',
-              clientPhone: b.client_phone,
-              projectType: b.project_type,
-              budgetRange: b.budget || '',
-              timeline: b.timeline || '',
-              location: b.location || '',
-              estimatedArea: b.estimated_area || '',
-              description: b.description || '',
-              status: b.status || 'Pendente',
-              createdAt: b.created_at || '',
-            }))
-          );
+        if (briefRes.status === 'fulfilled' && !briefRes.value.error && Array.isArray(briefRes.value.data) && briefRes.value.data.length > 0) {
+          const briefData = briefRes.value.data;
+          const mappedBriefings = briefData.map((b: any) => ({
+            id: b.id,
+            clientName: b.client_name,
+            clientEmail: b.client_email || '',
+            clientPhone: b.client_phone,
+            projectType: b.project_type,
+            budgetRange: b.budget || '',
+            timeline: b.timeline || '',
+            location: b.location || '',
+            estimatedArea: b.estimated_area || '',
+            description: b.description || '',
+            status: b.status || 'Pendente',
+            createdAt: b.created_at || '',
+          }));
+          setBriefings((prev) => {
+            if (isEqualJson(prev, mappedBriefings)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.BRIEFINGS, mappedBriefings);
+            return mappedBriefings;
+          });
         }
 
         // 5. Atelier Info
-        const { data: infoData, error: infoErr } = await client
-          .from('atelier_info')
-          .select('*')
-          .limit(1)
-          .maybeSingle();
-        if (!infoErr && infoData) {
-          setAtelierInfo((prev) => ({
-            ...prev,
-            name: infoData.name || prev.name,
-            brandTagline: infoData.tagline || infoData.brand_tagline || prev.brandTagline,
-            manifesto: infoData.manifesto || prev.manifesto,
-            email: infoData.email || prev.email,
-            phone: infoData.phone || prev.phone,
-            locationAddress: infoData.address || infoData.location_address || prev.locationAddress,
-            city: infoData.city || prev.city,
-            country: infoData.country || prev.country,
-            instagram: infoData.instagram || prev.instagram,
-            linkedin: infoData.linkedin || prev.linkedin,
-            whatsapp: infoData.whatsapp || prev.whatsapp,
-            stats: infoData.stats && typeof infoData.stats === 'object' ? infoData.stats : prev.stats,
-          }));
+        if (infoRes.status === 'fulfilled' && !infoRes.value.error && infoRes.value.data) {
+          const infoData = infoRes.value.data;
+          setAtelierInfo((prev) => {
+            const updated = {
+              ...prev,
+              name: infoData.name || prev.name,
+              brandTagline: infoData.tagline || infoData.brand_tagline || prev.brandTagline,
+              manifesto: infoData.manifesto || prev.manifesto,
+              email: infoData.email || prev.email,
+              phone: infoData.phone || prev.phone,
+              locationAddress: infoData.address || infoData.location_address || prev.locationAddress,
+              city: infoData.city || prev.city,
+              country: infoData.country || prev.country,
+              instagram: infoData.instagram || prev.instagram,
+              linkedin: infoData.linkedin || prev.linkedin,
+              whatsapp: infoData.whatsapp || prev.whatsapp,
+              stats: infoData.stats && typeof infoData.stats === 'object' ? infoData.stats : prev.stats,
+            };
+            if (isEqualJson(prev, updated)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.ATELIER, updated);
+            return updated;
+          });
         }
 
         // 6. Pages Content
-        const { data: pagesData, error: pagesErr } = await client.from('pages_content').select('*');
-        if (!pagesErr && Array.isArray(pagesData) && pagesData.length > 0) {
+        if (pagesRes.status === 'fulfilled' && !pagesRes.value.error && Array.isArray(pagesRes.value.data) && pagesRes.value.data.length > 0) {
+          const pagesData = pagesRes.value.data;
           setPagesContent((prev) => {
             const next = { ...prev };
             for (const item of pagesData) {
               if (item.page_key && (next as any)[item.page_key]) {
                 (next as any)[item.page_key] = {
                   ...(next as any)[item.page_key],
-                  ...(item.hero ? { hero: item.hero } : {}),
-                  ...(item.sections ? { sections: item.sections } : {}),
-                  ...(item.seo ? { seo: item.seo } : {}),
+                  ...(item.hero && Object.keys(item.hero).length > 0 ? { hero: item.hero } : {}),
+                  ...(item.sections && Object.keys(item.sections).length > 0 ? { sections: item.sections } : {}),
+                  ...(item.seo && Object.keys(item.seo).length > 0 ? { seo: item.seo } : {}),
                 };
               }
             }
+            if (isEqualJson(prev, next)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.PAGES, next);
             return next;
           });
         }
 
         // 7. Media Library
-        const { data: mediaData, error: mediaErr } = await client
-          .from('media_library')
-          .select('*')
-          .order('uploaded_at', { ascending: false });
-        if (!mediaErr && Array.isArray(mediaData) && mediaData.length > 0) {
-          setMediaLibrary(
-            mediaData.map((m: any) => ({
-              id: m.id,
-              name: m.name,
-              url: m.url,
-              type: m.type || 'image',
-              size: m.size || '',
-              uploadedAt: m.uploaded_at ? m.uploaded_at.split('T')[0] : new Date().toISOString().split('T')[0],
-              category: m.category || 'Uploads',
-            }))
-          );
+        if (mediaRes.status === 'fulfilled' && !mediaRes.value.error && Array.isArray(mediaRes.value.data) && mediaRes.value.data.length > 0) {
+          const mediaData = mediaRes.value.data;
+          const mappedMedia = mediaData.map((m: any) => ({
+            id: m.id,
+            name: m.name,
+            url: m.url,
+            type: m.type || 'image',
+            size: m.size || '',
+            uploadedAt: m.uploaded_at ? m.uploaded_at.split('T')[0] : new Date().toISOString().split('T')[0],
+            category: m.category || 'Uploads',
+          }));
+          setMediaLibrary((prev) => {
+            if (isEqualJson(prev, mappedMedia)) return prev;
+            safeSetLocalStorage(STORAGE_KEYS.MEDIA, mappedMedia);
+            return mappedMedia;
+          });
         }
       } catch (err) {
         console.warn('Supabase hydration check note:', err);
@@ -699,9 +758,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...projectData,
       id,
       slug,
-      featuredInBeforeAfter: projectData.featuredInBeforeAfter ?? (!!projectData.beforeImage),
+      featuredInBeforeAfter: Boolean(projectData.featuredInBeforeAfter),
     };
-    setProjects((prev) => [newProject, ...prev]);
+    setProjects((prev) => {
+      const next = [newProject, ...prev];
+      safeSetLocalStorage(STORAGE_KEYS.PROJECTS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -716,7 +779,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateProject = (updated: Project) => {
-    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    setProjects((prev) => {
+      const next = prev.map((p) => (p.id === updated.id ? updated : p));
+      safeSetLocalStorage(STORAGE_KEYS.PROJECTS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -731,7 +798,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteProject = (id: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
+    setProjects((prev) => {
+      const next = prev.filter((p) => p.id !== id);
+      safeSetLocalStorage(STORAGE_KEYS.PROJECTS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -748,9 +819,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const toggleFeaturedProject = (id: string) => {
     const target = projects.find((p) => p.id === id);
     const newFeatured = target ? !target.featured : false;
-    setProjects((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, featured: newFeatured } : p))
-    );
+    setProjects((prev) => {
+      const next = prev.map((p) => (p.id === id ? { ...p, featured: newFeatured } : p));
+      safeSetLocalStorage(STORAGE_KEYS.PROJECTS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -767,13 +840,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const toggleBeforeAfterProject = (id: string) => {
     const target = projects.find((p) => p.id === id);
     const newStatus = target ? !target.featuredInBeforeAfter : false;
-    setProjects((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? { ...p, featuredInBeforeAfter: newStatus }
-          : p
-      )
-    );
+    setProjects((prev) => {
+      const next = prev.map((p) => (p.id === id ? { ...p, featuredInBeforeAfter: newStatus } : p));
+      safeSetLocalStorage(STORAGE_KEYS.PROJECTS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
