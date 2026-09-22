@@ -92,7 +92,7 @@ export default function UsersManager() {
       department: user.department || '',
       role: user.role,
       status: user.status,
-      password: '',
+      password: user.password || '',
       avatar: user.avatar || '',
     });
     setIsModalOpen(true);
@@ -117,6 +117,7 @@ export default function UsersManager() {
         roleLabel: roleInfo.label,
         status: formData.status,
         avatar: formData.avatar.trim(),
+        ...(formData.password.trim() ? { password: formData.password.trim() } : {}),
       });
       showToast(`Utilizador "${formData.name}" atualizado com sucesso.`);
     } else {
@@ -129,6 +130,7 @@ export default function UsersManager() {
         roleLabel: roleInfo.label,
         status: formData.status,
         avatar: formData.avatar.trim(),
+        password: formData.password.trim(),
       });
       showToast(`Utilizador "${formData.name}" adicionado com sucesso.`);
     }
@@ -588,15 +590,29 @@ export default function UsersManager() {
                 </div>
               </div>
 
+              {/* Password field */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-700">
+                  Palavra-passe de Acesso {editingUser ? '(deixe em branco para manter a actual)' : '*'}
+                </label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder={editingUser ? '•••••••• (inalterada)' : 'Defina a palavra-passe do utilizador'}
+                  className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#c6a87c] focus:bg-white"
+                />
+              </div>
+
               {/* Password info */}
               {!editingUser && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 space-y-1">
                   <span className="font-semibold flex items-center gap-1.5">
                     <Icon icon="solar:info-circle-bold" width="14" />
-                    <span>Primeiro Acesso do Utilizador</span>
+                    <span>Segurança do Portal</span>
                   </span>
                   <p className="text-[11px] text-amber-700">
-                    O utilizador poderá iniciar sessão com o seu e-mail institucional utilizando a palavra-passe padrão provisória ou recuperar através do portal.
+                    O utilizador deverá utilizar esta palavra-passe para aceder ao portal administrativo. Não é permitido o acesso sem autenticação válida.
                   </p>
                 </div>
               )}

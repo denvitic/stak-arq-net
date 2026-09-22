@@ -145,6 +145,8 @@ ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS brand_tagline TEXT;
 ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS location_address TEXT;
 ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS logo TEXT;
 ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS favicon TEXT;
+ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS notification_email TEXT DEFAULT 'denvitc@gmail.com';
+ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS briefing_notification_email TEXT DEFAULT 'denvitc@gmail.com';
 ALTER TABLE public.atelier_info ADD COLUMN IF NOT EXISTS seo_meta JSONB DEFAULT '{}'::jsonb;
 
 -- 7. PAGES CONTENT (CUSTOMIZADOR DO FRONTWEB)

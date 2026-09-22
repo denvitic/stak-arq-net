@@ -1,6 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+export const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL || 'https://fxdcearoepqdhycfwtcq.supabase.co';
 export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 export const isSupabaseConfigured = (): boolean => {
@@ -9,6 +10,8 @@ export const isSupabaseConfigured = (): boolean => {
     supabaseAnonKey &&
     supabaseUrl !== 'https://your-project.supabase.co' &&
     supabaseAnonKey !== 'your-anon-key' &&
+    supabaseAnonKey !== 'your-supabase-anon-key' &&
+    supabaseAnonKey.trim().length > 20 &&
     supabaseUrl.startsWith('https://')
   );
 };

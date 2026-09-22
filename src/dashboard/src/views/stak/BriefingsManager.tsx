@@ -93,9 +93,13 @@ export default function BriefingsManager() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <span className="text-xs font-medium text-gray-500">
             Total de {briefings.length} pedido{briefings.length === 1 ? '' : 's'}
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-200 text-[11px] font-medium text-gray-600">
+            <Icon icon="solar:letter-bold" width="13" className="text-[#c6a87c]" />
+            <span>Despacho de E-mail via Resend</span>
           </span>
         </div>
       </div>

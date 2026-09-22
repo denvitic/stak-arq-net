@@ -27,6 +27,7 @@ export const initialAtelierInfo: AtelierInfo = {
   phone: '+244 937 826 963',
   whatsapp: '+244 937 826 963',
   email: 'geral@stakarquitectura.com',
+  briefingNotificationEmail: 'denvitc@gmail.com',
   instagram: '@stak.arquitectura',
   linkedin: 'https://www.linkedin.com/company/stak-arquitectura',
   facebook: 'https://www.facebook.com/stak.arquitectura',

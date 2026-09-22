@@ -28,7 +28,7 @@ export default function SettingsManager() {
     },
   }));
 
-  const [activeTab, setActiveTab] = useState<'branding' | 'seo' | 'contacts' | 'stats' | 'supabase'>('branding');
+  const [activeTab, setActiveTab] = useState<'branding' | 'seo' | 'contacts' | 'stats' | 'supabase' | 'email'>('branding');
   const [isSaved, setIsSaved] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [seedResult, setSeedResult] = useState<{ success: boolean; message: string } | null>(null);
@@ -36,6 +36,85 @@ export default function SettingsManager() {
   const [copiedQuickFix, setCopiedQuickFix] = useState(false);
   const [healthStatus, setHealthStatus] = useState<SupabaseHealthResult | null>(null);
   const [isCheckingHealth, setIsCheckingHealth] = useState(false);
+
+  // Email & Resend diagnostic states
+  const [emailStatus, setEmailStatus] = useState<{
+    status?: string;
+    resendConfigured?: boolean;
+    sender?: string;
+    recipient?: string;
+  } | null>(null);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [isTestingEmail, setIsTestingEmail] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState<{
+    success: boolean;
+    delivered?: boolean;
+    message: string;
+    details?: any;
+    error?: string;
+  } | null>(null);
+
+  const checkEmailStatus = async () => {
+    setIsCheckingEmail(true);
+    try {
+      let res = await fetch('/api/send-briefing');
+      if (res.status === 404) {
+        res = await fetch('/.netlify/functions/send-briefing');
+      }
+      if (res.ok) {
+        const data = await res.json();
+        setEmailStatus(data);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    setIsTestingEmail(true);
+    setEmailTestResult(null);
+    const targetEmail = formData.briefingNotificationEmail || 'denvitc@gmail.com';
+    const testPayload = {
+      clientName: 'Diagnóstico Técnico STAK',
+      clientEmail: targetEmail,
+      recipientEmail: targetEmail,
+      clientPhone: '+244 928 000 000',
+      projectType: 'Teste de Entrega Resend',
+      location: 'Talatona, Luanda',
+      estimatedArea: '350 m²',
+      budgetRange: 'Validação de Sistema',
+      timeline: 'Imediato',
+      description:
+        'Mensagem automática de teste gerada a partir do Painel Administrativo do Atelier STAK para verificar a integridade do despachante de e-mail Resend.',
+    };
+
+    try {
+      let res = await fetch('/api/send-briefing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testPayload),
+      });
+      if (res.status === 404) {
+        res = await fetch('/.netlify/functions/send-briefing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(testPayload),
+        });
+      }
+      const data = await res.json();
+      setEmailTestResult(data);
+      await checkEmailStatus();
+    } catch (err: any) {
+      setEmailTestResult({
+        success: false,
+        message: 'Erro ao contactar a API de envio: ' + (err?.message || 'Erro de rede'),
+      });
+    } finally {
+      setIsTestingEmail(false);
+    }
+  };
 
   const verifyConnection = async () => {
     setIsCheckingHealth(true);
@@ -58,6 +137,9 @@ export default function SettingsManager() {
   React.useEffect(() => {
     if (activeTab === 'supabase' && !healthStatus) {
       verifyConnection();
+    }
+    if (activeTab === 'email' && !emailStatus) {
+      checkEmailStatus();
     }
   }, [activeTab]);
 
@@ -332,6 +414,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
     { id: 'contacts', label: 'Contactos & Redes Sociais', icon: 'solar:phone-calling-rounded-bold' },
     { id: 'stats', label: 'Métricas & Números Oficiais', icon: 'solar:chart-square-bold' },
     { id: 'supabase', label: 'Base de Dados Supabase', icon: 'solar:database-bold' },
+    { id: 'email', label: 'E-mail & Resend', icon: 'solar:letter-bold' },
   ];
 
   return (
@@ -752,13 +835,33 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-800">E-mail Geral de Contacto</label>
+                <label className="text-xs font-semibold text-gray-800">E-mail Geral de Contacto (Público no Website)</label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="geral@stakarquitectura.com"
                   className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono"
                 />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-gray-800">E-mail de Notificação de Briefings (Resend)</label>
+                  <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium border border-emerald-200">
+                    Salvo no Supabase
+                  </span>
+                </div>
+                <input
+                  type="email"
+                  value={formData.briefingNotificationEmail || ''}
+                  onChange={(e) => setFormData({ ...formData, briefingNotificationEmail: e.target.value })}
+                  placeholder="denvitc@gmail.com"
+                  className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono focus:border-[#c6a87c] focus:outline-none"
+                />
+                <p className="text-[10px] text-gray-500">
+                  Endereço privado onde chegam as notificações por e-mail dos novos briefings de clientes.
+                </p>
               </div>
 
               <div className="space-y-1">
@@ -1213,6 +1316,242 @@ NOTIFY pgrst, 'reload schema';`}</pre>
 7. public.media_library (id, name, url, type, size, category, uploaded_at, etc.)
 
 -- Políticas de Row Level Security (RLS) configuradas para leitura pública e escrita via CMS.`}</pre>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: Email & Resend Notifications */}
+        {activeTab === 'email' && (
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                  <Icon icon="solar:letter-bold" width="18" className="text-[#c6a87c]" />
+                  <span>Notificações por E-mail (Resend API)</span>
+                </h2>
+                <p className="text-xs text-gray-500 mt-1">
+                  Despacho automático de cópias de novos formulários de briefing e pedidos de consulta preenchidos no website.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={checkEmailStatus}
+                disabled={isCheckingEmail}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 transition-all cursor-pointer shrink-0 disabled:opacity-50"
+              >
+                <Icon
+                  icon={isCheckingEmail ? 'solar:refresh-linear' : 'solar:tuning-square-2-bold'}
+                  width="15"
+                  className={isCheckingEmail ? 'animate-spin' : ''}
+                />
+                <span>{isCheckingEmail ? 'A verificar...' : 'Actualizar Estado'}</span>
+              </button>
+            </div>
+
+            {/* Direct Configuration Card: Notification Destination Email */}
+            <div className="p-5 sm:p-6 rounded-2xl border-2 border-[#c6a87c]/40 bg-gradient-to-br from-[#c6a87c]/5 to-transparent space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-gray-900">
+                      E-mail de Destino dos Briefings
+                    </h3>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full border border-emerald-300">
+                      Sincronizado no Supabase
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Insira aqui o e-mail onde deseja receber as notificações de novos briefings e pedidos de consulta submetidos no website.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateAtelierInfo(formData);
+                    setIsSaved(true);
+                    setTimeout(() => setIsSaved(false), 3500);
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-black text-white text-xs font-semibold rounded-xl shadow-xs transition-all cursor-pointer shrink-0"
+                >
+                  <Icon icon="solar:disk-bold" width="16" className="text-[#c6a87c]" />
+                  <span>Guardar E-mail no Supabase</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+                <div className="sm:col-span-2">
+                  <input
+                    type="email"
+                    value={formData.briefingNotificationEmail || ''}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        briefingNotificationEmail: e.target.value,
+                      })
+                    }
+                    placeholder="denvitc@gmail.com"
+                    className="w-full text-xs px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl font-mono text-gray-900 focus:border-[#c6a87c] focus:outline-none shadow-2xs font-semibold"
+                  />
+                </div>
+                <div className="text-[11px] text-gray-500 font-mono truncate">
+                  Destinatário activo: <strong className="text-gray-800">{formData.briefingNotificationEmail || 'denvitc@gmail.com'}</strong>
+                </div>
+              </div>
+
+              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-start gap-2.5">
+                <Icon icon="solar:info-circle-bold" width="16" className="text-amber-600 shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong>Nota sobre o Resend (Plano Gratuito / Onboarding):</strong> Caso esteja a usar o remetente de teste (<code>onboarding@resend.dev</code>), o Resend entrega para a conta associada (<code>denvitc@gmail.com</code>). Assim que registar o domínio próprio do atelier no painel do Resend, poderá redireccionar livremente para qualquer endereço institucional.
+                </p>
+              </div>
+            </div>
+
+            {/* Email Status Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1.5">
+                <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Chave Resend API
+                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${
+                      emailStatus?.resendConfigured ? 'bg-emerald-500' : 'bg-amber-500'
+                    }`}
+                  />
+                  <span className="text-sm font-bold text-gray-900">
+                    {emailStatus?.resendConfigured ? 'Configurada' : 'Pendente no .env'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  {emailStatus?.resendConfigured
+                    ? 'A chave RESEND_API_KEY foi detectada no ambiente do servidor.'
+                    : 'Aguardando definição da chave RESEND_API_KEY no ficheiro .env ou servidor.'}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1.5">
+                <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                  E-mail de Destino
+                </span>
+                <div className="flex items-center gap-2">
+                  <Icon icon="solar:inbox-line-bold" width="16" className="text-gray-700" />
+                  <span className="text-xs font-mono font-bold text-gray-900 truncate">
+                    {formData.briefingNotificationEmail || emailStatus?.recipient || 'denvitc@gmail.com'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  Recebe o alerta formatado em HTML com todos os detalhes do cliente.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1.5">
+                <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Remetente Autorizado
+                </span>
+                <div className="flex items-center gap-2">
+                  <Icon icon="solar:plain-bold" width="16" className="text-[#c6a87c]" />
+                  <span className="text-xs font-mono font-bold text-gray-900 truncate">
+                    {emailStatus?.sender || 'onboarding@resend.dev'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  Domínio de teste do Resend ou o seu domínio personalizado verificado.
+                </p>
+              </div>
+            </div>
+
+            {/* Test Trigger Card */}
+            <div className="p-5 rounded-xl border border-[#c6a87c]/30 bg-[#c6a87c]/5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                    <Icon icon="solar:play-circle-bold" width="16" className="text-[#c6a87c]" />
+                    <span>Disparar E-mail de Teste de Diagnóstico</span>
+                  </h3>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Envia um pedido de teste real para o endpoint{' '}
+                    <code className="bg-white px-1.5 py-0.5 rounded border border-gray-200 font-mono text-[11px]">
+                      /api/send-briefing
+                    </code>{' '}
+                    para validar a entrega na caixa de entrada.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleTestEmail}
+                  disabled={isTestingEmail}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#c6a87c] hover:bg-[#b59567] text-black font-semibold text-xs rounded-xl shadow-xs cursor-pointer transition-all disabled:opacity-50 shrink-0"
+                >
+                  <Icon
+                    icon={isTestingEmail ? 'solar:refresh-linear' : 'solar:letter-unread-bold'}
+                    width="16"
+                    className={isTestingEmail ? 'animate-spin' : ''}
+                  />
+                  <span>{isTestingEmail ? 'A enviar teste...' : 'Enviar E-mail de Teste'}</span>
+                </button>
+              </div>
+
+              {emailTestResult && (
+                <div
+                  className={`p-4 rounded-xl border text-xs space-y-2 animate-fade-in ${
+                    emailTestResult.delivered
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                      : emailTestResult.success
+                      ? 'bg-blue-50 border-blue-200 text-blue-900'
+                      : 'bg-red-50 border-red-200 text-red-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-bold">
+                    <Icon
+                      icon={
+                        emailTestResult.delivered
+                          ? 'solar:check-circle-bold'
+                          : emailTestResult.success
+                          ? 'solar:info-circle-bold'
+                          : 'solar:danger-circle-bold'
+                      }
+                      width="16"
+                    />
+                    <span>{emailTestResult.message}</span>
+                  </div>
+                  {emailTestResult.details && (
+                    <div className="text-[11px] font-mono bg-white/70 p-2.5 rounded-lg border border-current/10 overflow-x-auto">
+                      <pre>
+                        {typeof emailTestResult.details === 'string'
+                          ? emailTestResult.details
+                          : JSON.stringify(emailTestResult.details, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Resend Free Tier Rule Explanatory Card */}
+            <div className="p-4 rounded-xl border border-gray-200 bg-amber-50/60 text-xs text-amber-900 space-y-2">
+              <div className="font-bold flex items-center gap-1.5 text-amber-950">
+                <Icon icon="solar:info-circle-bold" width="16" />
+                <span>Regra Essencial do Resend (Plano Gratuito)</span>
+              </div>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                Ao utilizar o remetente gratuito padrão (<code className="font-mono bg-amber-100 px-1 py-0.5 rounded">onboarding@resend.dev</code>),
+                o serviço do Resend apenas permite entregar e-mails <strong>no próprio endereço de e-mail associado à sua conta do Resend</strong> (por exemplo: <code className="font-mono bg-amber-100 px-1 py-0.5 rounded">denvitic@gmail.com</code>).
+                Para enviar notificações para outros e-mails do atelier, adicione e verifique o domínio da empresa no painel do Resend em <em>Domains</em>.
+              </p>
+              <div className="pt-2 flex items-center gap-3">
+                <a
+                  href="https://resend.com/api-keys"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 font-semibold text-amber-900 underline hover:text-amber-950"
+                >
+                  <span>Obter ou verificar chave no Resend.com</span>
+                  <Icon icon="solar:arrow-right-up-linear" width="13" />
+                </a>
               </div>
             </div>
           </div>

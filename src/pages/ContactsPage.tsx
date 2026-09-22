@@ -70,14 +70,44 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
 
     // Notificação por e-mail para a equipa STAK (via Resend), como canal adicional
     // ao painel administrativo. Não bloqueia a confirmação ao cliente: o pedido já
-    // está guardado no painel mesmo que este envio falhe (ex: serviço em baixo).
+    // está guardado no painel mesmo que este envio falhe.
+    const targetEmail = atelierInfo.briefingNotificationEmail || atelierInfo.email || 'denvitc@gmail.com';
+    const payload = {
+      ...formData,
+      recipientEmail: targetEmail,
+    };
+
     fetch('/api/send-briefing', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    }).catch((err) => {
-      console.error('Falha ao enviar notificação por e-mail do briefing:', err);
-    });
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        if (res.status === 404) {
+          return fetch('/.netlify/functions/send-briefing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+        }
+        return res;
+      })
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text().catch(() => '');
+          console.warn('[Briefing Dispatcher] Resposta não-200 da API:', res.status, text);
+          return;
+        }
+        const data = await res.json().catch(() => ({}));
+        if (data.emailSent) {
+          console.info('[Briefing Dispatcher] Notificação por e-mail despachada com sucesso via Resend para', targetEmail);
+        } else if (data.message) {
+          console.info('[Briefing Dispatcher] Estado da notificação:', data.message);
+        }
+      })
+      .catch((err) => {
+        console.warn('[Briefing Dispatcher] Despachante de e-mail em segundo plano:', err);
+      });
 
     setSubmitted(true);
   };
@@ -199,22 +229,13 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
                 <p className="text-xs sm:text-sm text-[#d1d5db] leading-relaxed">
                   Obrigado, <strong className="text-white">{formData.clientName}</strong>. A nossa direcção técnica irá analisar as condicionantes do seu projecto e entrará em contacto dentro de 24 horas úteis.
                 </p>
-                <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <a
-                    href={whatsappBriefingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-[#25D366] text-black font-bold text-xs uppercase tracking-wider rounded-sm flex items-center gap-2"
-                  >
-                    <WhatsAppIcon className="w-4 h-4" />
-                    <span>Acelerar pelo WhatsApp</span>
-                  </a>
+                <div className="pt-4 flex items-center justify-center">
                   <button
                     type="button"
                     onClick={() => setSubmitted(false)}
-                    className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wider rounded-sm"
+                    className="px-6 py-3 bg-[#c6a87c] hover:bg-[#d8bb90] text-black font-bold text-xs uppercase tracking-wider rounded-sm transition-all cursor-pointer shadow-lg"
                   >
-                    Novo Envio
+                    Submeter Novo Briefing
                   </button>
                 </div>
               </div>
@@ -356,24 +377,14 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
                 </div>
 
                 {/* Buttons */}
-                <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
+                <div className="pt-4 flex items-center">
                   <button
                     type="submit"
                     className="w-full sm:w-auto px-8 py-4 bg-[#c6a87c] hover:bg-[#d8bb90] text-black font-bold text-xs uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                   >
-                    <span>Submeter Briefing ao Atelier</span>
+                    <span>Submeter Briefing por E-mail</span>
                     <Send className="w-4 h-4" />
                   </button>
-
-                  <a
-                    href={whatsappBriefingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto px-6 py-4 bg-white/5 hover:bg-white/15 text-white border border-white/10 text-xs font-semibold uppercase tracking-wider rounded-sm transition-all flex items-center justify-center gap-2"
-                  >
-                    <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
-                    <span>Enviar via WhatsApp Directo</span>
-                  </a>
                 </div>
               </form>
             )}

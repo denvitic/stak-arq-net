@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  functions = "netlify/functions"
 
 # Mantém o frontend a chamar sempre "/api/..." (tal como faria na Vercel),
 # encaminhando internamente para as Netlify Functions. Se um dia mudares de

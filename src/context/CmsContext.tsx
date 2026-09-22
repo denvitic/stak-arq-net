@@ -170,6 +170,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return {
           ...initialAtelierInfo,
           ...parsed,
+          briefingNotificationEmail: parsed.briefingNotificationEmail || initialAtelierInfo.briefingNotificationEmail || 'denvitc@gmail.com',
           seoMeta: {
             ...initialAtelierInfo.seoMeta,
             ...(parsed.seoMeta || {}),
@@ -556,6 +557,12 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               brandTagline: infoData.tagline || infoData.brand_tagline || prev.brandTagline,
               manifesto: infoData.manifesto || prev.manifesto,
               email: infoData.email || prev.email,
+              briefingNotificationEmail:
+                infoData.notification_email ||
+                infoData.briefing_notification_email ||
+                infoData.seo_meta?.briefingNotificationEmail ||
+                prev.briefingNotificationEmail ||
+                'denvitc@gmail.com',
               phone: infoData.phone || prev.phone,
               locationAddress: infoData.address || infoData.location_address || prev.locationAddress,
               city: infoData.city || prev.city,
@@ -727,29 +734,37 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updated_at: new Date().toISOString(),
   });
 
-  const mapAtelierToRow = (info: AtelierInfo) => ({
-    id: 'stak-main-atelier',
-    name: info.name,
-    tagline: info.brandTagline,
-    brand_tagline: info.brandTagline,
-    manifesto: info.manifesto,
-    email: info.email,
-    phone: info.phone,
-    phone_secondary: null,
-    address: info.locationAddress,
-    location_address: info.locationAddress,
-    city: info.city,
-    country: info.country,
-    instagram: info.instagram,
-    linkedin: info.linkedin || null,
-    whatsapp: info.whatsapp,
-    founded_year: info.stats?.yearsOfExperience || '10+',
-    logo: info.logoDark || info.logoLight || null,
-    favicon: info.favicon || null,
-    stats: info.stats || [],
-    seo_meta: info.seoMeta || {},
-    updated_at: new Date().toISOString(),
-  });
+  const mapAtelierToRow = (info: AtelierInfo) => {
+    const notifyEmail = info.briefingNotificationEmail || 'denvitc@gmail.com';
+    return {
+      id: 'stak-main-atelier',
+      name: info.name,
+      tagline: info.brandTagline,
+      brand_tagline: info.brandTagline,
+      manifesto: info.manifesto,
+      email: info.email,
+      notification_email: notifyEmail,
+      briefing_notification_email: notifyEmail,
+      phone: info.phone,
+      phone_secondary: null,
+      address: info.locationAddress,
+      location_address: info.locationAddress,
+      city: info.city,
+      country: info.country,
+      instagram: info.instagram,
+      linkedin: info.linkedin || null,
+      whatsapp: info.whatsapp,
+      founded_year: info.stats?.yearsOfExperience || '10+',
+      logo: info.logoDark || info.logoLight || null,
+      favicon: info.favicon || null,
+      stats: info.stats || [],
+      seo_meta: {
+        ...(info.seoMeta || {}),
+        briefingNotificationEmail: notifyEmail,
+      },
+      updated_at: new Date().toISOString(),
+    };
+  };
 
   // Project Actions
   const addProject = (projectData: Omit<Project, 'id' | 'slug'>) => {

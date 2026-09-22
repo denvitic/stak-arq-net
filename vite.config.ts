@@ -1,11 +1,103 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig, loadEnv, Plugin } from 'vite';
+import { processBriefingNotification } from './src/lib/briefingMailer';
 
-export default defineConfig(() => {
+function briefingApiPlugin(env: Record<string, string>): Plugin {
   return {
-    plugins: [react(), tailwindcss()],
+    name: 'stak-briefing-api-plugin',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const url = req.url?.split('?')[0];
+
+        if (url === '/api/send-briefing' || url === '/api/send-briefing/status') {
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+          res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+          if (req.method === 'OPTIONS') {
+            res.statusCode = 200;
+            res.end();
+            return;
+          }
+
+          if (req.method === 'GET') {
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.end(
+              JSON.stringify({
+                status: 'ok',
+                service: 'STAK Briefing Email Dispatcher (Local Dev Server)',
+                resendConfigured: Boolean(env.RESEND_API_KEY || process.env.RESEND_API_KEY),
+                sender:
+                  env.RESEND_FROM_EMAIL ||
+                  process.env.RESEND_FROM_EMAIL ||
+                  'STAK Arquitectura <onboarding@resend.dev>',
+                recipient:
+                  env.COMPANY_NOTIFICATION_EMAIL ||
+                  process.env.COMPANY_NOTIFICATION_EMAIL ||
+                  'denvitc@gmail.com',
+              })
+            );
+            return;
+          }
+
+          if (req.method === 'POST') {
+            let bodyStr = '';
+            req.on('data', (chunk) => {
+              bodyStr += chunk;
+            });
+            req.on('end', async () => {
+              try {
+                const payload = bodyStr ? JSON.parse(bodyStr) : {};
+                const apiKey = env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+                const fromEmail =
+                  env.RESEND_FROM_EMAIL ||
+                  process.env.RESEND_FROM_EMAIL ||
+                  'STAK Arquitectura <onboarding@resend.dev>';
+                const companyEmail =
+                  payload.recipientEmail ||
+                  env.COMPANY_NOTIFICATION_EMAIL ||
+                  process.env.COMPANY_NOTIFICATION_EMAIL ||
+                  'denvitc@gmail.com';
+
+                const result = await processBriefingNotification(payload, {
+                  apiKey,
+                  fromEmail,
+                  companyEmail,
+                });
+
+                res.setHeader('Content-Type', 'application/json');
+                res.statusCode = 200;
+                res.end(JSON.stringify(result));
+              } catch (err: any) {
+                console.error('[API Middleware] Erro no endpoint /api/send-briefing:', err);
+                res.setHeader('Content-Type', 'application/json');
+                res.statusCode = 500;
+                res.end(
+                  JSON.stringify({
+                    success: false,
+                    error: err?.message || 'Erro interno no processamento do briefing.',
+                  })
+                );
+              }
+            });
+            return;
+          }
+        }
+
+        next();
+      });
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    plugins: [react(), tailwindcss(), briefingApiPlugin(env)],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

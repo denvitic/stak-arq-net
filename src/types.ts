@@ -111,6 +111,7 @@ export interface AtelierInfo {
   phone: string;
   whatsapp: string;
   email: string;
+  briefingNotificationEmail?: string;
   instagram: string;
   linkedin?: string;
   facebook?: string;
@@ -521,4 +522,5 @@ export interface AtelierUser {
   createdAt: string;
   lastLogin?: string;
   avatar?: string;
+  password?: string;
 }

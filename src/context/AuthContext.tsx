@@ -139,37 +139,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
     setAuthError(null);
     const normalizedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password;
 
-    // 1. Direct validation for predefined default admin account
-    const isDefaultAdmin =
-      (normalizedEmail === 'stak@denvitic.com' && password === 'Admin2026@') ||
-      (normalizedEmail === 'denvitic@gmail.com' && password === 'Admin2026@') ||
-      (normalizedEmail === 'admin@stak.ao' &&
-        (password === 'stak.arquitectura' || password === 'stak2025' || password === 'admin123'));
-
-    // Also check if matches registered studio users
-    let isRegisteredStudioUser = false;
-    let matchedUserName = 'Administrador STAK';
-    let matchedUserRole = 'super_admin';
-    try {
-      const savedUsers = localStorage.getItem('stak_architects_users_v4') || localStorage.getItem('stak_architects_users_v1');
-      if (savedUsers) {
-        const parsed = JSON.parse(savedUsers);
-        const match = parsed.find((u: any) => u.email?.toLowerCase() === normalizedEmail);
-        if (match && match.status !== 'Inactivo') {
-          isRegisteredStudioUser = true;
-          matchedUserName = match.name;
-          matchedUserRole = match.role;
-        }
-      }
-    } catch {
-      // ignore
+    if (!normalizedEmail || !trimmedPassword) {
+      const err = 'Por favor introduza o e-mail e a palavra-passe.';
+      setAuthError(err);
+      return { error: err };
     }
 
-    const client = getSupabase();
+    // 1. Direct validation for predefined Master Super Admin account with STRICT password check
+    const isMasterAdmin =
+      ((normalizedEmail === 'stak@denvitic.com' || normalizedEmail === 'denvitic@gmail.com') &&
+        trimmedPassword === 'Admin2026@') ||
+      (normalizedEmail === 'admin@stak.ao' &&
+        (trimmedPassword === 'stak.arquitectura' ||
+          trimmedPassword === 'stak2025' ||
+          trimmedPassword === 'admin123'));
 
-    // If default admin or no backend client, authenticate immediately
-    if (isDefaultAdmin) {
+    if (isMasterAdmin) {
       setUser(DEFAULT_ADMIN_USER);
       localStorage.setItem('stak_admin_demo_session', 'true');
       localStorage.setItem('stak_admin_cached_user', JSON.stringify(DEFAULT_ADMIN_USER));
@@ -180,56 +167,82 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    if (!client) {
-      if (isRegisteredStudioUser) {
-        const customUser = {
-          id: 'user-' + normalizedEmail.replace(/[^a-z0-9]/g, '-'),
-          email: normalizedEmail,
-          user_metadata: {
-            full_name: matchedUserName,
-            role: matchedUserRole,
-            avatar_url: '',
-          },
-        } as any;
-        setUser(customUser);
-        localStorage.setItem('stak_admin_demo_session', 'true');
-        localStorage.setItem('stak_admin_cached_user', JSON.stringify(customUser));
-        localStorage.setItem('stak_admin_active_view', 'admin');
-        return { error: null };
+    // 2. Check registered studio users with STRICT password verification
+    let matchedStudioUser: any = null;
+    try {
+      const savedUsers =
+        localStorage.getItem('stak_architects_users_v4') ||
+        localStorage.getItem('stak_architects_users_v1');
+      if (savedUsers) {
+        const parsed = JSON.parse(savedUsers);
+        const match = parsed.find(
+          (u: any) => u.email?.toLowerCase() === normalizedEmail
+        );
+        if (match && match.status !== 'Inactivo') {
+          // A password MUST be set and MUST strictly match the entered password
+          if (match.password && match.password === trimmedPassword) {
+            matchedStudioUser = match;
+          }
+        }
       }
-      return { error: 'Credenciais incorrectas. Verifique o seu e-mail e palavra-passe.' };
+    } catch {
+      // ignore
+    }
+
+    if (matchedStudioUser) {
+      const customUser = {
+        id: matchedStudioUser.id || 'user-' + normalizedEmail.replace(/[^a-z0-9]/g, '-'),
+        email: normalizedEmail,
+        user_metadata: {
+          full_name: matchedStudioUser.name,
+          role: matchedStudioUser.role,
+          avatar_url: matchedStudioUser.avatar || '',
+        },
+      } as any;
+      setUser(customUser);
+      localStorage.setItem('stak_admin_demo_session', 'true');
+      localStorage.setItem('stak_admin_cached_user', JSON.stringify(customUser));
+      localStorage.setItem('stak_admin_active_view', 'admin');
+      return { error: null };
+    }
+
+    // 3. Supabase Auth authentication if client is configured
+    const client = getSupabase();
+    if (!client) {
+      // Neither master password nor local studio password matched, and no Supabase is configured
+      const msg = 'Credenciais incorrectas. Por favor verifique o seu e-mail e palavra-passe.';
+      setAuthError(msg);
+      return { error: msg };
     }
 
     try {
       const { data, error } = await client.auth.signInWithPassword({
-        email: email.trim(),
-        password,
+        email: normalizedEmail,
+        password: trimmedPassword,
       });
 
       if (error) {
-        // Fallback for registered studio user or default admin credentials
-        if (isRegisteredStudioUser) {
-          const customUser = {
-            id: 'user-' + normalizedEmail.replace(/[^a-z0-9]/g, '-'),
-            email: normalizedEmail,
-            user_metadata: {
-              full_name: matchedUserName,
-              role: matchedUserRole,
-              avatar_url: '',
-            },
-          } as any;
-          setUser(customUser);
-          localStorage.setItem('stak_admin_demo_session', 'true');
-          localStorage.setItem('stak_admin_cached_user', JSON.stringify(customUser));
-          localStorage.setItem('stak_admin_active_view', 'admin');
-          return { error: null };
+        const errMsg = error.message || '';
+        let friendlyMsg =
+          'Credenciais de acesso incorrectas. Por favor verifique o seu e-mail e palavra-passe.';
+        if (errMsg.toLowerCase().includes('email not confirmed')) {
+          friendlyMsg =
+            'O seu endereço de e-mail ainda não foi confirmado no Supabase. Verifique a sua caixa de entrada.';
+        } else if (
+          errMsg.toLowerCase().includes('too many requests') ||
+          errMsg.toLowerCase().includes('rate limit')
+        ) {
+          friendlyMsg =
+            'Demasiadas tentativas de início de sessão. Por favor aguarde alguns instantes.';
         }
-        const friendlyMsg =
-          error.message.includes('Invalid login credentials') || error.message.includes('Email not confirmed')
-            ? 'Credenciais de acesso incorrectas. Por favor verifique o seu e-mail e palavra-passe.'
-            : 'Não foi possível validar as credenciais. Tente novamente.';
         setAuthError(friendlyMsg);
         return { error: friendlyMsg };
+      }
+
+      if (!data.user) {
+        const msg = 'Não foi possível validar as credenciais. Tente novamente.';
+        setAuthError(msg);
+        return { error: msg };
       }
 
       setUser(data.user);
@@ -242,14 +255,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAdminRegistrationLocked(true);
       return { error: null };
     } catch (err: any) {
-      if (isRegisteredStudioUser) {
-        setUser(DEFAULT_ADMIN_USER);
-        localStorage.setItem('stak_admin_demo_session', 'true');
-        localStorage.setItem('stak_admin_cached_user', JSON.stringify(DEFAULT_ADMIN_USER));
-        localStorage.setItem('stak_admin_active_view', 'admin');
-        return { error: null };
-      }
-      const msg = 'Erro ao processar a autenticação. Verifique os dados inseridos.';
+      const msg =
+        err?.message || 'Erro ao processar a autenticação. Verifique os dados inseridos.';
       setAuthError(msg);
       return { error: msg };
     }
