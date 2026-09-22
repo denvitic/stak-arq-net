@@ -32,7 +32,7 @@ export const handler = async (event) => {
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
   const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'STAK Arquitectura <onboarding@resend.dev>';
-  const COMPANY_EMAIL = process.env.COMPANY_NOTIFICATION_EMAIL || 'geral@stakarquitectura.com';
+  const COMPANY_EMAIL = process.env.COMPANY_NOTIFICATION_EMAIL || 'denvitic@gmail.com';
 
   if (!RESEND_API_KEY) {
     console.error('RESEND_API_KEY não está configurada nas variáveis de ambiente do servidor.');
