@@ -68,6 +68,17 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
       description: formData.description,
     });
 
+    // Notificação por e-mail para a equipa STAK (via Resend), como canal adicional
+    // ao painel administrativo. Não bloqueia a confirmação ao cliente: o pedido já
+    // está guardado no painel mesmo que este envio falhe (ex: serviço em baixo).
+    fetch('/api/send-briefing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    }).catch((err) => {
+      console.error('Falha ao enviar notificação por e-mail do briefing:', err);
+    });
+
     setSubmitted(true);
   };
 

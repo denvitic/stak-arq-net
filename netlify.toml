@@ -2,6 +2,15 @@
   publish = "dist"
   command = "npm run build"
 
+# Mantém o frontend a chamar sempre "/api/..." (tal como faria na Vercel),
+# encaminhando internamente para as Netlify Functions. Se um dia mudares de
+# hospedagem, o código do frontend não precisa de ser alterado — só a função
+# em si (netlify/functions/) precisa de ser adaptada ao novo fornecedor.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
