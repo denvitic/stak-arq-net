@@ -526,7 +526,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
                     <span className="text-gray-400 text-xs ml-auto">×</span>
                   </div>
                   <div className="bg-[#202124] text-white p-2.5 rounded-b-xl text-[11px] font-mono truncate text-gray-400">
-                    https://stak.ao
+                    https://stakarquitectura.com
                   </div>
                 </div>
               </div>
@@ -658,7 +658,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
                     </div>
                     <div>
                       <div className="text-[11px] text-gray-800 font-medium leading-none">STAK Arquitectura</div>
-                      <div className="text-[10px] text-gray-500 leading-none">https://stak.ao</div>
+                      <div className="text-[10px] text-gray-500 leading-none">https://stakarquitectura.com</div>
                     </div>
                   </div>
                   <h3 className="text-base text-[#1a0dab] font-medium hover:underline cursor-pointer line-clamp-1 pt-1">

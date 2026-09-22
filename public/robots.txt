@@ -1,0 +1,29 @@
+# STAK Arquitectura & Designer de Interiores
+# https://stakarquitectura.com
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /#admin
+
+# Bots de IA (permitidos para indexação/treino informativo do conteúdo público)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://stakarquitectura.com/sitemap.xml

@@ -51,7 +51,7 @@ export const initialAtelierInfo: AtelierInfo = {
     metaKeywords:
       'arquitectura luanda, arquitecto angola, projectos residenciais luxo, design de interiores talatona, licenciamento gpl, fiscalização de obras luanda',
     ogImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-    canonicalUrl: 'https://stak.ao',
+    canonicalUrl: 'https://stakarquitectura.com',
     author: 'STAK Arquitectura & Designer de Interiores',
   },
 };

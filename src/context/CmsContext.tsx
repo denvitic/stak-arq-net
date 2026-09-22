@@ -564,6 +564,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               linkedin: infoData.linkedin || prev.linkedin,
               whatsapp: infoData.whatsapp || prev.whatsapp,
               stats: infoData.stats && typeof infoData.stats === 'object' ? infoData.stats : prev.stats,
+              favicon: infoData.favicon ?? prev.favicon,
+              logoLight: infoData.logo ?? prev.logoLight,
+              logoDark: infoData.logo ?? prev.logoDark,
+              seoMeta:
+                infoData.seo_meta && typeof infoData.seo_meta === 'object' && Object.keys(infoData.seo_meta).length > 0
+                  ? { ...prev.seoMeta, ...infoData.seo_meta }
+                  : prev.seoMeta,
             };
             if (isEqualJson(prev, updated)) return prev;
             safeSetLocalStorage(STORAGE_KEYS.ATELIER, updated);
