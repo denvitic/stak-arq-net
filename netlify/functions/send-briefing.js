@@ -25,7 +25,7 @@ const esc = (v) =>
 const row = (label, value) =>
   `<tr><td style="padding:6px 10px 6px 0;font-weight:bold;width:160px;color:#555;">${esc(label)}</td><td style="padding:6px 0;color:#1a1a1a;">${esc(value || '-')}</td></tr>`;
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Método não permitido.' }) };
   }
