@@ -76,10 +76,13 @@ export default function SettingsManager() {
     setIsTestingEmail(true);
     setEmailTestResult(null);
     const targetEmail = formData.briefingNotificationEmail || 'denvitc@gmail.com';
+    const senderEmail = formData.briefingSenderEmail;
     const testPayload = {
       clientName: 'Diagnóstico Técnico STAK',
       clientEmail: targetEmail,
       recipientEmail: targetEmail,
+      senderEmail: senderEmail || undefined,
+      fromEmail: senderEmail || undefined,
       clientPhone: '+244 928 000 000',
       projectType: 'Teste de Entrega Resend',
       location: 'Talatona, Luanda',
@@ -865,6 +868,25 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
               </div>
 
               <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-gray-800">E-mail Remetente (From) dos Briefings</label>
+                  <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium border border-emerald-200">
+                    Salvo no Supabase
+                  </span>
+                </div>
+                <input
+                  type="email"
+                  value={formData.briefingSenderEmail || ''}
+                  onChange={(e) => setFormData({ ...formData, briefingSenderEmail: e.target.value })}
+                  placeholder="onboarding@resend.dev"
+                  className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono focus:border-[#c6a87c] focus:outline-none"
+                />
+                <p className="text-[10px] text-gray-500">
+                  Endereço que aparece como remetente. Deixe em branco para usar o remetente por omissão do Resend.
+                </p>
+              </div>
+
+              <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-800">Horário de Atendimento</label>
                 <input
                   type="text"
@@ -1406,6 +1428,58 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                 <p className="leading-relaxed">
                   <strong>Nota sobre o Resend (Plano Gratuito / Onboarding):</strong> Caso esteja a usar o remetente de teste (<code>onboarding@resend.dev</code>), o Resend entrega para a conta associada (<code>denvitc@gmail.com</code>). Assim que registar o domínio próprio do atelier no painel do Resend, poderá redireccionar livremente para qualquer endereço institucional.
                 </p>
+              </div>
+            </div>
+
+            {/* Direct Configuration Card: Sender (From) Email */}
+            <div className="p-5 sm:p-6 rounded-2xl border-2 border-[#c6a87c]/40 bg-gradient-to-br from-[#c6a87c]/5 to-transparent space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-gray-900">
+                      Remetente (From)
+                    </h3>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full border border-emerald-300">
+                      Sincronizado no Supabase
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Defina o endereço que deve aparecer como remetente dos e-mails de briefing. Deixe em branco para usar o remetente por omissão do Resend.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateAtelierInfo(formData);
+                    setIsSaved(true);
+                    setTimeout(() => setIsSaved(false), 3500);
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-black text-white text-xs font-semibold rounded-xl shadow-xs transition-all cursor-pointer shrink-0"
+                >
+                  <Icon icon="solar:disk-bold" width="16" className="text-[#c6a87c]" />
+                  <span>Guardar Remetente no Supabase</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+                <div className="sm:col-span-2">
+                  <input
+                    type="email"
+                    value={formData.briefingSenderEmail || ''}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        briefingSenderEmail: e.target.value,
+                      })
+                    }
+                    placeholder="onboarding@resend.dev"
+                    className="w-full text-xs px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl font-mono text-gray-900 focus:border-[#c6a87c] focus:outline-none shadow-2xs font-semibold"
+                  />
+                </div>
+                <div className="text-[11px] text-gray-500 font-mono truncate">
+                  Remetente activo: <strong className="text-gray-800">{formData.briefingSenderEmail || 'onboarding@resend.dev'}</strong>
+                </div>
               </div>
             </div>
 

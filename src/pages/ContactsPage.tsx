@@ -72,9 +72,12 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
     // ao painel administrativo. Não bloqueia a confirmação ao cliente: o pedido já
     // está guardado no painel mesmo que este envio falhe.
     const targetEmail = atelierInfo.briefingNotificationEmail || atelierInfo.email || 'denvitc@gmail.com';
+    const senderEmail = atelierInfo.briefingSenderEmail;
     const payload = {
       ...formData,
       recipientEmail: targetEmail,
+      senderEmail: senderEmail || undefined,
+      fromEmail: senderEmail || undefined,
     };
 
     fetch('/api/send-briefing', {

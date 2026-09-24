@@ -171,6 +171,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           ...initialAtelierInfo,
           ...parsed,
           briefingNotificationEmail: parsed.briefingNotificationEmail || initialAtelierInfo.briefingNotificationEmail || 'denvitc@gmail.com',
+          briefingSenderEmail: parsed.briefingSenderEmail || initialAtelierInfo.briefingSenderEmail || '',
           seoMeta: {
             ...initialAtelierInfo.seoMeta,
             ...(parsed.seoMeta || {}),
@@ -563,6 +564,12 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 infoData.seo_meta?.briefingNotificationEmail ||
                 prev.briefingNotificationEmail ||
                 'denvitc@gmail.com',
+              briefingSenderEmail:
+                infoData.sender_email ||
+                infoData.briefing_sender_email ||
+                infoData.seo_meta?.briefingSenderEmail ||
+                prev.briefingSenderEmail ||
+                '',
               phone: infoData.phone || prev.phone,
               locationAddress: infoData.address || infoData.location_address || prev.locationAddress,
               city: infoData.city || prev.city,
@@ -736,6 +743,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const mapAtelierToRow = (info: AtelierInfo) => {
     const notifyEmail = info.briefingNotificationEmail || 'denvitc@gmail.com';
+    const senderEmail = info.briefingSenderEmail || '';
     return {
       id: 'stak-main-atelier',
       name: info.name,
@@ -745,6 +753,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       email: info.email,
       notification_email: notifyEmail,
       briefing_notification_email: notifyEmail,
+      sender_email: senderEmail,
+      briefing_sender_email: senderEmail,
       phone: info.phone,
       phone_secondary: null,
       address: info.locationAddress,
@@ -761,6 +771,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       seo_meta: {
         ...(info.seoMeta || {}),
         briefingNotificationEmail: notifyEmail,
+        briefingSenderEmail: senderEmail,
       },
       updated_at: new Date().toISOString(),
     };

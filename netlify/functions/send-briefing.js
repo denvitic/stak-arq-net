@@ -88,9 +88,15 @@ export const handler = async (event) => {
     timeline,
     description,
     recipientEmail,
+    senderEmail,
+    fromEmail,
   } = payload;
 
   const targetEmail = recipientEmail || DEFAULT_COMPANY_EMAIL;
+  const rawSender = (fromEmail || senderEmail || FROM_EMAIL || '').trim();
+  const effectiveFrom = rawSender && !rawSender.includes('<') && rawSender.includes('@')
+    ? `STAK Arquitectura <${rawSender}>`
+    : (rawSender || FROM_EMAIL);
 
   if (!clientName || !clientPhone) {
     return {
@@ -166,7 +172,7 @@ export const handler = async (event) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: FROM_EMAIL,
+        from: effectiveFrom,
         to: [targetEmail],
         reply_to: clientEmail || undefined,
         subject: `Novo Briefing Técnico: ${clientName} — ${projectType || 'Projecto'}`,

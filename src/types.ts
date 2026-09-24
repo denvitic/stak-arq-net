@@ -112,6 +112,7 @@ export interface AtelierInfo {
   whatsapp: string;
   email: string;
   briefingNotificationEmail?: string;
+  briefingSenderEmail?: string;
   instagram: string;
   linkedin?: string;
   facebook?: string;
