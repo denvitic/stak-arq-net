@@ -617,12 +617,12 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
                     Simulação da Aba do Navegador:
                   </span>
                   <div className="bg-white rounded-t-xl border border-gray-300 p-2.5 shadow-sm flex items-center gap-2 max-w-[260px]">
-                    <div className="w-5 h-5 rounded-sm bg-gray-900 flex items-center justify-center p-0.5 overflow-hidden shrink-0">
-                      {formData.favicon ? (
-                        <img src={formData.favicon} alt="Favicon" className="w-full h-full object-contain" />
-                      ) : (
-                        <span className="text-[10px] font-bold text-[#c6a87c]">S</span>
-                      )}
+                    <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center p-0.5 overflow-hidden shrink-0">
+                      <img
+                        src={formData.favicon || '/img/stak-favicon.png'}
+                        alt="Favicon"
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <span className="text-xs font-medium text-gray-800 truncate">
                       STAK Arquitectura | Luanda

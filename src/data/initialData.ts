@@ -45,7 +45,7 @@ export const initialAtelierInfo: AtelierInfo = {
   heroVideoTitle: 'Design de Interiores & Arquitectura Residencial de Luxo',
   logoLight: '/img/Stak-Logo-black.svg',
   logoDark: '/img/Stak-Logo-White.svg',
-  favicon: '/img/Stak-Logo-black.svg',
+  favicon: '/img/stak-favicon.png',
   seoMeta: {
     metaTitle: 'STAK Arquitectura & Designer de Interiores | Luanda, Angola',
     metaDescription:

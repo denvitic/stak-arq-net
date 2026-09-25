@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Circular Black Background -->
+  <circle cx="256" cy="256" r="212" fill="#000000" />
+
+  <!-- Architectural Chevron Monogram (STAK Emblem) -->
+  <!-- Left Leg (White) -->
+  <polygon points="150,342 178,342 256,196 256,150" fill="#ffffff" />
+  
+  <!-- Right Leg (White) -->
+  <polygon points="256,150 256,196 334,342 362,342" fill="#ffffff" />
+
+  <!-- Inner Diagonal Accent (Architectural Gold) -->
+  <polygon points="222,342 236,342 284,250 277,236" fill="#c29b61" />
+</svg>
