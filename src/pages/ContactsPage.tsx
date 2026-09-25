@@ -71,7 +71,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({
     // Notificação por e-mail para a equipa STAK (via Resend), como canal adicional
     // ao painel administrativo. Não bloqueia a confirmação ao cliente: o pedido já
     // está guardado no painel mesmo que este envio falhe.
-    const targetEmail = atelierInfo.briefingNotificationEmail || atelierInfo.email || 'denvitc@gmail.com';
+    const targetEmail = atelierInfo.briefingNotificationEmail || atelierInfo.email || 'geral@stakarquitectura.com';
     const senderEmail = atelierInfo.briefingSenderEmail;
     const payload = {
       ...formData,

@@ -1,0 +1,17 @@
+/* TEAM */
+  Desenvolvimento & Engenharia Web: Denvitic Tecnologias
+  Contacto: geral@denvitic.com
+  Website: https://www.denvitic.com
+  Localização: Luanda, Angola
+
+/* CLIENT */
+  Cliente: STAK Arquitectura & Design de Interiores
+  Website: https://stakarquitectura.com
+  Localização: Luanda, Angola
+
+/* SITE TECH SPEC */
+  Standards: HTML5, CSS3, ES2024
+  Components: React 19, TypeScript, Tailwind CSS v4, Motion, Vite
+  Database & Auth: Supabase (PostgreSQL)
+  Mailing: Resend API
+  Deployment: Netlify / Vercel

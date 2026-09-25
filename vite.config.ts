@@ -37,7 +37,7 @@ function briefingApiPlugin(env: Record<string, string>): Plugin {
                 recipient:
                   env.COMPANY_NOTIFICATION_EMAIL ||
                   process.env.COMPANY_NOTIFICATION_EMAIL ||
-                  'denvitc@gmail.com',
+                  'geral@stakarquitectura.com',
               })
             );
             return;
@@ -60,7 +60,7 @@ function briefingApiPlugin(env: Record<string, string>): Plugin {
                   payload.recipientEmail ||
                   env.COMPANY_NOTIFICATION_EMAIL ||
                   process.env.COMPANY_NOTIFICATION_EMAIL ||
-                  'denvitc@gmail.com';
+                  'geral@stakarquitectura.com';
 
                 const result = await processBriefingNotification(payload, {
                   apiKey,
@@ -102,6 +102,38 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, '.'),
         'src': path.resolve(__dirname, 'src/dashboard/src'),
+      },
+    },
+    build: {
+      chunkSizeWarningLimit: 800,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+              return 'vendor-react';
+            }
+            if (id.includes('node_modules/apexcharts') || id.includes('node_modules/react-apexcharts')) {
+              return 'vendor-charts';
+            }
+            if (id.includes('node_modules/@supabase')) {
+              return 'vendor-supabase';
+            }
+            if (
+              id.includes('node_modules/@iconify') ||
+              id.includes('node_modules/lucide-react') ||
+              id.includes('node_modules/@tabler') ||
+              id.includes('node_modules/react-icons')
+            ) {
+              return 'vendor-icons';
+            }
+            if (id.includes('node_modules/motion')) {
+              return 'vendor-motion';
+            }
+            if (id.includes('node_modules/@radix-ui')) {
+              return 'vendor-radix';
+            }
+          },
+        },
       },
     },
     server: {

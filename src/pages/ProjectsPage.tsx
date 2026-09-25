@@ -305,7 +305,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   <div className="relative aspect-[16/11] overflow-hidden bg-black/60">
                     <img
                       src={project.coverImage}
-                      alt={project.title}
+                      alt={project.altText || project.title}
+                      loading="lazy"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700"
                     />
@@ -377,7 +378,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   <div className="w-28 h-20 sm:w-36 sm:h-24 rounded-lg overflow-hidden bg-black shrink-0 border border-white/10 relative">
                     <img
                       src={project.coverImage}
-                      alt={project.title}
+                      alt={project.altText || project.title}
+                      loading="lazy"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />

@@ -1,5 +1,6 @@
-# STAK Arquitectura & Designer de Interiores
-# https://stakarquitectura.com
+# STAK Arquitectura & Design de Interiores (https://stakarquitectura.com)
+# Desenvolvimento e Arquitectura Web por Denvitic Tecnologias (https://www.denvitic.com)
+# Créditos técnicos da equipa: https://stakarquitectura.com/humans.txt
 
 User-agent: *
 Allow: /

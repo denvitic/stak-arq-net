@@ -114,7 +114,8 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({ onNavigate }) => {
                 <div className="aspect-[16/10] overflow-hidden bg-black/60 relative">
                   <img
                     src={article.image}
-                    alt={article.title}
+                    alt={article.altText || article.title}
+                    loading="lazy"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700"
                   />
@@ -247,7 +248,8 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({ onNavigate }) => {
             <div className="aspect-[16/9] rounded-xl overflow-hidden bg-black/60 border border-white/10">
               <img
                 src={selectedArticle.image}
-                alt={selectedArticle.title}
+                alt={selectedArticle.altText || selectedArticle.title}
+                loading="lazy"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
               />

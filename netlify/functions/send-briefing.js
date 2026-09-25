@@ -42,7 +42,7 @@ export const handler = async (event) => {
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
   const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'STAK Arquitectura <onboarding@resend.dev>';
-  const DEFAULT_COMPANY_EMAIL = process.env.COMPANY_NOTIFICATION_EMAIL || 'denvitc@gmail.com';
+  const DEFAULT_COMPANY_EMAIL = process.env.COMPANY_NOTIFICATION_EMAIL || 'geral@stakarquitectura.com';
 
   if (event.httpMethod === 'GET') {
     return {

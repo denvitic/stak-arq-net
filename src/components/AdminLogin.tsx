@@ -218,8 +218,20 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToWebsite }) => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-6 text-center text-[11px] text-gray-500 z-10">
-        © {new Date().getFullYear()} STAK Arquitectura • Luanda, Angola. Todos os direitos reservados.
+      <footer className="w-full py-6 text-center text-[11px] text-gray-500 z-10 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2">
+        <span>© {new Date().getFullYear()} STAK Arquitectura • Luanda, Angola.</span>
+        <span className="hidden sm:inline text-gray-700">•</span>
+        <span>
+          Plataforma desenvolvida por{' '}
+          <a
+            href="https://www.denvitic.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-[#c6a87c] font-medium transition-colors"
+          >
+            Denvitic Tecnologias
+          </a>
+        </span>
       </footer>
     </div>
   );

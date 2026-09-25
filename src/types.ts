@@ -1,4 +1,4 @@
-export type NavPage = 'inicio' | 'sobre-nos' | 'projectos' | 'servicos' | 'artigos' | 'contactos' | 'admin';
+export type NavPage = 'inicio' | 'sobre-nos' | 'projectos' | 'servicos' | 'artigos' | 'contactos' | 'admin' | '404';
 
 export type ProjectCategory = 
   | 'todos'
@@ -26,6 +26,7 @@ export interface Project {
   category: 'residencial' | 'comercial' | 'interiores' | 'urbanismo' | 'em-construcao';
   categoryLabel: string;
   coverImage: string;
+  altText?: string;
   beforeImage?: string;
   beforeLabel?: string;
   afterLabel?: string;
@@ -34,6 +35,7 @@ export interface Project {
   videoUrl?: string;
   videoPoster?: string;
   galleryImages: string[];
+  galleryAlts?: string[];
   description: string;
   architecturalConcept: string;
   fichaTecnica: FichaTecnica;
@@ -51,6 +53,7 @@ export interface ServiceItem {
   ctaLabel: string;
   ctaAction: string;
   image: string;
+  altText?: string;
   typicalDuration?: string;
   icon?: string;
 }
@@ -67,12 +70,14 @@ export interface MethodologyStep {
 export interface Article {
   id: string;
   title: string;
+  slug?: string;
   category: string;
   date: string;
   readTime: string;
   excerpt: string;
   content: string[];
   image: string;
+  altText?: string;
   author: string;
 }
 
@@ -98,6 +103,24 @@ export interface SeoMetaSettings {
   ogImage: string;
   canonicalUrl?: string;
   author?: string;
+  googleSearchConsoleTag?: string;
+  googleAnalyticsId?: string;
+  googleTagManagerId?: string;
+}
+
+export interface PageSeoSettings {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogUrl?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  noIndex?: boolean;
 }
 
 export interface AtelierInfo {
@@ -284,6 +307,7 @@ export interface HomePageContent {
       secondaryButtonLink?: string;
     };
   };
+  seo?: PageSeoSettings;
 }
 
 export interface AtelierPageContent {
@@ -367,6 +391,7 @@ export interface AtelierPageContent {
       secondaryButtonLink?: string;
     };
   };
+  seo?: PageSeoSettings;
 }
 
 export interface ProjectsPageContent {
@@ -393,6 +418,7 @@ export interface ProjectsPageContent {
       buttonLink?: string;
     };
   };
+  seo?: PageSeoSettings;
 }
 
 export interface ServicesPageContent {
@@ -433,6 +459,7 @@ export interface ServicesPageContent {
       buttonLink?: string;
     };
   };
+  seo?: PageSeoSettings;
 }
 
 export interface ArticlesPageContent {
@@ -458,6 +485,7 @@ export interface ArticlesPageContent {
       buttonLabel: string;
     };
   };
+  seo?: PageSeoSettings;
 }
 
 export interface ContactsPageContent {
@@ -488,6 +516,7 @@ export interface ContactsPageContent {
       description: string;
     };
   };
+  seo?: PageSeoSettings;
 }
 
 export interface GlobalFaqContent {

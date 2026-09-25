@@ -16,7 +16,7 @@ export default async function handler(req: any, res: any) {
       service: 'STAK Briefing Email Dispatcher',
       resendConfigured: !!process.env.RESEND_API_KEY,
       sender: process.env.RESEND_FROM_EMAIL || 'STAK Arquitectura <onboarding@resend.dev>',
-      recipient: process.env.COMPANY_NOTIFICATION_EMAIL || 'denvitc@gmail.com',
+      recipient: process.env.COMPANY_NOTIFICATION_EMAIL || 'geral@stakarquitectura.com',
     });
   }
 

@@ -44,6 +44,7 @@ export default function ProjectsManager() {
     architecturalConcept: '',
     description: '',
     coverImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
+    altText: '',
     galleryImages: [],
     featured: false,
     featuredInBeforeAfter: false,
@@ -114,6 +115,7 @@ export default function ProjectsManager() {
       architecturalConcept: project.architecturalConcept || '',
       description: project.description,
       coverImage: project.coverImage,
+      altText: project.altText || '',
       galleryImages: [...(project.galleryImages || [])],
       featured: project.featured,
       featuredInBeforeAfter: Boolean(project.featuredInBeforeAfter),
@@ -587,6 +589,9 @@ export default function ProjectsManager() {
                   description="Imagem em alta resolução que representa o projecto na grelha e no cabeçalho"
                   value={formData.coverImage}
                   onChange={(url) => setFormData({ ...formData, coverImage: url })}
+                  altText={formData.altText || ''}
+                  onAltChange={(alt) => setFormData({ ...formData, altText: alt })}
+                  altPlaceholder="ex: Vista frontal da Moradia Miramar com brises e iluminação arquitectónica"
                   acceptedType="image"
                   placeholder="https://..."
                 />

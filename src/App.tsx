@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { CmsProvider, useCms } from './context/CmsContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -19,66 +19,17 @@ import { ProjectsPage } from './pages/ProjectsPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { ArticlesPage } from './pages/ArticlesPage';
 import { ContactsPage } from './pages/ContactsPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { SeoHeadManager } from './components/SeoHeadManager';
 import { Project, NavPage } from './types';
-import DashboardApp from './dashboard/src/App';
+
+// Lazy load the full administration dashboard to ensure optimal public website performance
+const DashboardApp = lazy(() => import('./dashboard/src/App'));
 
 function StakApp() {
   const { isDark, theme } = useTheme();
   const { atelierInfo, isHydrated } = useCms();
   const { isAuthenticated, user, signOut } = useAuth();
-
-  // Dynamic SEO Metatags & Favicon Synchronization
-  useEffect(() => {
-    const seo = atelierInfo?.seoMeta;
-    if (seo?.metaTitle) {
-      document.title = seo.metaTitle;
-    } else if (atelierInfo?.name) {
-      document.title = `${atelierInfo.name} | Arquitectura & Design de Interiores`;
-    }
-
-    if (seo?.metaDescription) {
-      let descMeta = document.querySelector('meta[name="description"]');
-      if (!descMeta) {
-        descMeta = document.createElement('meta');
-        descMeta.setAttribute('name', 'description');
-        document.head.appendChild(descMeta);
-      }
-      descMeta.setAttribute('content', seo.metaDescription);
-
-      let ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.setAttribute('content', seo.metaDescription);
-    }
-
-    if (seo?.metaKeywords) {
-      let kwMeta = document.querySelector('meta[name="keywords"]');
-      if (!kwMeta) {
-        kwMeta = document.createElement('meta');
-        kwMeta.setAttribute('name', 'keywords');
-        document.head.appendChild(kwMeta);
-      }
-      kwMeta.setAttribute('content', seo.metaKeywords);
-    }
-
-    if (seo?.ogImage) {
-      let ogImg = document.querySelector('meta[property="og:image"]');
-      if (!ogImg) {
-        ogImg = document.createElement('meta');
-        ogImg.setAttribute('property', 'og:image');
-        document.head.appendChild(ogImg);
-      }
-      ogImg.setAttribute('content', seo.ogImage);
-    }
-
-    if (atelierInfo?.favicon) {
-      let fav = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
-      if (!fav) {
-        fav = document.createElement('link');
-        fav.rel = 'icon';
-        document.head.appendChild(fav);
-      }
-      fav.href = atelierInfo.favicon;
-    }
-  }, [atelierInfo]);
 
   // Check whether current URL (hash or pathname) or persistent state refers to the admin panel
   const checkIsAdminRoute = () => {
@@ -132,11 +83,12 @@ function StakApp() {
     if (checkIsAdminRoute()) return 'admin';
     const hash = window.location.hash.replace('#', '').toLowerCase();
     if (hash === 'sobre-nos' || hash === 'atelier') return 'sobre-nos';
-    if (hash === 'projectos' || hash === 'portfolio') return 'projectos';
+    if (hash === 'projectos' || hash === 'portfolio' || hash.startsWith('projectos/')) return 'projectos';
     if (hash === 'servicos' || hash === 'especialidades') return 'servicos';
-    if (hash === 'artigos' || hash === 'publicacoes') return 'artigos';
+    if (hash === 'artigos' || hash === 'publicacoes' || hash.startsWith('artigos/')) return 'artigos';
     if (hash === 'contactos' || hash === 'briefing') return 'contactos';
-    return 'inicio';
+    if (hash === 'inicio' || hash === '') return 'inicio';
+    return '404';
   });
 
   // Keep admin active view and hash synchronized
@@ -218,6 +170,9 @@ function StakApp() {
         if (localStorage.getItem('stak_admin_active_view') !== 'admin') {
           setCurrentPage('inicio');
         }
+      } else {
+        setCurrentPage('404');
+        localStorage.removeItem('stak_admin_active_view');
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -263,6 +218,18 @@ function StakApp() {
             </span>
             <span className="hidden sm:inline text-gray-300">|</span>
             <span className="hidden sm:inline text-gray-500 text-xs">Gestão de Conteúdos & Portfólio</span>
+            <span className="hidden lg:inline text-gray-300">|</span>
+            <span className="hidden lg:inline text-[11px] text-gray-400">
+              Desenvolvido por{' '}
+              <a
+                href="https://www.denvitic.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-gray-600 hover:text-[#c6a87c] transition-colors"
+              >
+                Denvitic Tecnologias
+              </a>
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -294,7 +261,18 @@ function StakApp() {
 
         {/* Real Admin Dashboard */}
         <div className="flex-1 w-full">
-          <DashboardApp />
+          <Suspense
+            fallback={
+              <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
+                <div className="w-8 h-8 border-2 border-[#c6a87c] border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs font-mono text-gray-500 uppercase tracking-widest">
+                  A carregar painel de gestão...
+                </span>
+              </div>
+            }
+          >
+            <DashboardApp />
+          </Suspense>
         </div>
       </div>
     );
@@ -305,6 +283,12 @@ function StakApp() {
       id="stak-website"
       className="min-h-screen bg-[#090a0c] dark:bg-[#090a0c] light:bg-[#f8f7f5] text-[#e8e8ea] dark:text-[#e8e8ea] light:text-[#18191d] flex flex-col selection:bg-[#c6a87c] selection:text-black font-sans opacity-100"
     >
+      {/* Dynamic SEO Meta, OpenGraph, Canonical & Schema.org JSON-LD */}
+      <SeoHeadManager
+        currentPage={currentPage}
+        selectedProject={selectedProject}
+      />
+
       {/* 1. Uncluttered, Focused Navbar */}
       <Navbar
         currentPage={currentPage}
@@ -350,6 +334,10 @@ function StakApp() {
             onNavigate={navigateTo}
             preselectedService={preselectedService}
           />
+        )}
+
+        {currentPage === '404' && (
+          <NotFoundPage onNavigate={navigateTo} />
         )}
       </main>
 

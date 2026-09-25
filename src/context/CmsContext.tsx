@@ -111,6 +111,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             return {
               ...match,
               ...p,
+              videoUrl: p.videoUrl ? p.videoUrl.trim() : '',
+              videoPoster: p.videoPoster ? p.videoPoster.trim() : '',
               featuredInBeforeAfter: p.featuredInBeforeAfter ?? (match?.featuredInBeforeAfter ?? false),
             };
           });
@@ -170,7 +172,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return {
           ...initialAtelierInfo,
           ...parsed,
-          briefingNotificationEmail: parsed.briefingNotificationEmail || initialAtelierInfo.briefingNotificationEmail || 'denvitc@gmail.com',
+          briefingNotificationEmail: parsed.briefingNotificationEmail || initialAtelierInfo.briefingNotificationEmail || 'geral@stakarquitectura.com',
           briefingSenderEmail: parsed.briefingSenderEmail || initialAtelierInfo.briefingSenderEmail || '',
           seoMeta: {
             ...initialAtelierInfo.seoMeta,
@@ -195,6 +197,10 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           home: {
             ...initialPagesContent.home,
             ...(parsed.home || {}),
+            seo: {
+              ...initialPagesContent.home.seo,
+              ...(parsed.home?.seo || {}),
+            },
             sections: {
               ...initialPagesContent.home.sections,
               ...(parsed.home?.sections || {}),
@@ -213,15 +219,30 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           atelier: {
             ...initialPagesContent.atelier,
             ...(parsed.atelier || {}),
+            seo: {
+              ...initialPagesContent.atelier.seo,
+              ...(parsed.atelier?.seo || {}),
+            },
             sections: {
               ...initialPagesContent.atelier.sections,
               ...(parsed.atelier?.sections || {}),
             },
           },
-          projects: { ...initialPagesContent.projects, ...(parsed.projects || {}) },
+          projects: {
+            ...initialPagesContent.projects,
+            ...(parsed.projects || {}),
+            seo: {
+              ...initialPagesContent.projects.seo,
+              ...(parsed.projects?.seo || {}),
+            },
+          },
           services: {
             ...initialPagesContent.services,
             ...(parsed.services || {}),
+            seo: {
+              ...initialPagesContent.services.seo,
+              ...(parsed.services?.seo || {}),
+            },
             hero: {
               ...initialPagesContent.services.hero,
               ...(parsed.services?.hero || {}),
@@ -241,8 +262,22 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               },
             },
           },
-          articles: { ...initialPagesContent.articles, ...(parsed.articles || {}) },
-          contacts: { ...initialPagesContent.contacts, ...(parsed.contacts || {}) },
+          articles: {
+            ...initialPagesContent.articles,
+            ...(parsed.articles || {}),
+            seo: {
+              ...initialPagesContent.articles.seo,
+              ...(parsed.articles?.seo || {}),
+            },
+          },
+          contacts: {
+            ...initialPagesContent.contacts,
+            ...(parsed.contacts || {}),
+            seo: {
+              ...initialPagesContent.contacts.seo,
+              ...(parsed.contacts?.seo || {}),
+            },
+          },
           navigation: {
             ...initialPagesContent.navigation,
             ...(parsed.navigation || {}),
@@ -427,9 +462,15 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               ? match.beforeImage
               : (p.before_image || match?.beforeImage);
 
-            const videoUrl = (p.video_url?.startsWith('data:video') && match?.videoUrl)
-              ? match.videoUrl
-              : (p.video_url || match?.videoUrl);
+            // Respect user deletion in Supabase: if video_url is null or empty, keep it empty.
+            // NEVER fallback to match?.videoUrl when the user cleared or deleted the video!
+            const videoUrl = p.video_url && typeof p.video_url === 'string' && p.video_url.trim().length > 0
+              ? (p.video_url.startsWith('data:video') && match?.videoUrl ? match.videoUrl : p.video_url.trim())
+              : '';
+
+            const videoPoster = p.video_poster && typeof p.video_poster === 'string' && p.video_poster.trim().length > 0
+              ? p.video_poster.trim()
+              : '';
 
             const galleryImages = Array.isArray(p.gallery_images)
               ? p.gallery_images.map((g: string, idx: number) => (g?.startsWith('data:image') && match?.galleryImages?.[idx]) ? match.galleryImages[idx] : g)
@@ -448,7 +489,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               beforeLabel: p.before_label || match?.beforeLabel,
               beforeDescription: p.before_description || match?.beforeDescription,
               videoUrl,
-              videoPoster: p.video_poster || match?.videoPoster,
+              videoPoster,
               galleryImages,
               description: p.description || (match?.description ?? ''),
               architecturalConcept: p.architectural_concept || p.concept || (match?.architecturalConcept ?? ''),
@@ -563,7 +604,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 infoData.briefing_notification_email ||
                 infoData.seo_meta?.briefingNotificationEmail ||
                 prev.briefingNotificationEmail ||
-                'denvitc@gmail.com',
+                'geral@stakarquitectura.com',
               briefingSenderEmail:
                 infoData.sender_email ||
                 infoData.briefing_sender_email ||
@@ -742,7 +783,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const mapAtelierToRow = (info: AtelierInfo) => {
-    const notifyEmail = info.briefingNotificationEmail || 'denvitc@gmail.com';
+    const notifyEmail = info.briefingNotificationEmail || 'geral@stakarquitectura.com';
     const senderEmail = info.briefingSenderEmail || '';
     return {
       id: 'stak-main-atelier',
@@ -897,7 +938,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...data,
       id: 'serv-' + Date.now(),
     };
-    setServices((prev) => [...prev, newService]);
+    setServices((prev) => {
+      const next = [...prev, newService];
+      safeSetLocalStorage(STORAGE_KEYS.SERVICES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -911,7 +956,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateService = (updated: ServiceItem) => {
-    setServices((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    setServices((prev) => {
+      const next = prev.map((s) => (s.id === updated.id ? updated : s));
+      safeSetLocalStorage(STORAGE_KEYS.SERVICES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -925,7 +974,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteService = (id: string) => {
-    setServices((prev) => prev.filter((s) => s.id !== id));
+    setServices((prev) => {
+      const next = prev.filter((s) => s.id !== id);
+      safeSetLocalStorage(STORAGE_KEYS.SERVICES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -953,7 +1006,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       createdAt,
       status: 'Pendente',
     };
-    setBriefings((prev) => [newBriefing, ...prev]);
+    setBriefings((prev) => {
+      const next = [newBriefing, ...prev];
+      safeSetLocalStorage(STORAGE_KEYS.BRIEFINGS, next);
+      return next;
+    });
 
     // Asynchronously insert into Supabase if configured
     const client = getSupabase();
@@ -986,9 +1043,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateBriefingStatus = (id: string, status: BriefingSubmission['status']) => {
-    setBriefings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status } : b))
-    );
+    setBriefings((prev) => {
+      const next = prev.map((b) => (b.id === id ? { ...b, status } : b));
+      safeSetLocalStorage(STORAGE_KEYS.BRIEFINGS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -1004,7 +1063,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteBriefing = (id: string) => {
-    setBriefings((prev) => prev.filter((b) => b.id !== id));
+    setBriefings((prev) => {
+      const next = prev.filter((b) => b.id !== id);
+      safeSetLocalStorage(STORAGE_KEYS.BRIEFINGS, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -1025,7 +1088,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...data,
       id: 'art-' + Date.now(),
     };
-    setArticles((prev) => [newArticle, ...prev]);
+    setArticles((prev) => {
+      const next = [newArticle, ...prev];
+      safeSetLocalStorage(STORAGE_KEYS.ARTICLES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -1039,7 +1106,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateArticle = (updated: Article) => {
-    setArticles((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
+    setArticles((prev) => {
+      const next = prev.map((a) => (a.id === updated.id ? updated : a));
+      safeSetLocalStorage(STORAGE_KEYS.ARTICLES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -1053,7 +1124,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteArticle = (id: string) => {
-    setArticles((prev) => prev.filter((a) => a.id !== id));
+    setArticles((prev) => {
+      const next = prev.filter((a) => a.id !== id);
+      safeSetLocalStorage(STORAGE_KEYS.ARTICLES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client) {
@@ -1069,6 +1144,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateAtelierInfo = (info: AtelierInfo) => {
     setAtelierInfo(info);
+    safeSetLocalStorage(STORAGE_KEYS.ATELIER, info);
 
     const client = getSupabase();
     if (client) {
@@ -1083,6 +1159,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updatePagesContent = (pages: SitePagesContent) => {
     setPagesContent(pages);
+    safeSetLocalStorage(STORAGE_KEYS.PAGES, pages);
 
     const client = getSupabase();
     if (client) {
@@ -1109,10 +1186,14 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updatePageContent = <K extends keyof SitePagesContent>(pageKey: K, content: SitePagesContent[K]) => {
-    setPagesContent((prev) => ({
-      ...prev,
-      [pageKey]: content,
-    }));
+    setPagesContent((prev) => {
+      const next = {
+        ...prev,
+        [pageKey]: content,
+      };
+      safeSetLocalStorage(STORAGE_KEYS.PAGES, next);
+      return next;
+    });
 
     const client = getSupabase();
     if (client && content && typeof content === 'object') {

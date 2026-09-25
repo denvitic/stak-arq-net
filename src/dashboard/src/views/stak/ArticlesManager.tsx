@@ -15,6 +15,8 @@ export default function ArticlesManager() {
     date: new Date().toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', year: 'numeric' }),
     readTime: '4 min',
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    altText: '',
+    slug: '',
     excerpt: '',
     content: [],
     author: 'Equipa Editorial STAK',
@@ -32,10 +34,12 @@ export default function ArticlesManager() {
   const handleOpenCreate = () => {
     setFormData({
       title: '',
+      slug: '',
       category: 'Arquitectura & Cidade',
       date: new Date().toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', year: 'numeric' }),
       readTime: '5 min',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+      altText: '',
       excerpt: '',
       content: [],
       author: 'Atelier STAK',
@@ -49,10 +53,12 @@ export default function ArticlesManager() {
     setEditingArticle(art);
     setFormData({
       title: art.title,
+      slug: art.slug || '',
       category: art.category || 'Arquitectura & Cidade',
       date: art.date,
       readTime: art.readTime,
       image: art.image,
+      altText: art.altText || '',
       excerpt: art.excerpt,
       content: [...(art.content || [])],
       author: art.author,
@@ -70,8 +76,18 @@ export default function ArticlesManager() {
       .map((p) => p.trim())
       .filter((p) => p.length > 0);
 
+    const generatedSlug = formData.slug?.trim()
+      ? formData.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      : formData.title
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+
     const payload: Omit<Article, 'id'> = {
       ...formData,
+      slug: generatedSlug,
       content: parsedParagraphs.length > 0 ? parsedParagraphs : [rawTextContent.trim() || formData.excerpt],
     };
 
@@ -267,11 +283,30 @@ export default function ArticlesManager() {
               </div>
 
               <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Slug do Artigo (URL amigável para SEO)
+                </label>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-gray-400 font-mono">#artigos/</span>
+                  <input
+                    type="text"
+                    value={formData.slug || ''}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="ex: arquitectura-bioclimatica-luanda"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs font-mono focus:ring-1 focus:ring-[#c6a87c] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
                 <ImagePickerInput
                   label="Fotografia de Capa do Artigo *"
                   description="Fotografia em alta resolução ilustrativa da reflexão arquitectónica"
                   value={formData.image}
                   onChange={(url) => setFormData({ ...formData, image: url })}
+                  altText={formData.altText || ''}
+                  onAltChange={(alt) => setFormData({ ...formData, altText: alt })}
+                  altPlaceholder="ex: Fotografia de obra com brises de madeira em Luanda"
                   acceptedType="image"
                   placeholder="https://images.unsplash.com/..."
                 />

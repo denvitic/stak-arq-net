@@ -6,6 +6,9 @@ interface ImagePickerInputProps {
   label?: string;
   value: string;
   onChange: (url: string) => void;
+  altText?: string;
+  onAltChange?: (alt: string) => void;
+  altPlaceholder?: string;
   acceptedType?: 'image' | 'video' | 'all';
   helperText?: string;
   description?: string;
@@ -17,6 +20,9 @@ export const ImagePickerInput: React.FC<ImagePickerInputProps> = ({
   label,
   value,
   onChange,
+  altText,
+  onAltChange,
+  altPlaceholder,
   acceptedType = 'image',
   helperText,
   description,
@@ -112,6 +118,19 @@ export const ImagePickerInput: React.FC<ImagePickerInputProps> = ({
               </button>
             )}
           </div>
+
+          {onAltChange && !isVideo && (
+            <div className="flex items-center gap-2 pt-1">
+              <Icon icon="solar:tag-bold" width="14" className="text-[#c6a87c] shrink-0" />
+              <input
+                type="text"
+                value={altText || ''}
+                onChange={(e) => onAltChange(e.target.value)}
+                placeholder={altPlaceholder || 'Texto alternativo para SEO e acessibilidade (Alt Text)...'}
+                className="w-full text-[11px] px-2.5 py-1 border border-gray-200 rounded-lg focus:border-[#c6a87c] focus:outline-none bg-white placeholder:text-gray-400 text-gray-800"
+              />
+            </div>
+          )}
         </div>
       </div>
 

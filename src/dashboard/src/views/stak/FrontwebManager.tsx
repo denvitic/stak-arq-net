@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import { useCms } from '@/src/context/CmsContext';
 import { SuccessModal } from '@/src/dashboard/src/components/SuccessModal';
 import { ImagePickerInput } from '@/src/dashboard/src/components/ImagePickerInput';
+import { PageSeoEditor } from '@/src/dashboard/src/components/PageSeoEditor';
 import {
   SitePagesContent,
   HomePageContent,
@@ -412,6 +413,7 @@ function HomePageEditor({
     { id: 'beforeAfter', label: '5. Antes & Depois', icon: 'solar:slider-minimalistic-horizontal-bold' },
     { id: 'testimonials', label: '6. Testemunhos', icon: 'solar:chat-round-like-bold' },
     { id: 'cta', label: '7. Bloco Final de Contacto (CTA)', icon: 'solar:phone-calling-bold' },
+    { id: 'seo', label: '8. SEO & Meta Tags', icon: 'solar:global-bold' },
   ];
 
   return (
@@ -2142,6 +2144,25 @@ function HomePageEditor({
           </div>
         )}
 
+        {/* SEO & META TAGS SECTION */}
+        {activeSection === 'seo' && (
+          <PageSeoEditor
+            pageName="Página Inicial (Home)"
+            pagePath="/"
+            seo={draft.seo}
+            onChange={(newSeo) => onChange((prev) => ({ ...prev, seo: newSeo }))}
+            recommendedFallbacks={{
+              metaTitle: 'STAK Arquitectura & Design de Interiores | Luanda, Angola',
+              metaDescription:
+                'Gabinete de arquitectura de autor e design de ambientes de alto padrão em Luanda. Projectos residenciais de luxo, edifícios corporativos e fiscalização de obras.',
+              metaKeywords:
+                'arquitectura luanda, arquitectos angola, design de interiores talatona, moradias luxo, atelier de arquitectura',
+              ogImage:
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+            }}
+          />
+        )}
+
         {/* Bottom Save Bar */}
         <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
           <span className="text-[11px] text-gray-400">
@@ -2186,6 +2207,7 @@ function AtelierPageEditor({
     { id: 'bioclimatic', label: '6. Resiliência & Conforto (Tropical)', icon: 'solar:leaf-bold' },
     { id: 'team', label: '7. Equipa de Liderança', icon: 'solar:users-group-two-rounded-bold' },
     { id: 'cta', label: '8. Atendimento Presencial (CTA)', icon: 'solar:phone-calling-bold' },
+    { id: 'seo', label: '9. SEO & Meta Tags', icon: 'solar:global-bold' },
   ];
 
   return (
@@ -3855,6 +3877,25 @@ function AtelierPageEditor({
           </div>
         )}
 
+        {/* SEO & META TAGS SECTION */}
+        {activeSection === 'seo' && (
+          <PageSeoEditor
+            pageName="O Atelier & Filosofia"
+            pagePath="/#sobre-nos"
+            seo={draft.seo}
+            onChange={(newSeo) => onChange((prev) => ({ ...prev, seo: newSeo }))}
+            recommendedFallbacks={{
+              metaTitle: 'O Atelier & Filosofia | STAK Arquitectura Luanda',
+              metaDescription:
+                'Conheça o atelier STAK Arquitectura em Luanda. Rigor técnico, identidade bioclimática angolana e equipa multidisciplinar de arquitectos e engenheiros.',
+              metaKeywords:
+                'atelier arquitectura luanda, arquitectos angola, história stak arquitectura, equipa arquitectura luanda',
+              ogImage:
+                'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85',
+            }}
+          />
+        )}
+
         {/* Save Bar */}
         <div className="pt-6 border-t border-gray-100 flex items-center justify-end">
           <button
@@ -3891,6 +3932,7 @@ function ProjectsPageEditor({
     { id: 'hero', label: '1. Hero & Badges de Projectos', icon: 'solar:palette-round-bold' },
     { id: 'catalogIntro', label: '2. Introdução ao Catálogo', icon: 'solar:layers-bold' },
     { id: 'cta', label: '3. Bloco de Apelo (CTA)', icon: 'solar:phone-calling-bold' },
+    { id: 'seo', label: '4. SEO & Meta Tags', icon: 'solar:global-bold' },
   ];
 
   return (
@@ -4265,6 +4307,25 @@ function ProjectsPageEditor({
           </div>
         )}
 
+        {/* SEO & META TAGS SECTION */}
+        {activeSection === 'seo' && (
+          <PageSeoEditor
+            pageName="Projectos & Portfólio"
+            pagePath="/#projectos"
+            seo={draft.seo}
+            onChange={(newSeo) => onChange((prev) => ({ ...prev, seo: newSeo }))}
+            recommendedFallbacks={{
+              metaTitle: 'Projectos & Portfólio de Arquitectura | STAK Luanda',
+              metaDescription:
+                'Explore o portfólio de residências unifamiliares, interiores corporativos e projectos comerciais desenvolvidos pela STAK Arquitectura em Angola.',
+              metaKeywords:
+                'projectos arquitectura luanda, casas luxo angola, moradias talatona, portfólio arquitectura',
+              ogImage:
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+            }}
+          />
+        )}
+
         {/* Bottom Save Bar */}
         <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
           <span className="text-[11px] text-gray-400">
@@ -4306,6 +4367,7 @@ function ServicesPageEditor({
     { id: 'methodology', label: '3. Metodologia de Fases (Processo)', icon: 'solar:tuning-square-bold' },
     { id: 'faq', label: '4. Perguntas Frequentes (FAQ)', icon: 'solar:question-circle-bold' },
     { id: 'cta', label: '5. Bloco de Diagnóstico (CTA)', icon: 'solar:phone-calling-bold' },
+    { id: 'seo', label: '6. SEO & Meta Tags', icon: 'solar:global-bold' },
   ];
 
   return (
@@ -5428,6 +5490,25 @@ function ServicesPageEditor({
           </div>
         )}
 
+        {/* SEO & META TAGS SECTION */}
+        {activeSection === 'seo' && (
+          <PageSeoEditor
+            pageName="Serviços & Especialidades"
+            pagePath="/#servicos"
+            seo={draft.seo}
+            onChange={(newSeo) => onChange((prev) => ({ ...prev, seo: newSeo }))}
+            recommendedFallbacks={{
+              metaTitle: 'Serviços de Arquitectura & Design de Interiores | STAK Luanda',
+              metaDescription:
+                'Projectos de arquitectura, licenciamento camarário, design de interiores, estudos bioclimáticos e fiscalização de obras em Angola.',
+              metaKeywords:
+                'serviços arquitectura angola, licenciamento obras luanda, design interiores talatona, fiscalização obras',
+              ogImage:
+                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
+            }}
+          />
+        )}
+
         {/* Bottom Save Bar */}
         <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
           <span className="text-[11px] text-gray-400">
@@ -5467,6 +5548,7 @@ function ArticlesPageEditor({
     { id: 'hero', label: '1. Hero & Badges Editoriais', icon: 'solar:palette-round-bold' },
     { id: 'editorialIntro', label: '2. Introdução Editorial', icon: 'solar:document-text-bold' },
     { id: 'newsletter', label: '3. Subscrição de Newsletter', icon: 'solar:letter-bold' },
+    { id: 'seo', label: '4. SEO & Meta Tags', icon: 'solar:global-bold' },
   ];
 
   return (
@@ -5803,6 +5885,25 @@ function ArticlesPageEditor({
           </div>
         )}
 
+        {/* SEO & META TAGS SECTION */}
+        {activeSection === 'seo' && (
+          <PageSeoEditor
+            pageName="Artigos & Publicações"
+            pagePath="/#artigos"
+            seo={draft.seo}
+            onChange={(newSeo) => onChange((prev) => ({ ...prev, seo: newSeo }))}
+            recommendedFallbacks={{
+              metaTitle: 'Artigos, Ensaios & Tendências de Arquitectura | STAK Journal',
+              metaDescription:
+                'Reflexões sobre arquitectura contemporânea tropical, sustentabilidade, materiais nobres e design de interiores em Luanda e no mundo.',
+              metaKeywords:
+                'artigos arquitectura angola, tendências design interiores luanda, revista arquitectura',
+              ogImage:
+                'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85',
+            }}
+          />
+        )}
+
         {/* Bottom Save Bar */}
         <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
           <span className="text-[11px] text-gray-400">
@@ -5842,6 +5943,7 @@ function ContactsPageEditor({
     { id: 'hero', label: '1. Hero & Imagem de Fundo', icon: 'solar:palette-round-bold' },
     { id: 'info', label: '2. Gabinete de Luanda', icon: 'solar:buildings-3-bold' },
     { id: 'briefingIntro', label: '3. Ficha de Briefing', icon: 'solar:clipboard-list-bold' },
+    { id: 'seo', label: '4. SEO & Meta Tags', icon: 'solar:global-bold' },
   ];
 
   return (
@@ -6273,6 +6375,25 @@ function ContactsPageEditor({
               </div>
             </div>
           </div>
+        )}
+
+        {/* SEO & META TAGS SECTION */}
+        {activeSection === 'seo' && (
+          <PageSeoEditor
+            pageName="Contactos & Briefing"
+            pagePath="/#contactos"
+            seo={draft.seo}
+            onChange={(newSeo) => onChange((prev) => ({ ...prev, seo: newSeo }))}
+            recommendedFallbacks={{
+              metaTitle: 'Contactos & Pedido de Briefing | STAK Arquitectura Luanda',
+              metaDescription:
+                'Entre em contacto com o atelier STAK em Luanda. Solicite o seu estudo prévio, proposta técnica de arquitectura ou agende uma reunião presencial.',
+              metaKeywords:
+                'contactos stak arquitectura, orçamento arquitectura luanda, briefing arquitectura angola, gabinete luanda',
+              ogImage:
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+            }}
+          />
         )}
 
         {/* Bottom Save Bar */}

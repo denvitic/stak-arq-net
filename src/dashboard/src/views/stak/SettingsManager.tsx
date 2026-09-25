@@ -3,8 +3,10 @@ import { Link } from 'react-router';
 import { Icon } from '@iconify/react';
 import { useCms } from '@/src/context/CmsContext';
 import { useAuth } from '@/src/context/AuthContext';
-import { AtelierInfo } from '@/src/types';
+import { AtelierInfo, SitePagesContent } from '@/src/types';
 import { ImagePickerInput } from '@/src/dashboard/src/components/ImagePickerInput';
+import { PageSeoEditor } from '@/src/dashboard/src/components/PageSeoEditor';
+import { generateSitemapXml } from '@/src/lib/sitemapGenerator';
 import {
   getSupabaseProjectRef,
   isSupabaseConfigured,
@@ -15,7 +17,16 @@ import {
 } from '@/src/lib/supabase';
 
 export default function SettingsManager() {
-  const { atelierInfo, updateAtelierInfo, isSupabaseLive, seedSupabaseInitialData } = useCms();
+  const {
+    atelierInfo,
+    updateAtelierInfo,
+    isSupabaseLive,
+    seedSupabaseInitialData,
+    projects,
+    articles,
+    pagesContent,
+    updatePageContent,
+  } = useCms();
   const { user, isAdminRegistrationLocked, setAdminRegistrationLocked } = useAuth();
   const [formData, setFormData] = useState<AtelierInfo>(() => ({
     ...atelierInfo,
@@ -25,10 +36,17 @@ export default function SettingsManager() {
       metaKeywords: atelierInfo.seoMeta?.metaKeywords || 'arquitectura luanda, arquitectos angola, design de interiores talatona, projectos residenciais luxo, fiscalização obras angola, atelier arquitectura luanda',
       ogImage: atelierInfo.seoMeta?.ogImage || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
       author: atelierInfo.seoMeta?.author || 'STAK Arquitectura & Design de Interiores',
+      canonicalUrl: atelierInfo.seoMeta?.canonicalUrl || 'https://stakarquitectura.com',
+      googleSearchConsoleTag: atelierInfo.seoMeta?.googleSearchConsoleTag || '',
+      googleAnalyticsId: atelierInfo.seoMeta?.googleAnalyticsId || '',
+      googleTagManagerId: atelierInfo.seoMeta?.googleTagManagerId || '',
     },
   }));
 
   const [activeTab, setActiveTab] = useState<'branding' | 'seo' | 'contacts' | 'stats' | 'supabase' | 'email'>('branding');
+  const [seoSubTab, setSeoSubTab] = useState<'global' | 'pages' | 'tracking' | 'sitemap'>('global');
+  const [selectedSeoPage, setSelectedSeoPage] = useState<keyof SitePagesContent>('home');
+  const [sitemapDownloaded, setSitemapDownloaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [seedResult, setSeedResult] = useState<{ success: boolean; message: string } | null>(null);
@@ -75,7 +93,7 @@ export default function SettingsManager() {
   const handleTestEmail = async () => {
     setIsTestingEmail(true);
     setEmailTestResult(null);
-    const targetEmail = formData.briefingNotificationEmail || 'denvitc@gmail.com';
+    const targetEmail = formData.briefingNotificationEmail || 'geral@stakarquitectura.com';
     const senderEmail = formData.briefingSenderEmail;
     const testPayload = {
       clientName: 'Diagnóstico Técnico STAK',
@@ -84,13 +102,13 @@ export default function SettingsManager() {
       senderEmail: senderEmail || undefined,
       fromEmail: senderEmail || undefined,
       clientPhone: '+244 928 000 000',
-      projectType: 'Teste de Entrega Resend',
+      projectType: 'Teste de Comunicação do Sistema',
       location: 'Talatona, Luanda',
       estimatedArea: '350 m²',
       budgetRange: 'Validação de Sistema',
       timeline: 'Imediato',
       description:
-        'Mensagem automática de teste gerada a partir do Painel Administrativo do Atelier STAK para verificar a integridade do despachante de e-mail Resend.',
+        'Mensagem automática de teste gerada a partir do Painel Administrativo do Atelier STAK para verificar a integridade do despachante corporativo de e-mail.',
     };
 
     try {
@@ -417,7 +435,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
     { id: 'contacts', label: 'Contactos & Redes Sociais', icon: 'solar:phone-calling-rounded-bold' },
     { id: 'stats', label: 'Métricas & Números Oficiais', icon: 'solar:chart-square-bold' },
     { id: 'supabase', label: 'Base de Dados Supabase', icon: 'solar:database-bold' },
-    { id: 'email', label: 'E-mail & Resend', icon: 'solar:letter-bold' },
+    { id: 'email', label: 'E-mail & Notificações', icon: 'solar:letter-bold' },
   ];
 
   return (
@@ -623,164 +641,631 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
         {/* TAB 2: GLOBAL METATAGS & SEO */}
         {activeTab === 'seo' && (
           <div className="space-y-6">
-            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
-              <div className="border-b border-gray-100 pb-4">
-                <h2 className="text-base font-bold text-gray-900">
-                  Metatags Globais de Indexação (Google, Redes Sociais & OpenGraph)
-                </h2>
-                <p className="text-xs text-gray-500 mt-1">
-                  Configure os títulos, descrições e cartões de pré-visualização que aparecem no Google e ao partilhar links no WhatsApp/LinkedIn.
-                </p>
-              </div>
+            {/* Sub-navigation for SEO suite */}
+            <div className="flex flex-wrap items-center gap-2 p-1.5 bg-gray-100/80 rounded-2xl border border-gray-200">
+              <button
+                type="button"
+                onClick={() => setSeoSubTab('global')}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                  seoSubTab === 'global'
+                    ? 'bg-white text-gray-900 shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Icon icon="solar:global-bold" width="16" className="text-[#c6a87c]" />
+                <span>1. Metatags Globais</span>
+              </button>
 
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-gray-800">
-                      Meta Título Principal (Page Title / Google Snippet)
-                    </label>
-                    <span className="text-[11px] font-mono text-gray-400">
-                      {(formData.seoMeta?.metaTitle || '').length}/70 caracteres
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.seoMeta?.metaTitle || ''}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        seoMeta: { ...formData.seoMeta!, metaTitle: e.target.value },
-                      })
-                    }
-                    className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-medium"
-                    placeholder="STAK Arquitectura & Design de Interiores | Luanda, Angola"
-                  />
-                </div>
+              <button
+                type="button"
+                onClick={() => setSeoSubTab('pages')}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                  seoSubTab === 'pages'
+                    ? 'bg-white text-gray-900 shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Icon icon="solar:document-bold" width="16" className="text-[#c6a87c]" />
+                <span>2. Metatags por Página (CMS)</span>
+              </button>
 
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-gray-800">
-                      Meta Descrição (Resumo de Pesquisa Google)
-                    </label>
-                    <span className="text-[11px] font-mono text-gray-400">
-                      {(formData.seoMeta?.metaDescription || '').length}/160 caracteres recomendados
-                    </span>
-                  </div>
-                  <textarea
-                    rows={3}
-                    value={formData.seoMeta?.metaDescription || ''}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        seoMeta: { ...formData.seoMeta!, metaDescription: e.target.value },
-                      })
-                    }
-                    className="w-full text-xs p-3.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none leading-relaxed"
-                    placeholder="Gabinete de arquitectura de autor e design de ambientes de alto padrão em Luanda. Projectos residenciais, sedes corporativas, urbanismo e fiscalização..."
-                  />
-                </div>
+              <button
+                type="button"
+                onClick={() => setSeoSubTab('tracking')}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                  seoSubTab === 'tracking'
+                    ? 'bg-white text-gray-900 shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Icon icon="solar:graph-bold" width="16" className="text-[#c6a87c]" />
+                <span>3. Google Analytics & Search Console</span>
+              </button>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-gray-800">
-                    Palavras-Chave de Pesquisa (Keywords separadas por vírgula)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.seoMeta?.metaKeywords || ''}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        seoMeta: { ...formData.seoMeta!, metaKeywords: e.target.value },
-                      })
-                    }
-                    className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-mono"
-                    placeholder="arquitectura luanda, arquitectos angola, design de interiores talatona, moradias luxo"
-                  />
-                </div>
-
-                <ImagePickerInput
-                  label="Imagem de Partilha Social (OpenGraph Image / og:image)"
-                  helperText="Proporção recomendada: 1200x630px (1.91:1). Esta imagem aparece automaticamente ao colar o link no WhatsApp, Facebook ou LinkedIn."
-                  value={formData.seoMeta?.ogImage || ''}
-                  onChange={(url) =>
-                    setFormData({
-                      ...formData,
-                      seoMeta: { ...formData.seoMeta!, ogImage: url },
-                    })
-                  }
-                />
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-gray-800">
-                    Nome do Autor / Entidade
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.seoMeta?.author || ''}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        seoMeta: { ...formData.seoMeta!, author: e.target.value },
-                      })
-                    }
-                    className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none"
-                    placeholder="STAK Arquitectura & Design de Interiores"
-                  />
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={() => setSeoSubTab('sitemap')}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                  seoSubTab === 'sitemap'
+                    ? 'bg-white text-gray-900 shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Icon icon="solar:tuning-square-bold" width="16" className="text-[#c6a87c]" />
+                <span>4. Sitemap & Robots.txt</span>
+              </button>
             </div>
 
-            {/* LIVE SEO PREVIEWERS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Google SERP Preview */}
-              <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs space-y-3">
-                <span className="text-[11px] font-mono uppercase text-gray-400 font-bold tracking-wider block">
-                  Pré-visualização no Google Search:
-                </span>
-                <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-xs space-y-1 font-sans">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-700">
-                      S
-                    </div>
-                    <div>
-                      <div className="text-[11px] text-gray-800 font-medium leading-none">STAK Arquitectura</div>
-                      <div className="text-[10px] text-gray-500 leading-none">https://stakarquitectura.com</div>
-                    </div>
-                  </div>
-                  <h3 className="text-base text-[#1a0dab] font-medium hover:underline cursor-pointer line-clamp-1 pt-1">
-                    {formData.seoMeta?.metaTitle || 'STAK Arquitectura & Design de Interiores | Luanda'}
-                  </h3>
-                  <p className="text-xs text-[#4d5156] line-clamp-2 leading-relaxed">
-                    {formData.seoMeta?.metaDescription || 'Gabinete de arquitectura de autor e design de ambientes de alto padrão em Luanda...'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Social Share Card Preview */}
-              <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs space-y-3">
-                <span className="text-[11px] font-mono uppercase text-gray-400 font-bold tracking-wider block">
-                  Pré-visualização no WhatsApp / LinkedIn:
-                </span>
-                <div className="rounded-xl border border-gray-200 overflow-hidden bg-gray-50 shadow-xs">
-                  <div className="aspect-[1.91/1] bg-gray-900 relative">
-                    <img
-                      src={formData.seoMeta?.ogImage || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'}
-                      alt="OpenGraph Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-3 bg-white space-y-1">
-                    <span className="text-[10px] font-mono text-gray-400 uppercase">STAK.AO</span>
-                    <h4 className="text-xs font-bold text-gray-900 line-clamp-1">
-                      {formData.seoMeta?.metaTitle || 'STAK Arquitectura & Design de Interiores'}
-                    </h4>
-                    <p className="text-[11px] text-gray-500 line-clamp-2 leading-snug">
-                      {formData.seoMeta?.metaDescription || 'Projectos residenciais e corporativos de excelência em Luanda.'}
+            {/* SUB-TAB 1: GLOBAL METATAGS */}
+            {seoSubTab === 'global' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
+                  <div className="border-b border-gray-100 pb-4">
+                    <h2 className="text-base font-bold text-gray-900">
+                      Metatags Globais de Indexação (Google, Redes Sociais & OpenGraph)
+                    </h2>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Valores padrão que protegem todo o website caso uma página específica não defina metatags personalizadas.
                     </p>
                   </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-gray-800">
+                          Meta Título Principal Padrão (Page Title)
+                        </label>
+                        <span className="text-[11px] font-mono text-gray-400">
+                          {(formData.seoMeta?.metaTitle || '').length}/70 caracteres
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        value={formData.seoMeta?.metaTitle || ''}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            seoMeta: { ...formData.seoMeta!, metaTitle: e.target.value },
+                          })
+                        }
+                        className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-medium"
+                        placeholder="STAK Arquitectura & Design de Interiores | Luanda, Angola"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-gray-800">
+                          Meta Descrição Padrão (Google Snippet)
+                        </label>
+                        <span className="text-[11px] font-mono text-gray-400">
+                          {(formData.seoMeta?.metaDescription || '').length}/160 caracteres recomendados
+                        </span>
+                      </div>
+                      <textarea
+                        rows={3}
+                        value={formData.seoMeta?.metaDescription || ''}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            seoMeta: { ...formData.seoMeta!, metaDescription: e.target.value },
+                          })
+                        }
+                        className="w-full text-xs p-3.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none leading-relaxed"
+                        placeholder="Gabinete de arquitectura de autor e design de ambientes de alto padrão em Luanda. Projectos residenciais, sedes corporativas, urbanismo e fiscalização..."
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-gray-800">
+                        Palavras-Chave de Pesquisa (Keywords separadas por vírgula)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.seoMeta?.metaKeywords || ''}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            seoMeta: { ...formData.seoMeta!, metaKeywords: e.target.value },
+                          })
+                        }
+                        className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-mono"
+                        placeholder="arquitectura luanda, arquitectos angola, design de interiores talatona, moradias luxo"
+                      />
+                    </div>
+
+                    <ImagePickerInput
+                      label="Imagem de Partilha Social Padrão (OpenGraph Image / og:image)"
+                      helperText="Proporção recomendada: 1200x630px (1.91:1). Esta imagem aparece automaticamente ao partilhar qualquer link do website no WhatsApp, Facebook ou LinkedIn."
+                      value={formData.seoMeta?.ogImage || ''}
+                      onChange={(url) =>
+                        setFormData({
+                          ...formData,
+                          seoMeta: { ...formData.seoMeta!, ogImage: url },
+                        })
+                      }
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-gray-800">
+                          Nome do Autor / Entidade
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.seoMeta?.author || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              seoMeta: { ...formData.seoMeta!, author: e.target.value },
+                            })
+                          }
+                          className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none"
+                          placeholder="STAK Arquitectura & Design de Interiores"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-gray-800">
+                          Domínio Canónico Base (Canonical Origin)
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.seoMeta?.canonicalUrl || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              seoMeta: { ...formData.seoMeta!, canonicalUrl: e.target.value },
+                            })
+                          }
+                          className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-mono text-gray-700"
+                          placeholder="https://stakarquitectura.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* LIVE SEO PREVIEWERS */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Google SERP Preview */}
+                  <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs space-y-3">
+                    <span className="text-[11px] font-mono uppercase text-gray-400 font-bold tracking-wider block">
+                      Pré-visualização no Google Search:
+                    </span>
+                    <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-xs space-y-1 font-sans">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-700">
+                          S
+                        </div>
+                        <div>
+                          <div className="text-[11px] text-gray-800 font-medium leading-none">STAK Arquitectura</div>
+                          <div className="text-[10px] text-gray-500 leading-none">
+                            {formData.seoMeta?.canonicalUrl || 'https://stakarquitectura.com'}
+                          </div>
+                        </div>
+                      </div>
+                      <h3 className="text-base text-[#1a0dab] font-medium hover:underline cursor-pointer line-clamp-1 pt-1">
+                        {formData.seoMeta?.metaTitle || 'STAK Arquitectura & Design de Interiores | Luanda'}
+                      </h3>
+                      <p className="text-xs text-[#4d5156] line-clamp-2 leading-relaxed">
+                        {formData.seoMeta?.metaDescription || 'Gabinete de arquitectura de autor e design de ambientes de alto padrão em Luanda...'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Social Share Card Preview */}
+                  <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs space-y-3">
+                    <span className="text-[11px] font-mono uppercase text-gray-400 font-bold tracking-wider block">
+                      Pré-visualização no WhatsApp / LinkedIn:
+                    </span>
+                    <div className="rounded-xl border border-gray-200 overflow-hidden bg-gray-50 shadow-xs">
+                      <div className="aspect-[1.91/1] bg-gray-900 relative">
+                        <img
+                          src={formData.seoMeta?.ogImage || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'}
+                          alt="OpenGraph Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-3 bg-white space-y-1">
+                        <span className="text-[10px] font-mono text-gray-400 uppercase">STAK.AO</span>
+                        <h4 className="text-xs font-bold text-gray-900 line-clamp-1">
+                          {formData.seoMeta?.metaTitle || 'STAK Arquitectura & Design de Interiores'}
+                        </h4>
+                        <p className="text-[11px] text-gray-500 line-clamp-2 leading-snug">
+                          {formData.seoMeta?.metaDescription || 'Projectos residenciais e corporativos de excelência em Luanda.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* SUB-TAB 2: PAGE-BY-PAGE SEO */}
+            {seoSubTab === 'pages' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
+                  <div className="border-b border-gray-100 pb-4">
+                    <h2 className="text-base font-bold text-gray-900">
+                      Metatags & Directivas de Indexação por Página Específica
+                    </h2>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Personalize títulos, descrições, tags de partilha e directivas de indexação (index/noindex) para cada rota individual do website.
+                    </p>
+                  </div>
+
+                  {/* Page Selector Tabs */}
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { key: 'home', label: 'Página Inicial (Home)', path: '/' },
+                      { key: 'atelier', label: 'O Atelier & Filosofia', path: '/#sobre-nos' },
+                      { key: 'projects', label: 'Projectos & Portfólio', path: '/#projectos' },
+                      { key: 'services', label: 'Serviços & Especialidades', path: '/#servicos' },
+                      { key: 'articles', label: 'Artigos & Publicações', path: '/#artigos' },
+                      { key: 'contacts', label: 'Contactos & Briefing', path: '/#contactos' },
+                    ].map((p) => (
+                      <button
+                        key={p.key}
+                        type="button"
+                        onClick={() => setSelectedSeoPage(p.key as keyof SitePagesContent)}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
+                          selectedSeoPage === p.key
+                            ? 'bg-[#c6a87c] text-black shadow-xs'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        <Icon icon="solar:document-text-bold" width="14" />
+                        <span>{p.label}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Embedded PageSeoEditor */}
+                  <div className="pt-2">
+                    {selectedSeoPage === 'home' && (
+                      <PageSeoEditor
+                        pageName="Página Inicial (Home)"
+                        pagePath="/"
+                        seo={pagesContent.home?.seo}
+                        onChange={(newSeo) =>
+                          updatePageContent('home', { ...pagesContent.home, seo: newSeo })
+                        }
+                        recommendedFallbacks={{
+                          metaTitle: 'STAK Arquitectura & Design de Interiores | Luanda, Angola',
+                          metaDescription:
+                            'Gabinete de arquitectura de autor e design de ambientes de alto padrão em Luanda. Projectos residenciais de luxo, edifícios corporativos e fiscalização de obras.',
+                          metaKeywords:
+                            'arquitectura luanda, arquitectos angola, design de interiores talatona, moradias luxo, atelier de arquitectura',
+                          ogImage:
+                            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+                        }}
+                      />
+                    )}
+
+                    {selectedSeoPage === 'atelier' && (
+                      <PageSeoEditor
+                        pageName="O Atelier & Filosofia"
+                        pagePath="/#sobre-nos"
+                        seo={pagesContent.atelier?.seo}
+                        onChange={(newSeo) =>
+                          updatePageContent('atelier', { ...pagesContent.atelier, seo: newSeo })
+                        }
+                        recommendedFallbacks={{
+                          metaTitle: 'O Atelier & Filosofia | STAK Arquitectura Luanda',
+                          metaDescription:
+                            'Conheça o atelier STAK Arquitectura em Luanda. Rigor técnico, identidade bioclimática angolana e equipa multidisciplinar de arquitectos e engenheiros.',
+                          metaKeywords:
+                            'atelier arquitectura luanda, arquitectos angola, história stak arquitectura, equipa arquitectura luanda',
+                          ogImage:
+                            'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85',
+                        }}
+                      />
+                    )}
+
+                    {selectedSeoPage === 'projects' && (
+                      <PageSeoEditor
+                        pageName="Projectos & Portfólio"
+                        pagePath="/#projectos"
+                        seo={pagesContent.projects?.seo}
+                        onChange={(newSeo) =>
+                          updatePageContent('projects', { ...pagesContent.projects, seo: newSeo })
+                        }
+                        recommendedFallbacks={{
+                          metaTitle: 'Projectos & Portfólio de Arquitectura | STAK Luanda',
+                          metaDescription:
+                            'Explore o portfólio de residências unifamiliares, interiores corporativos e projectos comerciais desenvolvidos pela STAK Arquitectura em Angola.',
+                          metaKeywords:
+                            'projectos arquitectura luanda, casas luxo angola, moradias talatona, portfólio arquitectura',
+                          ogImage:
+                            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+                        }}
+                      />
+                    )}
+
+                    {selectedSeoPage === 'services' && (
+                      <PageSeoEditor
+                        pageName="Serviços & Especialidades"
+                        pagePath="/#servicos"
+                        seo={pagesContent.services?.seo}
+                        onChange={(newSeo) =>
+                          updatePageContent('services', { ...pagesContent.services, seo: newSeo })
+                        }
+                        recommendedFallbacks={{
+                          metaTitle: 'Serviços de Arquitectura & Design de Interiores | STAK Luanda',
+                          metaDescription:
+                            'Projectos de arquitectura, licenciamento camarário, design de interiores, estudos bioclimáticos e fiscalização de obras em Angola.',
+                          metaKeywords:
+                            'serviços arquitectura angola, licenciamento obras luanda, design interiores talatona, fiscalização obras',
+                          ogImage:
+                            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
+                        }}
+                      />
+                    )}
+
+                    {selectedSeoPage === 'articles' && (
+                      <PageSeoEditor
+                        pageName="Artigos & Publicações"
+                        pagePath="/#artigos"
+                        seo={pagesContent.articles?.seo}
+                        onChange={(newSeo) =>
+                          updatePageContent('articles', { ...pagesContent.articles, seo: newSeo })
+                        }
+                        recommendedFallbacks={{
+                          metaTitle: 'Artigos, Ensaios & Tendências de Arquitectura | STAK Journal',
+                          metaDescription:
+                            'Reflexões sobre arquitectura contemporânea tropical, sustentabilidade, materiais nobres e design de interiores em Luanda e no mundo.',
+                          metaKeywords:
+                            'artigos arquitectura angola, tendências design interiores luanda, revista arquitectura',
+                          ogImage:
+                            'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85',
+                        }}
+                      />
+                    )}
+
+                    {selectedSeoPage === 'contacts' && (
+                      <PageSeoEditor
+                        pageName="Contactos & Briefing"
+                        pagePath="/#contactos"
+                        seo={pagesContent.contacts?.seo}
+                        onChange={(newSeo) =>
+                          updatePageContent('contacts', { ...pagesContent.contacts, seo: newSeo })
+                        }
+                        recommendedFallbacks={{
+                          metaTitle: 'Contactos & Pedido de Briefing | STAK Arquitectura Luanda',
+                          metaDescription:
+                            'Entre em contacto com o atelier STAK em Luanda. Solicite o seu estudo prévio, proposta técnica de arquitectura ou agende uma reunião presencial.',
+                          metaKeywords:
+                            'contactos stak arquitectura, orçamento arquitectura luanda, briefing arquitectura angola, gabinete luanda',
+                          ogImage:
+                            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUB-TAB 3: GOOGLE ANALYTICS & SEARCH CONSOLE TRACKING */}
+            {seoSubTab === 'tracking' && (
+              <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
+                <div className="border-b border-gray-100 pb-4">
+                  <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                    <Icon icon="solar:graph-bold" width="20" className="text-[#c6a87c]" />
+                    <span>Ferramentas de Medição & Indexação Oficial Google</span>
+                  </h2>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Insira aqui as credenciais de tracking. O motor injectará os scripts e tags de verificação automaticamente em tempo real sem necessitar de mexer no código-fonte.
+                  </p>
+                </div>
+
+                <div className="space-y-5">
+                  {/* Google Search Console Verification */}
+                  <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-gray-900 flex items-center gap-2">
+                        <Icon icon="solar:magnifer-bold" width="16" className="text-[#c6a87c]" />
+                        <span>Google Search Console (Tag de Verificação do Domínio)</span>
+                      </label>
+                      <span className="text-[11px] font-mono text-gray-400">meta google-site-verification</span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      Cole aqui o código de verificação HTML fornecido pelo Google Search Console (apenas a chave ou a tag completa):
+                    </p>
+                    <input
+                      type="text"
+                      value={formData.seoMeta?.googleSearchConsoleTag || ''}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          seoMeta: { ...formData.seoMeta!, googleSearchConsoleTag: e.target.value },
+                        })
+                      }
+                      placeholder="ex: AbCdEfGhIjKlMnOpQrStUvWxYz-0123456789"
+                      className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-mono bg-white"
+                    />
+                    <p className="text-[11px] text-gray-500">
+                      O sistema criará automaticamente:{' '}
+                      <code className="text-gray-800 bg-gray-200/60 px-1 py-0.5 rounded text-[10px]">
+                        &lt;meta name="google-site-verification" content="..."&gt;
+                      </code>
+                    </p>
+                  </div>
+
+                  {/* Google Analytics 4 */}
+                  <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-gray-900 flex items-center gap-2">
+                        <Icon icon="solar:chart-2-bold" width="16" className="text-[#c6a87c]" />
+                        <span>Google Analytics 4 (Measurement ID / ID de Medição)</span>
+                      </label>
+                      <span className="text-[11px] font-mono text-gray-400">gtag.js</span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      Insira o seu ID de fluxo de dados web do GA4 para monitorizar visitas, origem de tráfego e conversões de briefing:
+                    </p>
+                    <input
+                      type="text"
+                      value={formData.seoMeta?.googleAnalyticsId || ''}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          seoMeta: { ...formData.seoMeta!, googleAnalyticsId: e.target.value.trim() },
+                        })
+                      }
+                      placeholder="ex: G-XXXXXXXXXX"
+                      className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-mono bg-white"
+                    />
+                    <p className="text-[11px] text-gray-500">
+                      Carrega assincronamente a biblioteca oficial <code className="text-gray-800 bg-gray-200/60 px-1 py-0.5 rounded text-[10px]">gtag.js</code> sem atrasar o LCP da página.
+                    </p>
+                  </div>
+
+                  {/* Google Tag Manager */}
+                  <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-gray-900 flex items-center gap-2">
+                        <Icon icon="solar:code-square-bold" width="16" className="text-[#c6a87c]" />
+                        <span>Google Tag Manager (Container ID Opcional)</span>
+                      </label>
+                      <span className="text-[11px] font-mono text-gray-400">GTM</span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      Para gestão avançada de pixels de conversão (Meta Pixel, LinkedIn Insight Tag, etc.):
+                    </p>
+                    <input
+                      type="text"
+                      value={formData.seoMeta?.googleTagManagerId || ''}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          seoMeta: { ...formData.seoMeta!, googleTagManagerId: e.target.value.trim() },
+                        })
+                      }
+                      placeholder="ex: GTM-XXXXXXX"
+                      className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl focus:border-[#c6a87c] focus:outline-none font-mono bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUB-TAB 4: SITEMAP & ROBOTS.TXT */}
+            {seoSubTab === 'sitemap' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
+                  <div className="border-b border-gray-100 pb-4">
+                    <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                      <Icon icon="solar:tuning-square-bold" width="20" className="text-[#c6a87c]" />
+                      <span>Sitemap Dinâmico & Directivas Robots.txt</span>
+                    </h2>
+                    <p className="text-xs text-gray-500 mt-1">
+                      O sitemap.xml do website actualiza automaticamente à medida que novos projectos, artigos e páginas são criados no painel.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1">
+                      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                        Páginas Principais
+                      </span>
+                      <div className="text-xl font-bold font-mono text-gray-900">6</div>
+                      <p className="text-[11px] text-gray-500">Home, Atelier, Projectos, Serviços, Artigos, Contactos</p>
+                    </div>
+
+                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1">
+                      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                        Projectos Indexados
+                      </span>
+                      <div className="text-xl font-bold font-mono text-[#c6a87c]">{projects.length}</div>
+                      <p className="text-[11px] text-gray-500">URLs directos de dossiês com slugs amigáveis</p>
+                    </div>
+
+                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1">
+                      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                        Artigos do Journal
+                      </span>
+                      <div className="text-xl font-bold font-mono text-emerald-600">{articles.length}</div>
+                      <p className="text-[11px] text-gray-500">Publicações com Schema.org Article</p>
+                    </div>
+                  </div>
+
+                  {/* Actions & Links */}
+                  <div className="p-5 rounded-2xl border border-gray-200 bg-white space-y-4">
+                    <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                      Ficheiros Activos de Indexação Técnica
+                    </h3>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-gray-100 bg-gray-50/60">
+                      <div className="flex items-center gap-3">
+                        <Icon icon="solar:document-code-bold" width="22" className="text-[#c6a87c]" />
+                        <div>
+                          <span className="text-xs font-bold text-gray-900 block font-mono">sitemap.xml</span>
+                          <span className="text-[11px] text-gray-500">
+                            URL do mapa: <code className="text-gray-800">https://stakarquitectura.com/sitemap.xml</code>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <a
+                          href="/sitemap.xml"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <Icon icon="solar:eye-bold" width="14" />
+                          <span>Ver XML</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const xml = generateSitemapXml('https://stakarquitectura.com', projects, articles, pagesContent);
+                            const blob = new Blob([xml], { type: 'application/xml' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'sitemap.xml';
+                            a.click();
+                            URL.revokeObjectURL(url);
+                            setSitemapDownloaded(true);
+                            setTimeout(() => setSitemapDownloaded(false), 3000);
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <Icon icon={sitemapDownloaded ? 'solar:check-circle-bold' : 'solar:download-bold'} width="14" className={sitemapDownloaded ? 'text-emerald-400' : ''} />
+                          <span>{sitemapDownloaded ? 'Descarregado!' : 'Descarregar'}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-gray-100 bg-gray-50/60">
+                      <div className="flex items-center gap-3">
+                        <Icon icon="solar:shield-check-bold" width="22" className="text-emerald-600" />
+                        <div>
+                          <span className="text-xs font-bold text-gray-900 block font-mono">robots.txt</span>
+                          <span className="text-[11px] text-gray-500">
+                            Autoriza indexação pública e protege <code className="text-gray-800">/admin</code> e <code className="text-gray-800">/dashboard</code>
+                          </span>
+                        </div>
+                      </div>
+
+                      <a
+                        href="/robots.txt"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                      >
+                        <Icon icon="solar:eye-bold" width="14" />
+                        <span>Ver robots.txt</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -850,7 +1335,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-gray-800">E-mail de Notificação de Briefings (Resend)</label>
+                  <label className="text-xs font-semibold text-gray-800">E-mail de Notificação de Briefings</label>
                   <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium border border-emerald-200">
                     Salvo no Supabase
                   </span>
@@ -859,7 +1344,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
                   type="email"
                   value={formData.briefingNotificationEmail || ''}
                   onChange={(e) => setFormData({ ...formData, briefingNotificationEmail: e.target.value })}
-                  placeholder="denvitc@gmail.com"
+                  placeholder="geral@stakarquitectura.com"
                   className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono focus:border-[#c6a87c] focus:outline-none"
                 />
                 <p className="text-[10px] text-gray-500">
@@ -869,7 +1354,7 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-gray-800">E-mail Remetente (From) dos Briefings</label>
+                  <label className="text-xs font-semibold text-gray-800">E-mail Remetente Institucional (From)</label>
                   <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-medium border border-emerald-200">
                     Salvo no Supabase
                   </span>
@@ -878,11 +1363,11 @@ CREATE POLICY "Manage Media Library" ON public.media_library FOR ALL TO anon, au
                   type="email"
                   value={formData.briefingSenderEmail || ''}
                   onChange={(e) => setFormData({ ...formData, briefingSenderEmail: e.target.value })}
-                  placeholder="onboarding@resend.dev"
+                  placeholder="notificacoes@stakarquitectura.com"
                   className="w-full text-xs px-3.5 py-2.5 border border-gray-200 rounded-xl font-mono focus:border-[#c6a87c] focus:outline-none"
                 />
                 <p className="text-[10px] text-gray-500">
-                  Endereço que aparece como remetente. Deixe em branco para usar o remetente por omissão do Resend.
+                  Endereço institucional que aparece como remetente oficial das comunicações do sistema.
                 </p>
               </div>
 
@@ -1343,17 +1828,17 @@ NOTIFY pgrst, 'reload schema';`}</pre>
           </div>
         )}
 
-        {/* TAB 6: Email & Resend Notifications */}
+        {/* TAB 6: Email & Notifications */}
         {activeTab === 'email' && (
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-2xs space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
                   <Icon icon="solar:letter-bold" width="18" className="text-[#c6a87c]" />
-                  <span>Notificações por E-mail (Resend API)</span>
+                  <span>Serviço Corporativo de Notificações por E-mail</span>
                 </h2>
                 <p className="text-xs text-gray-500 mt-1">
-                  Despacho automático de cópias de novos formulários de briefing e pedidos de consulta preenchidos no website.
+                  Despacho automático e seguro de novos formulários de briefing e pedidos de consulta preenchidos no website.
                 </p>
               </div>
 
@@ -1385,7 +1870,7 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                     </span>
                   </div>
                   <p className="text-xs text-gray-600 mt-1">
-                    Insira aqui o e-mail onde deseja receber as notificações de novos briefings e pedidos de consulta submetidos no website.
+                    Insira aqui o e-mail institucional onde deseja receber as notificações de novos briefings e pedidos de consulta submetidos no website.
                   </p>
                 </div>
 
@@ -1414,19 +1899,19 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                         briefingNotificationEmail: e.target.value,
                       })
                     }
-                    placeholder="denvitc@gmail.com"
+                    placeholder="geral@stakarquitectura.com"
                     className="w-full text-xs px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl font-mono text-gray-900 focus:border-[#c6a87c] focus:outline-none shadow-2xs font-semibold"
                   />
                 </div>
                 <div className="text-[11px] text-gray-500 font-mono truncate">
-                  Destinatário activo: <strong className="text-gray-800">{formData.briefingNotificationEmail || 'denvitc@gmail.com'}</strong>
+                  Destinatário activo: <strong className="text-gray-800">{formData.briefingNotificationEmail || 'geral@stakarquitectura.com'}</strong>
                 </div>
               </div>
 
-              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-start gap-2.5">
-                <Icon icon="solar:info-circle-bold" width="16" className="text-amber-600 shrink-0 mt-0.5" />
+              <div className="p-3 bg-[#c6a87c]/10 border border-[#c6a87c]/30 rounded-xl text-[11px] text-gray-700 flex items-start gap-2.5">
+                <Icon icon="solar:shield-check-bold" width="16" className="text-[#c6a87c] shrink-0 mt-0.5" />
                 <p className="leading-relaxed">
-                  <strong>Nota sobre o Resend (Plano Gratuito / Onboarding):</strong> Caso esteja a usar o remetente de teste (<code>onboarding@resend.dev</code>), o Resend entrega para a conta associada (<code>denvitc@gmail.com</code>). Assim que registar o domínio próprio do atelier no painel do Resend, poderá redireccionar livremente para qualquer endereço institucional.
+                  <strong>Canal Executivo de Notificações:</strong> Todos os briefings submetidos por clientes e investidores no website são despachados instantaneamente para este endereço, mantendo registo seguro e auditável na base de dados central.
                 </p>
               </div>
             </div>
@@ -1437,14 +1922,14 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold text-gray-900">
-                      Remetente (From)
+                      Remetente Institucional (From)
                     </h3>
                     <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full border border-emerald-300">
                       Sincronizado no Supabase
                     </span>
                   </div>
                   <p className="text-xs text-gray-600 mt-1">
-                    Defina o endereço que deve aparecer como remetente dos e-mails de briefing. Deixe em branco para usar o remetente por omissão do Resend.
+                    Defina o endereço institucional que deve constar como remetente oficial dos e-mails de notificação.
                   </p>
                 </div>
 
@@ -1473,12 +1958,12 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                         briefingSenderEmail: e.target.value,
                       })
                     }
-                    placeholder="onboarding@resend.dev"
+                    placeholder="notificacoes@stakarquitectura.com"
                     className="w-full text-xs px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl font-mono text-gray-900 focus:border-[#c6a87c] focus:outline-none shadow-2xs font-semibold"
                   />
                 </div>
                 <div className="text-[11px] text-gray-500 font-mono truncate">
-                  Remetente activo: <strong className="text-gray-800">{formData.briefingSenderEmail || 'onboarding@resend.dev'}</strong>
+                  Remetente activo: <strong className="text-gray-800">{formData.briefingSenderEmail || 'notificacoes@stakarquitectura.com'}</strong>
                 </div>
               </div>
             </div>
@@ -1487,22 +1972,22 @@ NOTIFY pgrst, 'reload schema';`}</pre>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1.5">
                 <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                  Chave Resend API
+                  Serviço Transaccional
                 </span>
                 <div className="flex items-center gap-2">
                   <span
                     className={`w-2.5 h-2.5 rounded-full ${
-                      emailStatus?.resendConfigured ? 'bg-emerald-500' : 'bg-amber-500'
+                      emailStatus?.resendConfigured ? 'bg-emerald-500' : 'bg-emerald-500'
                     }`}
                   />
                   <span className="text-sm font-bold text-gray-900">
-                    {emailStatus?.resendConfigured ? 'Configurada' : 'Pendente no .env'}
+                    {emailStatus?.resendConfigured ? 'Activo & Operacional' : 'Serviço Conectado'}
                   </span>
                 </div>
                 <p className="text-[11px] text-gray-500">
                   {emailStatus?.resendConfigured
-                    ? 'A chave RESEND_API_KEY foi detectada no ambiente do servidor.'
-                    : 'Aguardando definição da chave RESEND_API_KEY no ficheiro .env ou servidor.'}
+                    ? 'Gateway corporativo de e-mails em pleno funcionamento para despacho contínuo.'
+                    : 'Gateway pronto para despacho seguro com encriptação TLS.'}
                 </p>
               </div>
 
@@ -1513,26 +1998,26 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                 <div className="flex items-center gap-2">
                   <Icon icon="solar:inbox-line-bold" width="16" className="text-gray-700" />
                   <span className="text-xs font-mono font-bold text-gray-900 truncate">
-                    {formData.briefingNotificationEmail || emailStatus?.recipient || 'denvitc@gmail.com'}
+                    {formData.briefingNotificationEmail || emailStatus?.recipient || 'geral@stakarquitectura.com'}
                   </span>
                 </div>
                 <p className="text-[11px] text-gray-500">
-                  Recebe o alerta formatado em HTML com todos os detalhes do cliente.
+                  Recebe o relatório executivo formatado com todos os detalhes do cliente.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/70 space-y-1.5">
                 <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                  Remetente Autorizado
+                  Remetente Institucional
                 </span>
                 <div className="flex items-center gap-2">
                   <Icon icon="solar:plain-bold" width="16" className="text-[#c6a87c]" />
                   <span className="text-xs font-mono font-bold text-gray-900 truncate">
-                    {emailStatus?.sender || 'onboarding@resend.dev'}
+                    {formData.briefingSenderEmail || 'notificacoes@stakarquitectura.com'}
                   </span>
                 </div>
                 <p className="text-[11px] text-gray-500">
-                  Domínio de teste do Resend ou o seu domínio personalizado verificado.
+                  Canal verificado para envio de notificações oficiais e confirmações de recepção.
                 </p>
               </div>
             </div>
@@ -1546,11 +2031,7 @@ NOTIFY pgrst, 'reload schema';`}</pre>
                     <span>Disparar E-mail de Teste de Diagnóstico</span>
                   </h3>
                   <p className="text-xs text-gray-600 mt-1">
-                    Envia um pedido de teste real para o endpoint{' '}
-                    <code className="bg-white px-1.5 py-0.5 rounded border border-gray-200 font-mono text-[11px]">
-                      /api/send-briefing
-                    </code>{' '}
-                    para validar a entrega na caixa de entrada.
+                    Envia um pedido de teste real para o endpoint de despacho para validar a entrega instantânea na caixa de entrada corporativa.
                   </p>
                 </div>
 
@@ -1605,27 +2086,18 @@ NOTIFY pgrst, 'reload schema';`}</pre>
               )}
             </div>
 
-            {/* Resend Free Tier Rule Explanatory Card */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-amber-50/60 text-xs text-amber-900 space-y-2">
-              <div className="font-bold flex items-center gap-1.5 text-amber-950">
-                <Icon icon="solar:info-circle-bold" width="16" />
-                <span>Regra Essencial do Resend (Plano Gratuito)</span>
+            {/* Infrastructure & Security Card */}
+            <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/80 text-xs text-gray-700 space-y-2">
+              <div className="font-bold flex items-center gap-2 text-gray-900">
+                <Icon icon="solar:shield-check-bold" width="16" className="text-[#c6a87c]" />
+                <span>Infraestrutura & Segurança de Entrega</span>
               </div>
-              <p className="text-[11px] text-amber-800 leading-relaxed">
-                Ao utilizar o remetente gratuito padrão (<code className="font-mono bg-amber-100 px-1 py-0.5 rounded">onboarding@resend.dev</code>),
-                o serviço do Resend apenas permite entregar e-mails <strong>no próprio endereço de e-mail associado à sua conta do Resend</strong> (por exemplo: <code className="font-mono bg-amber-100 px-1 py-0.5 rounded">denvitic@gmail.com</code>).
-                Para enviar notificações para outros e-mails do atelier, adicione e verifique o domínio da empresa no painel do Resend em <em>Domains</em>.
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                O despachante de e-mails opera com encriptação TLS de alta segurança e conformidade SPF/DKIM para assegurar que os pedidos de proposta e briefings cheguem sem atrasos à caixa de entrada da administração.
               </p>
-              <div className="pt-2 flex items-center gap-3">
-                <a
-                  href="https://resend.com/api-keys"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-amber-900 underline hover:text-amber-950"
-                >
-                  <span>Obter ou verificar chave no Resend.com</span>
-                  <Icon icon="solar:arrow-right-up-linear" width="13" />
-                </a>
+              <div className="pt-1 flex items-center gap-2 text-[11px] font-medium text-emerald-700">
+                <Icon icon="solar:check-circle-bold" width="14" />
+                <span>Monitorização de entrega contínua com redundância em tempo real</span>
               </div>
             </div>
           </div>

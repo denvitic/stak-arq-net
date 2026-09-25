@@ -108,7 +108,7 @@ export async function processBriefingNotification(
     payload.recipientEmail ||
     envOverride?.companyEmail ||
     (typeof process !== 'undefined' ? process.env?.COMPANY_NOTIFICATION_EMAIL : undefined) ||
-    'denvitc@gmail.com';
+    'geral@stakarquitectura.com';
 
   // Se a chave do Resend não estiver configurada no ambiente
   if (!apiKey) {

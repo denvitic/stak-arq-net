@@ -142,7 +142,11 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
               <div className="relative rounded-lg overflow-hidden bg-black/60 aspect-[16/9] border border-white/10 group">
                 <img
                   src={images[activeImageIndex]}
-                  alt={`${project.title} imagem ${activeImageIndex + 1}`}
+                  alt={
+                    activeImageIndex === 0 && project.altText
+                      ? project.altText
+                      : `${project.title} – Fotografia de Arquitectura ${activeImageIndex + 1}`
+                  }
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transition-all duration-300"
                 />

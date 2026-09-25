@@ -253,15 +253,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBriefing }) =>
           </div>
 
           {/* Denvitic Technology Partnership Credit */}
-          <div className="flex items-center gap-2 text-[11px] text-[#9ca3af]">
-            <span>Solução digital concebida por</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-[#9ca3af]">
+            <span>Engenharia & Arquitectura Digital por</span>
             <a
               href="https://www.denvitic.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#e5e7eb] font-semibold hover:text-[#c6a87c] transition-colors"
             >
-              Denvitic – Prestação de Serviços
+              Denvitic Tecnologias
             </a>
             <span className="hidden sm:inline text-[#4b5563]">• Luanda, Angola</span>
           </div>
